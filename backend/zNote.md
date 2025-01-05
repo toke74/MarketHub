@@ -424,3 +424,138 @@ app.all("*", (req, res, next) => {
 });
 
 ```
+
+# <span style="color:rgb(136, 236, 90) ; "> 2.) Setting Up Error Handler </span>
+## <span style="color:rgb(236, 90, 212) ; "> 2.1) Custom Error Handler </span>
+The error object is a built-in object in the Node.js runtime. It gives you a set of info about an error when it happens.
+
+### <span style="color: #86efac;"> 2.1.1) Create Error Handler class</span>
+Create a file inside <a>utils</a> folder call <a>errorHandler.js</a> and write the following code
+the use of the class to extend the default Error by adding statusCode and Custom Message.
+
+```js
+class ErrorHandler extends Error {
+ 
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export default ErrorHandler;
+```
+
+### <span style="color: #86efac;"> 2.1.2) Handling Possible Errors</span>
+In side <a>middleware </a> folder create <a>error.js</a> file and write the following code.
+
+```js
+import ErrorHandler from "../utils/errorHandler.js";
+
+const errorMiddleware = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal server Error";
+
+  // Wrong MongoDB ID error
+  if (err.name === "CastError") {
+    const message = `Resources not found with this ID. Invalid ${err.path}`;
+    err = new ErrorHandler(message, 400);
+  }
+
+  // Duplicate key error
+  if (err.code === 11000) {
+    const message = `Duplicate key ${Object.keys(err.keyValue)} entered`;
+    err = new ErrorHandler(message, 400);
+  }
+
+  // Wrong JWT error
+  if (err.name === "JsonWebTokenError") {
+    const message = `Your URL is invalid, please try again later`;
+    err = new ErrorHandler(message, 400);
+  }
+
+  // JWT expired
+  if (err.name === "TokenExpiredError") {
+    const message = `Your URL is expired, please try again later`;
+    err = new ErrorHandler(message, 400);
+  }
+
+  res.status(err.statusCode).json({
+    success: false,
+    message: err.message,
+  });
+};
+
+export default errorMiddleware;
+```
+
+### <span style="color: #86efac;"> 2.1.3) Handling try-catch statements</span>
+Again in side <a>middleware </a> folder create <a>catchAsyncErrors.js </a> file and write the following code.
+
+```js
+  const asyncErrorHandler = (theFunc) => (req, res, next) => {
+   Promise.resolve(theFunc(req, res, next)).catch(next);
+ };
+ 
+ export default asyncErrorHandler;
+```
+
+### <span style="color: #86efac;"> 2.1.4) Integrate error handler middleware with app.js file</span>
+now call error handler middleware inside <a> app.js</a> file and put it at the end of all middleware.
+
+```js
+// it's for ErrorHandling
+app.use(ErrorHandlerMiddleware);
+```
+
+<a> app.js</a>
+
+```js
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import ErrorHandlerMiddleware from "./middleware/error.js";
+import "dotenv/config.js";
+
+const { ORIGIN } = process.env;
+export const app = express();
+
+//passing bodyParser middleware
+app.use(express.json({ limit: "50mb" }));
+
+//cookie parser middleware
+app.use(cookieParser());
+
+//cors middleware
+app.use(
+  cors({
+    origin: ORIGIN,
+  })
+);
+
+//routes middleware go's here
+
+
+//testing route
+app.get("/test", (req, res, next) => {
+  return res.status(200).json({
+    success: true,
+    message: "Test API is Working",
+  });
+});
+
+//all Unknown Routes
+app.all("*", (req, res, next) => {
+  const err = new Error(`Route ${req.originalUrl} not found`) as any;
+  err.statusCode = 404;
+  next(err);
+});
+
+// it's for ErrorHandling
+app.use(ErrorHandlerMiddleware);
+```
+
+
+
+### <span style="color: #86efac;"> 3.1) Create an account on MongoDB Atlas</span>
+

@@ -5,6 +5,7 @@ import cors from "cors";
 
 //local imports
 import "dotenv/config.js";
+import ErrorHandlerMiddleware from "./middlewares/error.js";
 
 export const app = express()
 const { ORIGIN } = process.env;
@@ -50,3 +51,6 @@ app.all("*", (req, res, next) => {
   err.statusCode = 404;
   next(err);
 });
+
+// it's for ErrorHandling
+app.use(ErrorHandlerMiddleware);
