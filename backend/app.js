@@ -6,6 +6,7 @@ import cors from "cors";
 //local imports
 import "dotenv/config.js";
 import ErrorHandlerMiddleware from "./middlewares/error.js";
+import userRouter from "./routes/user.route.js";
 
 export const app = express()
 const { ORIGIN } = process.env;
@@ -34,8 +35,8 @@ app.use(
   })
 );
 
-//routes middleware go's here
-
+//routes
+app.use("/api/v1/user", userRouter);
 
 //testing route
 app.get("/test", (req, res, next) => {
