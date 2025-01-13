@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import asyncErrorHandler  from "../middlewares/catchAsyncErrors.js";
@@ -51,5 +52,53 @@ try {
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
+  }
+);
+
+
+// @desc    Activate user
+// @route   POST /api/v1/user/activate_user
+// @access  Public
+export const activateUser = asyncErrorHandler(
+  async (req, res, next) => {
+const { activation_token, activation_code } = req.body;
+
+
+//verify toke
+const decoded = jwt.verify(
+      activation_token,
+      process.env.ACTIVATION_SECRET 
+    );
+    
+// if activation code not valid, throw error 
+if (activation_code !== decoded.ActivationCode) {
+      return next(new ErrorHandler("Invalid activation code", 400));
+    }
+
+//if activation code is valid, find user
+const isUserExist = await User.findOne({ _id: decoded.id });
+
+// if user not exist, throw the error 
+ if (!isUserExist) {
+      return next(new ErrorHandler("User not exist ", 400));
+    }
+
+//if user exist and isVerified field is true, throw the error ask user to login
+if (isUserExist.isVerified) {
+      return next(
+        new ErrorHandler("Your email is verified, Please login ", 400)
+      );
+    }
+
+ // if user  exist and  isVerified field is false, update the user as verified 
+const user = await User.findOneAndUpdate(
+      { _id: decoded.id },
+      { isVerified: true }
+    );
+
+// Then send success message to client 
+res.status(201).json({
+      success: true,
+    });
   }
 );
