@@ -155,7 +155,6 @@ export const loginUser = asyncErrorHandler(async (req, res, next) => {
   sendTokensAsCookies(user._id, 200, res);
 });
 
-
 // @desc    Resend Activation code
 // @route   POST /api/v1/user/resend_activation_code
 // @access  Public
@@ -211,16 +210,41 @@ export const resendActivationCode = asyncErrorHandler(
   }
 );
 
-
 // @desc    Update Access Token
 // @route   GET /api/v1/user/refresh_Token
 // @access  Public
+export const updateAccessToken = asyncErrorHandler(async (req, res, next) => {
+  //Get refresh token from cookies, every time client send request. the cookie send along with the request.
+  const refresh_token = req.cookies.refreshToken;
 
+  // Check whether the refresh token is empty or not
+  if (!refresh_token) {
+    return next(
+      new ErrorHandler("Refresh token not found. Please login again.", 401)
+    );
+  }
+  // Verify the validity of the refresh token
+  let decoded;
+  try {
+    decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
+  } catch (err) {
+    return next(
+      new ErrorHandler("Invalid refresh token. Please login again.", 401)
+    );
+  }
 
-// @desc Social Auth
-// @route POST /api/v1/user/social_auth
-// @access Public
+  // If valid, find user by decoded ID from the token
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    return next(new ErrorHandler("User not found. Please login again.", 404));
+  }
 
+  //Put user object on req.user for access by middleware
+  req.user = user;
+
+  //import methods to generate access Token and refresh token
+  sendTokensAsCookies(user._id, 200, res);
+});
 
 // @desc    Logout user
 // @route   GET /api/v1/user/logout
@@ -254,12 +278,15 @@ export const resendActivationCode = asyncErrorHandler(
 // @route   PUT /api/v1/user/update_address
 // @access  Private
 
-
 // @desc    delete user
 // @route   DELETE /api/v1/user/delete_user/:id
 // @access  Private
 
-    //Admin Controllers
+// @desc Social Auth
+// @route POST /api/v1/user/social_auth
+// @access Public
+
+//Admin Controllers
 // @desc    Get all users by admin
 // @route   GET /api/v1/user/all_users
 // @access  Private
@@ -275,5 +302,3 @@ export const resendActivationCode = asyncErrorHandler(
 // @desc    Delete user by admin
 // @route   DELETE /api/v1/user/delete_user/:id
 // @access  Private
-
-

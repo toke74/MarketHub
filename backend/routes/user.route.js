@@ -3,7 +3,8 @@ import {
   registerUser,
   activateUser,
   loginUser,
-  resendActivationCode
+  resendActivationCode,
+  updateAccessToken,
 } from "../controllers/user.controller.js";
 
 const userRouter = express.Router();
@@ -19,5 +20,8 @@ userRouter.post("/login", loginUser);
 
 // Resend activation code route
 userRouter.post("/resend_activation_code", resendActivationCode);
+
+// Update Access Token route
+userRouter.get("/refresh_Token", updateAccessToken);
 
 export default userRouter;
