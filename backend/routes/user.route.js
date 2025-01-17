@@ -5,6 +5,7 @@ import {
   loginUser,
   resendActivationCode,
   updateAccessToken,
+  logoutUser,
 } from "../controllers/user.controller.js";
 
 const userRouter = express.Router();
@@ -23,5 +24,8 @@ userRouter.post("/resend_activation_code", resendActivationCode);
 
 // Update Access Token route
 userRouter.get("/refresh_Token", updateAccessToken);
+
+// logout route
+userRouter.get("/logout", logoutUser);
 
 export default userRouter;

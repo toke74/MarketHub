@@ -249,6 +249,28 @@ export const updateAccessToken = asyncErrorHandler(async (req, res, next) => {
 // @desc    Logout user
 // @route   GET /api/v1/user/logout
 // @access  Public
+export const logoutUser = asyncErrorHandler(async (req, res, next) => {
+  res
+    .cookie("accessToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      expires: new Date(0), // Set expiry to past date
+    })
+    .cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      expires: new Date(0), // Set expiry to past date
+    });
+
+  //Send success message to client
+  res.status(200).json({
+    success: true,
+    accessToken: "",
+    message: "Logged out successfully",
+  });
+});
 
 // @desc    Forgot password
 // @route   POST /api/v1/user/forgot_password
