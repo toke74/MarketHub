@@ -381,6 +381,47 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
 // @desc    Update user Password
 // @route   PUT /api/v1/user/update_password
 // @access  Private
+export const updatePassword = asyncErrorHandler(async (req, res, next) => {
+  //Get currentPassword, newPassword, and confirmPassword from the client by req.body
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  // Check if all fields are provided
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return next(new ErrorHandler("Please provide all required fields", 400));
+  }
+
+  // Find the user in the database by ID, we get user ID from req.user from isAuthenticated middleware
+  const user = await User.findById(req.user._id).select("+password");
+
+  //Check if user exist, if not throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  //If user exist, Check if current password matches with password in DB
+  const isMatch = await user.comparePassword(currentPassword);
+
+  //If current password is not match, throw error to client
+  if (!isMatch) {
+    return next(new ErrorHandler("Current password is incorrect", 401));
+  }
+
+  //If current password matches, Check if new password and confirm password match also
+  if (newPassword !== confirmPassword) {
+    return next(
+      new ErrorHandler("New password and confirm password do not match", 400)
+    );
+  }
+
+  //If everything is ok, Update the user's password
+  user.password = newPassword;
+  await user.save();
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
+  });
+});
 
 // @desc    Get user profile
 // @route   GET /api/v1/user/me

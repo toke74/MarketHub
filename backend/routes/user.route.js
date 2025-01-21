@@ -8,7 +8,10 @@ import {
   logoutUser,
   forgotPassword,
   resetPassword,
+  updatePassword,
 } from "../controllers/user.controller.js";
+
+import { isAuthenticated } from "../middlewares/authMiddleware.js";
 
 const userRouter = express.Router();
 
@@ -35,5 +38,8 @@ userRouter.post("/forgot_password", forgotPassword);
 
 // Reset Password route
 userRouter.post("/reset_password/resetToken", resetPassword);
+
+// update Password route
+userRouter.put("/update_password", isAuthenticated, updatePassword);
 
 export default userRouter;
