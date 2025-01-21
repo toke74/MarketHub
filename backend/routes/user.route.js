@@ -6,6 +6,8 @@ import {
   resendActivationCode,
   updateAccessToken,
   logoutUser,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/user.controller.js";
 
 const userRouter = express.Router();
@@ -27,5 +29,11 @@ userRouter.get("/refresh_Token", updateAccessToken);
 
 // logout route
 userRouter.get("/logout", logoutUser);
+
+// Forgot Password route
+userRouter.post("/forgot_password", forgotPassword);
+
+// Reset Password route
+userRouter.post("/reset_password/resetToken", resetPassword);
 
 export default userRouter;

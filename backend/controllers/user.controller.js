@@ -1,4 +1,8 @@
+//import modules
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+
+//import local files
 import User from "../model/user.model.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
@@ -272,13 +276,107 @@ export const logoutUser = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Forgot password
+// @desc    Forgot Password
 // @route   POST /api/v1/user/forgot_password
 // @access  Public
+export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
+  //Get user email from client by req.body
+  const { email } = req.body;
 
-// @desc    Reset password
-// @route   PUT /api/v1/user/reset_password/:resetToken
+  // Check if email exists
+  const user = await User.findOne({ email });
+
+  //If user not exist, throw the error
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email.", 404));
+  }
+
+  //If user exist, Generate a reset token and hash and set the reset token in the database
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // Hash and set the reset token in the database
+  user.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Token valid for 10 minutes
+  await user.save({ validateBeforeSave: false });
+
+  // Create reset URL
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/user/reset_password/${resetToken}`;
+
+  //After create reset token, then send reset link to user email
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password Reset Request",
+      message: resetUrl,
+      name: user.name,
+      ejsUrl: `forgotPassword.ejs`,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Password reset email sent to ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new ErrorHandler("Failed to send email. Try again later.", 500)
+    );
+  }
+});
+
+// @desc    Reset Password
+// @route   POST /api/v1/user/reset_password/resetToken
 // @access  Public
+export const resetPassword = asyncErrorHandler(async (req, res, next) => {
+  //Get password, confirmPassword from req.body and resetToken from req.params
+  const { resetToken } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  console.log(resetToken);
+
+  // Hash the token to find the user
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Find user by the hashed token
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }, // Ensure token is not expired
+  });
+
+  // Check if user exists, if not throw error
+  if (!user) {
+    return next(
+      new ErrorHandler("Invalid or expired password reset token.", 400)
+    );
+  }
+
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    return next(new ErrorHandler("Passwords do not match.", 400));
+  }
+
+  //If everything is ok, Set new password
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  //After reset password, send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Password reset successfully.",
+  });
+});
 
 // @desc    Update user Password
 // @route   PUT /api/v1/user/update_password

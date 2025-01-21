@@ -3,79 +3,79 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneNumberRegexPattern = /^[+]?[\d]{0,3}[\W]?[(]?[\d]{3}[)]?[-\s.]?[\d]{3}[-\s.]?[\d]{4,6}$/im;
+const phoneNumberRegexPattern =
+  /^[+]?[\d]{0,3}[\W]?[(]?[\d]{3}[)]?[-\s.]?[\d]{3}[-\s.]?[\d]{4,6}$/im;
 
 const userSchema = new mongoose.Schema({
-  name:{
+  name: {
     type: String,
     required: [true, "Please enter your name!"],
   },
 
-  email:{
+  email: {
     type: String,
     required: [true, "Please enter your email!"],
     validate: {
-        validator: function (value) {
-          return emailRegexPattern.test(value);
-        },
-        message: "Please enter a valid email",
+      validator: function (value) {
+        return emailRegexPattern.test(value);
       },
-      unique: true,
+      message: "Please enter a valid email",
+    },
+    unique: true,
   },
 
-  password:{
+  password: {
     type: String,
     required: [true, "Please enter your password"],
     minLength: [4, "Password should be greater than 4 characters"],
     select: false,
   },
 
-  phoneNumber:{
+  phoneNumber: {
     type: Number,
     validate: {
-        validator: function (value) {
-          return phoneNumberRegexPattern.test(value);
-        },
-        message: "Please enter a valid phone number",
+      validator: function (value) {
+        return phoneNumberRegexPattern.test(value);
       },
-      
+      message: "Please enter a valid phone number",
+    },
   },
 
-  addresses:[
+  addresses: [
     {
       country: {
         type: String,
       },
-      city:{
+      city: {
         type: String,
       },
-      address1:{
+      address1: {
         type: String,
       },
-      address2:{
+      address2: {
         type: String,
       },
-      zipCode:{
+      zipCode: {
         type: Number,
       },
-      addressType:{
+      addressType: {
         type: String,
       },
-    }
+    },
   ],
-  
+
   role: {
     type: String,
     default: "user",
     enum: ["user", "admin"],
   },
-  
+
   isVerified: {
-      type: Boolean,
-      default: false,
+    type: Boolean,
+    default: false,
   },
-  
-  avatar:{
+
+  avatar: {
     public_id: {
       type: String,
       // required: true,
@@ -86,32 +86,29 @@ const userSchema = new mongoose.Schema({
     },
   },
 
- resetPasswordToken: String,
- resetPasswordTime: Date,
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
 
- createdAt: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
 //Hash the password before saving to DB
-userSchema.pre("save", async function (next){
-   if(!this.isModified("password")){
-     next();
-   }
- const salt = await bcrypt.genSalt(12);
-   this.password = await bcrypt.hash(this.password, salt);
-   next();
- });
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
 
- //Compare the password which is stored in mongoDB and password entered by user
-userSchema.methods.comparePassword = async function ( enteredPassword) {
-   return await bcrypt.compare(enteredPassword, this.password);
- };
-
-
+//Compare the password which is stored in mongoDB and password entered by user
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model("User", userSchema);
 export default User;
-
