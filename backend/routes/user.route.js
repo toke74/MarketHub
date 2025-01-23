@@ -10,6 +10,7 @@ import {
   resetPassword,
   updatePassword,
   updateAvatar,
+  getUserInfo,
 } from "../controllers/user.controller.js";
 
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
@@ -52,4 +53,6 @@ userRouter.post(
   updateAvatar
 );
 
+// Get user profile route
+userRouter.get("/me", isAuthenticated, getUserInfo);
 export default userRouter;

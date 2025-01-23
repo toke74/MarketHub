@@ -470,9 +470,24 @@ export const updateAvatar = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Get user profile
+// @desc    Get User Profile
 // @route   GET /api/v1/user/me
 // @access  Private
+export const getUserInfo = asyncErrorHandler(async (req, res, next) => {
+  // Find the authenticated user by ID
+  const user = await User.findById(req.user._id).select("-password");
+
+  //If user not found, throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  //If user exist, send user data to client
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
 
 // @desc    Update user profile
 // @route   PUT /api/v1/user/update_me
