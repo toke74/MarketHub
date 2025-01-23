@@ -9,6 +9,7 @@ import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
 import { createActivationToken } from "../utils/generateTokens.js";
 import sendEmail from "../utils/sendEmail.js";
 import sendTokensAsCookies from "../utils/sendTokensAsCookies.js";
+import cloudinary from "../config/cloudinary.config.js";
 
 // @desc    Register user
 // @route   POST /api/v1/user/register
@@ -423,16 +424,58 @@ export const updatePassword = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+// @desc    Update User Avatar
+// @route   POST /api/v1/user/update_avatar
+// @access  Private
+export const updateAvatar = asyncErrorHandler(async (req, res, next) => {
+  //Get user avatar from client by req.file. The new avatar image data (Base64 or image URL)
+  const avatar = req.file?.path;
+
+  //If avatar not exist, throw error to client
+  if (!avatar) {
+    return next(new ErrorHandler("Avatar image is required", 400));
+  }
+
+  //If avatar found, then find user by ID, we get ID from req.user isAuthenticated middleware
+  const user = await User.findById(req.user._id);
+  //If user not found, throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  //If user exist and avatar found, Delete the existing avatar from Cloudinary
+  if (user.avatar.public_id) {
+    await cloudinary.uploader.destroy(user.avatar.public_id);
+  }
+
+  //Then Upload the new avatar to Cloudinary
+  const result = await cloudinary.uploader.upload(avatar, {
+    folder: "avatars",
+    width: 150,
+    crop: "scale",
+  });
+
+  // Update also user's avatar in the database
+  user.avatar = {
+    public_id: result.public_id,
+    url: result.secure_url,
+  };
+  await user.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Avatar updated successfully",
+    avatar: user.avatar,
+  });
+});
+
 // @desc    Get user profile
 // @route   GET /api/v1/user/me
 // @access  Private
 
 // @desc    Update user profile
 // @route   PUT /api/v1/user/update_me
-// @access  Private
-
-// @desc    Update user avatar
-// @route   PUT /api/v1/user/update_avatar
 // @access  Private
 
 // @desc    update user address

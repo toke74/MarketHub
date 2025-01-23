@@ -9,9 +9,11 @@ import {
   forgotPassword,
   resetPassword,
   updatePassword,
+  updateAvatar,
 } from "../controllers/user.controller.js";
 
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
+import { uploadAvatarImage } from "../middlewares/fileUploadMiddleware.js";
 
 const userRouter = express.Router();
 
@@ -41,5 +43,13 @@ userRouter.post("/reset_password/resetToken", resetPassword);
 
 // update Password route
 userRouter.put("/update_password", isAuthenticated, updatePassword);
+
+// update Avatar route
+userRouter.post(
+  "/update_avatar",
+  isAuthenticated,
+  uploadAvatarImage,
+  updateAvatar
+);
 
 export default userRouter;
