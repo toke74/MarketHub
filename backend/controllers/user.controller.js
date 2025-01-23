@@ -492,6 +492,49 @@ export const getUserInfo = asyncErrorHandler(async (req, res, next) => {
 // @desc    Update user profile
 // @route   PUT /api/v1/user/update_me
 // @access  Private
+export const updateUserInfo = asyncErrorHandler(async (req, res, next) => {
+  //Get name, email, phoneNumber from req.body
+  const { name, email, phoneNumber } = req.body;
+
+  // Validate input
+  if (!name || !email) {
+    return next(new ErrorHandler("Name and email are required!", 400));
+  }
+
+  // Validate email format
+  const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegexPattern.test(email)) {
+    return next(new ErrorHandler("Invalid email format", 400));
+  }
+
+  // Validate phone number format if provided
+  if (phoneNumber) {
+    const phoneNumberRegexPattern =
+      /^[+]?[0-9]{0,3}\W??[0-9]{3}?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4,6}$/im;
+    if (!phoneNumberRegexPattern.test(phoneNumber)) {
+      return next(new ErrorHandler("Invalid phone number format", 400));
+    }
+  }
+
+  // Update user information and return the updated user and enable Validation
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    { name, email, phoneNumber },
+    { new: true, runValidators: true }
+  );
+
+  //If user not found, throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "User information updated successfully!",
+    user,
+  });
+});
 
 // @desc    update user address
 // @route   PUT /api/v1/user/update_address

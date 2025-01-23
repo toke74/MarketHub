@@ -11,6 +11,7 @@ import {
   updatePassword,
   updateAvatar,
   getUserInfo,
+  updateUserInfo,
 } from "../controllers/user.controller.js";
 
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
@@ -55,4 +56,7 @@ userRouter.post(
 
 // Get user profile route
 userRouter.get("/me", isAuthenticated, getUserInfo);
+
+// Update user profile route
+userRouter.put("/update_me", isAuthenticated, updateUserInfo);
 export default userRouter;
