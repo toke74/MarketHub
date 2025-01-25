@@ -536,9 +536,155 @@ export const updateUserInfo = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    update user address
-// @route   PUT /api/v1/user/update_address
+// @desc    Add User Address
+// @route   POST /api/v1/user/add_address
 // @access  Private
+
+export const addUserAddress = asyncErrorHandler(async (req, res, next) => {
+  //Get country, city, address1, address2, zipCode, addressType, state from req.body
+  const { country, city, address1, address2, zipCode, addressType, state } =
+    req.body;
+
+  // Validate required fields,  if not valid throw error
+  if (!country || !city || !address1) {
+    return next(
+      new ErrorHandler("Country, city, and address1 are required fields", 400)
+    );
+  }
+
+  //Find user from DB by using ID, we get ID from req.user
+  const user = await User.findById(req.user._id);
+
+  //If user not exist then throw error
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Check if user enter the addressType is default
+  if (addressType === "default") {
+    //if default addressType, Set all existing addresses' addressType to "other"
+    user.addresses = user.addresses.map((address) => ({
+      ...address.toObject(),
+      addressType: "other",
+    }));
+  }
+
+  // Add the new address to the user's address array
+  const newAddress = {
+    country,
+    city,
+    address1,
+    address2,
+    zipCode,
+    state,
+    addressType: addressType || "other", // Default to "other" if not provided
+  };
+  user.addresses.push(newAddress);
+
+  // Save the user with the updated addresses
+  await user.save();
+
+  //Finally send success message to client
+  res.status(201).json({
+    success: true,
+    message: "Address added successfully",
+    addresses: user.addresses,
+  });
+});
+
+// @desc    Update User Address
+// @route   PUT /api/v1/user/update_address/:addressID
+// @access  Private
+
+export const updateUserAddress = asyncErrorHandler(async (req, res, next) => {
+  //Get address ID from req.params
+  const { addressID } = req.params;
+
+  //Get country, city, address1, address2, zipCode, state, addressType from req.body
+  const { country, city, address1, address2, zipCode, state, addressType } =
+    req.body;
+
+  // Find user by ID, we get ID from req.user isAuthenticated middleware
+  const user = await User.findById(req.user._id);
+
+  //If user not exist ,throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Find the address by ID(req.params. AddressID)in user's addresses array
+  const address = user.addresses.id(addressID);
+
+  //If address not exist, throw error to client
+  if (!address) {
+    return next(new ErrorHandler("Address not found", 404));
+  }
+
+  // Update the address fields,  if exit to update
+  if (country) address.country = country;
+  if (city) address.city = city;
+  if (address1) address.address1 = address1;
+  if (address2) address.address2 = address2;
+  if (zipCode) address.zipCode = zipCode;
+
+  // Handle addressType to ensure only one default
+  if (addressType === "default") {
+    user.addresses.forEach((addr) => {
+      addr.addressType = "other"; // Set all other addresses to "other"
+    });
+    address.addressType = "default";
+  } else if (addressType) {
+    address.addressType = addressType;
+  }
+
+  // Save the updated user document
+  await user.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Address updated successfully",
+    addresses: user.addresses,
+  });
+});
+
+// @desc    Delete User Address
+// @route   DELETE /api/v1/user/delete_address/:addressID
+// @access  Private
+export const deleteUserAddress = asyncErrorHandler(async (req, res, next) => {
+  //Get addressID from req.params
+  const { addressID } = req.params;
+
+  // Find user by ID,  we get ID from req.user isAuthenticated middleware
+  const user = await User.findById(req.user._id);
+  //If user not exist, throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Find and remove the address from the addresses array
+  const addressIndex = user.addresses.findIndex(
+    (address) => address._id.toString() === addressID
+  );
+
+  //If address not found, throw error to client
+  if (addressIndex === -1) {
+    return next(new ErrorHandler("Address not found", 404));
+  }
+
+  //If address exist, Remove the address
+  user.addresses.splice(addressIndex, 1);
+
+  //If everything goes well, Save the updated user document
+  await user.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Address deleted successfully",
+    addresses: user.addresses,
+  });
+});
 
 // @desc    delete user
 // @route   DELETE /api/v1/user/delete_user/:id

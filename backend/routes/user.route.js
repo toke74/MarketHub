@@ -12,6 +12,9 @@ import {
   updateAvatar,
   getUserInfo,
   updateUserInfo,
+  addUserAddress,
+  updateUserAddress,
+  deleteUserAddress,
 } from "../controllers/user.controller.js";
 
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
@@ -59,4 +62,22 @@ userRouter.get("/me", isAuthenticated, getUserInfo);
 
 // Update user profile route
 userRouter.put("/update_me", isAuthenticated, updateUserInfo);
+
+// Add user address route
+userRouter.post("/add_address", isAuthenticated, addUserAddress);
+
+// Update user address route
+userRouter.put(
+  "/update_address/:addressID",
+  isAuthenticated,
+  updateUserAddress
+);
+
+// Delete user address route
+userRouter.delete(
+  "/delete_address/:addressID",
+  isAuthenticated,
+  deleteUserAddress
+);
+
 export default userRouter;
