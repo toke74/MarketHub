@@ -15,6 +15,8 @@ import {
   addUserAddress,
   updateUserAddress,
   deleteUserAddress,
+  socialAuth,
+  deleteUserAccount,
 } from "../controllers/user.controller.js";
 
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
@@ -79,5 +81,11 @@ userRouter.delete(
   isAuthenticated,
   deleteUserAddress
 );
+
+// Social auth route
+userRouter.post("/social_auth", socialAuth);
+
+// Delete user Account route
+userRouter.delete("/delete_user", isAuthenticated, deleteUserAccount);
 
 export default userRouter;

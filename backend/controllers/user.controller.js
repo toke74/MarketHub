@@ -686,13 +686,75 @@ export const deleteUserAddress = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    delete user
-// @route   DELETE /api/v1/user/delete_user/:id
-// @access  Private
-
 // @desc Social Auth
 // @route POST /api/v1/user/social_auth
 // @access Public
+export const socialAuth = asyncErrorHandler(async (req, res, next) => {
+  //Get user info from client which we get it from social auth provider
+  const { email, name, photo, provider } = req.body;
+
+  //Find if user exist by its email
+  const user = await User.findOne({ email });
+
+  //If user not exist, generate password and save user in db
+  if (!user) {
+    const generatePassword =
+      Math.random().toString(36).slice(-8) +
+      Math.random().toString(36).slice(-8);
+
+    const newUser = await User.create({
+      email,
+      name,
+      password: generatePassword,
+      avatar: photo,
+      isVerified: true,
+      provider,
+    });
+
+    // After saving user in db, generate access and refresh token and send it to client
+    sendTokensAsCookies(newUser._id, 200, res);
+  } else {
+    //If user exist in db, check if user register with local login with that email, if it is throw error
+    if (user.provider === "local") {
+      return next(
+        new ErrorHandler(
+          "you have account with us, please login with your email and password",
+          400
+        )
+      );
+    } else {
+      //if user exist in db and register with social auth, login the user by generate access and refresh token and send it to client
+      sendTokensAsCookies(user._id, 200, res);
+    }
+  }
+});
+
+// @desc    Delete User
+// @route   DELETE /api/v1/user/delete_user
+// @access  Private
+export const deleteUserAccount = asyncErrorHandler(async (req, res, next) => {
+  // Find user by ID, we get ID from req.user isAuthenticated middleware
+  const user = await User.findById(req.user.id);
+
+  //If user not found, throw error to client
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  // Remove user's avatar from Cloudinary if it exists
+  if (user.avatar && user.avatar.public_id) {
+    await cloudinary.uploader.destroy(user.avatar.public_id);
+  }
+
+  // Delete the user from the database
+  await user.deleteOne();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Your account has been successfully deleted.",
+  });
+});
 
 //Admin Controllers
 // @desc    Get all users by admin
