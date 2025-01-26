@@ -43,3 +43,20 @@ export const isAuthenticated = asyncErrorHandler(async (req, res, next) => {
   //If everything is ok then pass to next function
   next();
 });
+
+// @desc   Authorize roles middleware
+// @access  Private
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    //If roles array not include user role, throw error to client
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new ErrorHandler(
+          `Role (${req.user.role}) is not allowed to access this resource`,
+          403
+        )
+      );
+    }
+    next();
+  };
+};

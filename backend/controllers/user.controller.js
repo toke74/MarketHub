@@ -757,18 +757,76 @@ export const deleteUserAccount = asyncErrorHandler(async (req, res, next) => {
 });
 
 //Admin Controllers
-// @desc    Get all users by admin
-// @route   GET /api/v1/user/all_users
-// @access  Private
 
-// @desc    Get user details by admin
-// @route   GET /api/v1/user/user_details/:id
+// @desc    Get User By ID for Admin
+// @route   GET /api/v1/user/admin/get_user_info/:user_id
 // @access  Private
+export const getUserByIdForAdmin = asyncErrorHandler(async (req, res, next) => {
+  //Get user ID from req.params
+  const { user_id } = req.params;
+
+  // Find user by ID
+  const user = await User.findById(user_id);
+
+  //If user not found, throw error to Admin
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  //Finally send success message to Admin
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+// @desc    Get all users by admin
+// @route   GET /api/v1/user/admin /all_users
+// @access  Private
+export const getAllUsersForAdmin = asyncErrorHandler(async (req, res, next) => {
+  // Retrieve all users with role "user", exclude "admin" role
+  const users = await User.find({ role: "user" });
+
+  //If no user found, throw error to Admin
+  if (!users || users.length === 0) {
+    return next(new ErrorHandler("No users found", 404));
+  }
+
+  //Finally send success message to Admin
+  res.status(200).json({
+    success: true,
+    count: users.length,
+    users,
+  });
+});
 
 // @desc    Update user by admin
 // @route   PUT /api/v1/user/update_user/:id
 // @access  Private
 
-// @desc    Delete user by admin
-// @route   DELETE /api/v1/user/delete_user/:id
+// @desc    Delete User By ID for Admin
+// @route   DELETE /api/v1/user/admin/delete_user_info/:user_id
 // @access  Private
+export const deleteUserByIdForAdmin = asyncErrorHandler(
+  async (req, res, next) => {
+    //Get ID from req.params
+    const { user_id } = req.params;
+
+    // Find user by ID
+    const user = await User.findById(user_id);
+
+    //If user not found, throw error to Admin
+    if (!user) {
+      return next(new ErrorHandler("User not found", 404));
+    }
+
+    // Delete user
+    await user.deleteOne();
+
+    //Finally send success message to Admin
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  }
+);

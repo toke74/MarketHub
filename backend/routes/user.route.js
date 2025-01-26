@@ -17,9 +17,15 @@ import {
   deleteUserAddress,
   socialAuth,
   deleteUserAccount,
+  getUserByIdForAdmin,
+  getAllUsersForAdmin,
+  deleteUserByIdForAdmin,
 } from "../controllers/user.controller.js";
 
-import { isAuthenticated } from "../middlewares/authMiddleware.js";
+import {
+  isAuthenticated,
+  authorizeRoles,
+} from "../middlewares/authMiddleware.js";
 import { uploadAvatarImage } from "../middlewares/fileUploadMiddleware.js";
 
 const userRouter = express.Router();
@@ -87,5 +93,30 @@ userRouter.post("/social_auth", socialAuth);
 
 // Delete user Account route
 userRouter.delete("/delete_user", isAuthenticated, deleteUserAccount);
+
+// Admin  Use Only route
+// Get  user info by admin route
+userRouter.get(
+  "/admin/get_user_info/:user_id",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  getUserByIdForAdmin
+);
+
+// Get  all user info by admin route
+userRouter.get(
+  "/admin/all_users",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  getAllUsersForAdmin
+);
+
+// Delete  user  by admin route
+userRouter.delete(
+  "/admin/delete_user_info/:user_id",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  deleteUserByIdForAdmin
+);
 
 export default userRouter;
