@@ -7,8 +7,9 @@ import cors from "cors";
 import "dotenv/config.js";
 import ErrorHandlerMiddleware from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
+import vendorRouter from "./routes/vendor.route.js";
 
-export const app = express()
+export const app = express();
 const { ORIGIN } = process.env;
 
 app.use(express.json({ limit: "50mb" }));
@@ -18,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: ORIGIN,
-    credentials: true
+    credentials: true,
   })
 );
 
@@ -37,6 +38,7 @@ app.use(
 
 //routes
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/vendor", vendorRouter);
 
 //testing route
 app.get("/test", (req, res, next) => {

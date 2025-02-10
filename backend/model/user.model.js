@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 
 const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneNumberRegexPattern =
@@ -87,11 +87,12 @@ const userSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      // required: true,
+      default: "UserDefaultAvatar",
     },
     url: {
       type: String,
-      // required: true,
+      default:
+        "https://res.cloudinary.com/shalpeace/image/upload/v1737591816/avatars/t8thzk0xrzb3qfgh7qsl.jpg",
     },
   },
 
