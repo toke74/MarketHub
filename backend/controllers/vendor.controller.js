@@ -83,7 +83,7 @@ export const registerVendor = asyncErrorHandler(async (req, res, next) => {
 });
 
 // @desc    Verify  Vendor Email
-// @route   POST /api/v1/vendor/verify_email/:token
+// @route   GET /api/v1/vendor/verify_email/:token
 // @access  Public
 export const verifyVendorEmail = asyncErrorHandler(async (req, res, next) => {
   // Get token from params
@@ -117,5 +117,41 @@ export const verifyVendorEmail = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Email verified successfully. Your account is now active.",
+  });
+});
+
+// @desc    Activate Vendor by Admin
+// @route   PATCH /api/v1/vendor/activate/:id
+// @access  Admin
+export const activateVendor = asyncErrorHandler(async (req, res, next) => {
+  const { id } = req.params;
+
+  // Find the vendor by ID
+  const vendor = await Vendor.findById(id);
+
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  if (vendor.isVerified) {
+    return res.status(400).json({
+      success: false,
+      message: "Vendor is already verified.",
+    });
+  }
+
+  // Update the isVerified field to true
+  vendor.isVerified = true;
+  await vendor.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Vendor has been successfully verified.",
+    data: {
+      id: vendor._id,
+      name: vendor.name,
+      email: vendor.email,
+      isVerified: vendor.isVerified,
+    },
   });
 });
