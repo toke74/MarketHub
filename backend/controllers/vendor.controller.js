@@ -260,3 +260,43 @@ export const logoutVendor = asyncErrorHandler(async (req, res, next) => {
     message: "Logged out successfully",
   });
 });
+
+// @desc    Update Access Token
+// @route   GET /api/v1/vendor/vendor_refresh_token
+// @access  Public
+export const updateVendorAccessToken = asyncErrorHandler(
+  async (req, res, next) => {
+    //Get vendor refresh token from cookies, every time client send request. the cookie send along with the request.
+    const refresh_token = req.cookies.vendorRefreshToken;
+
+    // Check whether the refresh token is empty or not
+    if (!refresh_token) {
+      return next(
+        new ErrorHandler("Refresh token not found. Please login again.", 401)
+      );
+    }
+    // Verify the validity of the refresh token
+    let decoded;
+    try {
+      decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      return next(
+        new ErrorHandler("Invalid refresh token. Please login again.", 401)
+      );
+    }
+
+    // If valid, find user by decoded ID from the token
+    const vendor = await Vendor.findById(decoded.id);
+    if (!vendor) {
+      return next(
+        new ErrorHandler("Vendor not found. Please login again.", 404)
+      );
+    }
+
+    //Put vendor object on req.vendor for access by middleware
+    req.vendor = vendor;
+
+    //import methods to generate access Token and refresh token
+    sendTokensAsCookiesForVendor(vendor._id, 200, res);
+  }
+);

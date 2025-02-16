@@ -800,9 +800,6 @@ export const getAllUsersForAdmin = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Update user by admin
-// @route   PUT /api/v1/user/update_user/:id
-// @access  Private
 
 // @desc    Delete User By ID for Admin
 // @route   DELETE /api/v1/user/admin/delete_user_info/:user_id
@@ -830,3 +827,7 @@ export const deleteUserByIdForAdmin = asyncErrorHandler(
     });
   }
 );
+
+// @desc    Update user by admin
+// @route   PUT /api/v1/user/update_user/:id
+// @access  Private
