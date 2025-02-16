@@ -3,11 +3,14 @@ import {
   registerVendor,
   verifyVendorEmail,
   activateVendor,
+  loginVendor,
+  logoutVendor,
 } from "../controllers/vendor.controller.js";
 
 import {
   authorizeRoles,
   isAuthenticated,
+  isVendorAuthenticated,
 } from "../middlewares/authMiddleware.js";
 
 const vendorRouter = express.Router();
@@ -25,5 +28,11 @@ vendorRouter.patch(
   authorizeRoles("admin"),
   activateVendor
 );
+
+// Login Vendor route
+vendorRouter.post("/login", loginVendor);
+
+// Logout Vendor route
+vendorRouter.get("/logout", isVendorAuthenticated, logoutVendor);
 
 export default vendorRouter;

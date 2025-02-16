@@ -54,3 +54,17 @@ export const generateRefreshToken = (userId) => {
     expiresIn: refreshTokenExpiration,
   });
 };
+
+// Generating Access Token for Vendor
+export const generateAccessTokenForVendor = (vendorId) => {
+  return jwt.sign({ id: vendorId }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: `${accessTokenExpiration}m`,
+  });
+};
+
+// Generating Refresh Token for Vendor
+export const generateRefreshTokenForVendor = (vendorId) => {
+  return jwt.sign({ id: vendorId }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: refreshTokenExpiration,
+  });
+};

@@ -106,6 +106,11 @@ const vendorSchema = new mongoose.Schema(
         default: 0,
       },
     },
+    role: {
+      type: String,
+      default: "vendor",
+      enum: ["vendor"],
+    },
     socialLinks: {
       facebook: { type: String, default: null },
       twitter: { type: String, default: null },

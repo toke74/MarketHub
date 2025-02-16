@@ -8,7 +8,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
 import { createActivationToken } from "../utils/generateTokens.js";
 import sendEmail from "../utils/sendEmail.js";
-import sendTokensAsCookies from "../utils/sendTokensAsCookies.js";
+import { sendTokensAsCookies } from "../utils/sendTokensAsCookies.js";
 import cloudinary from "../config/cloudinary.config.js";
 
 // @desc    Register user
