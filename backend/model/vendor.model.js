@@ -125,7 +125,7 @@ const vendorSchema = new mongoose.Schema(
       default: Date.now,
     },
     resetPasswordToken: String,
-    resetPasswordTime: Date,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true, // Automatically manages createdAt and updatedAt fields

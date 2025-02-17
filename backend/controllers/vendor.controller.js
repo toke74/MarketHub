@@ -1,6 +1,7 @@
 // Desc: Vendor controller functions
 //importing required modules
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 //importing Local files
 import Vendor from "../model/vendor.model.js";
@@ -219,7 +220,7 @@ export const loginVendor = asyncErrorHandler(async (req, res, next) => {
 
   // If password does not match, return error
   if (!isPasswordMatch) {
-    return next(new ErrorHandler("Invalid email or password", 401));
+    return next(new ErrorHandler("Invalid Credential", 401));
   }
 
   //import methods to generate access Token and refresh token
@@ -300,3 +301,105 @@ export const updateVendorAccessToken = asyncErrorHandler(
     sendTokensAsCookiesForVendor(vendor._id, 200, res);
   }
 );
+
+// @desc    Forgot Password
+// @route   POST /api/v1/vendor/forgot_password
+// @access  Public
+export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
+  //Get vendor email from client by req.body
+  const { email } = req.body;
+
+  // Check if email exists
+  const vendor = await Vendor.findOne({ email });
+
+  //If vendor not exist, throw the error
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found with this email.", 404));
+  }
+
+  //If vendor exist, Generate a reset token and hash and set the reset token in the database
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // Hash and set the reset token in the database
+  vendor.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  vendor.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Token valid for 10 minutes
+  await vendor.save({ validateBeforeSave: false });
+
+  // Create reset URL
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/vendor/reset_password/${resetToken}`;
+
+  //After create reset token, then send reset link to vendor email
+  try {
+    await sendEmail({
+      email: vendor.email,
+      subject: "Password Reset Request",
+      message: resetUrl,
+      name: vendor.name,
+      ejsUrl: `forgotPassword.ejs`,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Password reset email sent to ${vendor.email}`,
+    });
+  } catch (error) {
+    vendor.resetPasswordToken = undefined;
+    vendor.resetPasswordExpire = undefined;
+    await vendor.save({ validateBeforeSave: false });
+    return next(
+      new ErrorHandler("Failed to send email. Try again later.", 500)
+    );
+  }
+});
+
+// @desc    Reset Password
+// @route   POST /api/v1/vendor/reset_password/:resetToken
+// @access  Public
+export const resetPassword = asyncErrorHandler(async (req, res, next) => {
+  //Get password, confirmPassword from req.body and resetToken from req.params
+  const { resetToken } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  console.log(resetToken);
+
+  // Hash the token to find the vendor
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Find vendor by the hashed token
+  const vendor = await Vendor.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() }, // Ensure token is not expired
+  });
+
+  // Check if vendor exists, if not throw error
+  if (!vendor) {
+    return next(
+      new ErrorHandler("Invalid or expired password reset token.", 400)
+    );
+  }
+
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    return next(new ErrorHandler("Passwords do not match.", 400));
+  }
+
+  //If everything is ok, Set new password
+  vendor.password = password;
+  vendor.resetPasswordToken = undefined;
+  vendor.resetPasswordExpire = undefined;
+  await vendor.save();
+
+  //After reset password, send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Password reset successfully.",
+  });
+});

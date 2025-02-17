@@ -52,7 +52,7 @@ userRouter.get("/logout", logoutUser);
 userRouter.post("/forgot_password", forgotPassword);
 
 // Reset Password route
-userRouter.post("/reset_password/resetToken", resetPassword);
+userRouter.post("/reset_password/:resetToken", resetPassword);
 
 // update Password route
 userRouter.put("/update_password", isAuthenticated, updatePassword);

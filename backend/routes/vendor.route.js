@@ -6,6 +6,8 @@ import {
   loginVendor,
   logoutVendor,
   updateVendorAccessToken,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/vendor.controller.js";
 
 import {
@@ -38,5 +40,11 @@ vendorRouter.get("/logout", isVendorAuthenticated, logoutVendor);
 
 // Login Vendor route
 vendorRouter.get("/vendor_refresh_token", updateVendorAccessToken);
+
+//Vendor Forgot Password  route
+vendorRouter.post("/forgot_password", forgotPassword);
+
+//Vendor Reset Password  route
+vendorRouter.post("/reset_password/:resetToken", resetPassword);
 
 export default vendorRouter;
