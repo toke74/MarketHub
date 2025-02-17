@@ -8,6 +8,7 @@ import {
   updateVendorAccessToken,
   forgotPassword,
   resetPassword,
+  updatePassword,
 } from "../controllers/vendor.controller.js";
 
 import {
@@ -46,5 +47,8 @@ vendorRouter.post("/forgot_password", forgotPassword);
 
 //Vendor Reset Password  route
 vendorRouter.post("/reset_password/:resetToken", resetPassword);
+
+// update Password route
+vendorRouter.put("/update_password", isVendorAuthenticated, updatePassword);
 
 export default vendorRouter;

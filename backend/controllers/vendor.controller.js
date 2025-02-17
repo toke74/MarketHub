@@ -365,8 +365,17 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   const { resetToken } = req.params;
   const { password, confirmPassword } = req.body;
 
-  console.log(resetToken);
+  // Check if all fields are provided
+  if (!password || !confirmPassword) {
+    return next(new ErrorHandler("Please provide all required fields", 400));
+  }
 
+  //If current password matches, Check if new password and confirm password match also
+  if (password !== confirmPassword) {
+    return next(
+      new ErrorHandler("New password and confirm password do not match", 400)
+    );
+  }
   // Hash the token to find the vendor
   const resetPasswordToken = crypto
     .createHash("sha256")
@@ -401,5 +410,51 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Password reset successfully.",
+  });
+});
+
+// @desc    Update Vendor Password
+// @route   PUT /api/v1/vendor/update_password
+// @access  Private
+export const updatePassword = asyncErrorHandler(async (req, res, next) => {
+  //Get currentPassword, newPassword, and confirmPassword from the client by req.body
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  // Check if all fields are provided
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return next(new ErrorHandler("Please provide all required fields", 400));
+  }
+
+  // Find the user in the database by ID, we get user ID from req.user from isAuthenticated middleware
+  const vendor = await Vendor.findById(req.vendor._id).select("+password");
+
+  //Check if vendor exist, if not throw error to client
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  //If vendor exist, Check if current password matches with password in DB
+  const isMatch = await vendor.comparePassword(currentPassword);
+
+  //If current password is not match, throw error to client
+  if (!isMatch) {
+    return next(new ErrorHandler("Current password is incorrect", 401));
+  }
+
+  //If current password matches, Check if new password and confirm password match also
+  if (newPassword !== confirmPassword) {
+    return next(
+      new ErrorHandler("New password and confirm password do not match", 400)
+    );
+  }
+
+  //If everything is ok, Update the vendor's password
+  vendor.password = newPassword;
+  await vendor.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
   });
 });
