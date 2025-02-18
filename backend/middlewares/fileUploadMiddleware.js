@@ -11,6 +11,14 @@ export const uploadProductImages = upload.array("images", 10);
 export const uploadAvatarImage = upload.single("avatar");
 // Field name: "avatar"
 
+// Middleware for storeAvatar image
+export const uploadStoreAvatar = upload.single("storeAvatar");
+// Field name: "storeAvatar"
+
+// Middleware for storeImage image
+export const uploadStoreImage = upload.single("storeImage");
+// Field name: "storeImage"
+
 // Middleware for vendor files
 export const uploadVendorFiles = upload.fields([
   { name: "storeAvatar", maxCount: 1 },

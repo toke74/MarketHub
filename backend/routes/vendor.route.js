@@ -9,6 +9,8 @@ import {
   forgotPassword,
   resetPassword,
   updatePassword,
+  updateStoreAvatar,
+  updateStoreImage,
 } from "../controllers/vendor.controller.js";
 
 import {
@@ -17,6 +19,10 @@ import {
   isVendorAuthenticated,
 } from "../middlewares/authMiddleware.js";
 
+import {
+  uploadStoreAvatar,
+  uploadStoreImage,
+} from "../middlewares/fileUploadMiddleware.js";
 const vendorRouter = express.Router();
 
 // Create Vendor route
@@ -50,5 +56,21 @@ vendorRouter.post("/reset_password/:resetToken", resetPassword);
 
 // update Password route
 vendorRouter.put("/update_password", isVendorAuthenticated, updatePassword);
+
+// update store Avatar route
+vendorRouter.post(
+  "/update_store_avatar",
+  isVendorAuthenticated,
+  uploadStoreAvatar,
+  updateStoreAvatar
+);
+
+// update store Image route
+vendorRouter.post(
+  "/update_store_image",
+  isVendorAuthenticated,
+  uploadStoreImage,
+  updateStoreImage
+);
 
 export default vendorRouter;

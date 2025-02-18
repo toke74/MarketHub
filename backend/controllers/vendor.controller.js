@@ -10,6 +10,7 @@ import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
 import { createVerifyEmailToken } from "../utils/generateTokens.js";
 import sendEmail from "../utils/sendEmail.js";
 import { sendTokensAsCookiesForVendor } from "../utils/sendTokensAsCookies.js";
+import cloudinary from "../config/cloudinary.config.js";
 
 // @desc    Register Vendor
 // @route   POST /api/v1/vendor/register
@@ -456,5 +457,98 @@ export const updatePassword = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Password updated successfully",
+  });
+});
+
+// @desc    Update Store Avatar
+// @route   POST /api/v1/vendor/update_store_avatar
+// @access  Private
+export const updateStoreAvatar = asyncErrorHandler(async (req, res, next) => {
+  //Get vendor avatar from client by req.file. The new avatar image data (Base64 or image URL)
+  const storeAvatar = req.file?.path;
+
+  //If store Avatar not exist, throw error to client
+  if (!storeAvatar) {
+    return next(new ErrorHandler("Avatar image is required", 400));
+  }
+
+  //If store Avatar found, then find vendor by ID, we get ID from req.vendor isVendorAuthenticated middleware
+  const vendor = await Vendor.findById(req.vendor._id);
+  //If vendor not found, throw error to client
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  //If vendor exist and store Avatar found, Delete the existing store Avatar from Cloudinary
+  if (vendor.storeAvatar.public_id) {
+    await cloudinary.uploader.destroy(vendor.storeAvatar.public_id);
+  }
+
+  //Then Upload the new store avatar to Cloudinary
+  const result = await cloudinary.uploader.upload(storeAvatar, {
+    folder: "storeAvatars",
+    width: 150,
+    crop: "scale",
+  });
+
+  // Update also user's store avatar in the database
+  vendor.storeAvatar = {
+    public_id: result.public_id,
+    url: result.secure_url,
+  };
+  await vendor.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Store Avatar updated successfully",
+    storeAvatar: vendor.storeAvatar,
+  });
+});
+
+// @desc    Update Store Image
+// @route   POST /api/v1/vendor/update_store_image
+// @access  Private
+export const updateStoreImage = asyncErrorHandler(async (req, res, next) => {
+  //Get vendor store Image from client by req.file. The new avatar image data (Base64 or image URL)
+  const storeImage = req.file?.path;
+
+  //If store Image not exist, throw error to client
+  if (!storeImage) {
+    return next(new ErrorHandler("Store image is required", 400));
+  }
+
+  //If Store Image found, then find vendor by ID, we get ID from req.vendor isVendorAuthenticated middleware
+  const vendor = await Vendor.findById(req.vendor._id);
+
+  //If vendor not found, throw error to client
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  //If vendor exist and store Image found, Delete the existing store Image from Cloudinary
+  if (vendor.storeImage.public_id) {
+    await cloudinary.uploader.destroy(vendor.storeImage.public_id);
+  }
+
+  //Then Upload the new avatar to Cloudinary
+  const result = await cloudinary.uploader.upload(storeImage, {
+    folder: "storeImages",
+    width: 150,
+    crop: "scale",
+  });
+
+  // Update also user's Store Image in the database
+  vendor.storeImage = {
+    public_id: result.public_id,
+    url: result.secure_url,
+  };
+  await vendor.save();
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Store Image updated successfully",
+    storeImage: vendor.storeImage,
   });
 });
