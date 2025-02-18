@@ -18,10 +18,3 @@ export const uploadStoreAvatar = upload.single("storeAvatar");
 // Middleware for storeImage image
 export const uploadStoreImage = upload.single("storeImage");
 // Field name: "storeImage"
-
-// Middleware for vendor files
-export const uploadVendorFiles = upload.fields([
-  { name: "storeAvatar", maxCount: 1 },
-  { name: "storeImage", maxCount: 1 },
-]);
-//Field names: "storeAvatar", "storeImage"

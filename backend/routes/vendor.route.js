@@ -11,6 +11,8 @@ import {
   updatePassword,
   updateStoreAvatar,
   updateStoreImage,
+  getVendorInfo,
+  updateVendorInfo,
 } from "../controllers/vendor.controller.js";
 
 import {
@@ -72,5 +74,11 @@ vendorRouter.post(
   uploadStoreImage,
   updateStoreImage
 );
+
+// Get Vendor Profile route
+vendorRouter.get("/me", isVendorAuthenticated, getVendorInfo);
+
+// Update Vendor profile route
+vendorRouter.post("/update_me", isVendorAuthenticated, updateVendorInfo);
 
 export default vendorRouter;

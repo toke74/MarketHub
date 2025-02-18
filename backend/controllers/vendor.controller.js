@@ -16,7 +16,7 @@ import cloudinary from "../config/cloudinary.config.js";
 // @route   POST /api/v1/vendor/register
 // @access  Public
 export const registerVendor = asyncErrorHandler(async (req, res, next) => {
-  const {
+  let {
     name,
     email,
     password,
@@ -32,6 +32,9 @@ export const registerVendor = asyncErrorHandler(async (req, res, next) => {
     return next(new ErrorHandler("All required fields must be filled", 400));
   }
 
+  console.log(email);
+  // Convert email to lowercase
+  email = email.toLowerCase();
   // Check if vendor already exists
   const existingVendor = await Vendor.findOne({ email });
   if (existingVendor) {
@@ -163,12 +166,15 @@ export const activateVendor = asyncErrorHandler(async (req, res, next) => {
 // @route   POST /api/v1/vendor/login
 // @access  Public
 export const loginVendor = asyncErrorHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
 
   // Validate email and password
   if (!email || !password) {
     return next(new ErrorHandler("Please provide email and password", 400));
   }
+
+  // Convert email to lowercase
+  email = email.toLowerCase();
 
   // Find vendor by email
   const vendor = await Vendor.findOne({ email }).select("+password");
@@ -195,8 +201,10 @@ export const loginVendor = asyncErrorHandler(async (req, res, next) => {
         ejsUrl: ejsUrl,
       });
 
+      // Return immediately to prevent further execution
       //Send response to vendor
-      res.status(201).json({
+
+      return res.status(201).json({
         success: true,
         message: `Please check your email ${vendor.email} to Verify your email!`,
         token,
@@ -308,7 +316,10 @@ export const updateVendorAccessToken = asyncErrorHandler(
 // @access  Public
 export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
   //Get vendor email from client by req.body
-  const { email } = req.body;
+  let { email } = req.body;
+
+  // Convert email to lowercase
+  email = email.toLowerCase();
 
   // Check if email exists
   const vendor = await Vendor.findOne({ email });
@@ -550,5 +561,74 @@ export const updateStoreImage = asyncErrorHandler(async (req, res, next) => {
     success: true,
     message: "Store Image updated successfully",
     storeImage: vendor.storeImage,
+  });
+});
+
+// @desc    Get Vendor Profile
+// @route   GET /api/v1/vendor/me
+// @access  Private
+export const getVendorInfo = asyncErrorHandler(async (req, res, next) => {
+  // Find the authenticated vendor by ID
+  const vendor = await Vendor.findById(req.vendor._id).select("-password");
+
+  //If Vendor not found, throw error to client
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  //If Vendor exist, send user data to client
+  res.status(200).json({
+    success: true,
+    vendor,
+  });
+});
+
+// @desc    Update Vendor profile
+// @route   PUT /api/v1/vendor/update_me
+// @access  Private
+export const updateVendorInfo = asyncErrorHandler(async (req, res, next) => {
+  //Get name, email, phone from req.body
+  let { name, email, phone, storeName, storeDescription } = req.body;
+
+  // Validate input
+  if (!name || !email) {
+    return next(new ErrorHandler("Name and email are required!", 400));
+  }
+
+  // Convert email to lowercase
+  email = email.toLowerCase();
+
+  // Validate email format
+  const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegexPattern.test(email)) {
+    return next(new ErrorHandler("Invalid email format", 400));
+  }
+
+  // Validate phone number format if provided
+  if (phone) {
+    const phoneNumberRegexPattern =
+      /^[+]?[0-9]{0,3}\W??[0-9]{3}?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4,6}$/im;
+    if (!phoneNumberRegexPattern.test(phone)) {
+      return next(new ErrorHandler("Invalid phone number format", 400));
+    }
+  }
+
+  // Update user information and return the updated user and enable Validation
+  const vendor = await Vendor.findByIdAndUpdate(
+    req.vendor._id,
+    { name, email, phone, storeName, storeDescription },
+    { new: true, runValidators: true }
+  );
+
+  //If vendor not found, throw error to client
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  //Finally send success message to client
+  res.status(200).json({
+    success: true,
+    message: "Vendor information updated successfully!",
+    vendor,
   });
 });
