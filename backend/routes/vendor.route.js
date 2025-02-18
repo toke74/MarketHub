@@ -12,7 +12,8 @@ import {
   updateStoreAvatar,
   updateStoreImage,
   getVendorInfo,
-  updateVendorInfo,
+  updateVendorProfile,
+  updateVendorAddress,
 } from "../controllers/vendor.controller.js";
 
 import {
@@ -79,6 +80,17 @@ vendorRouter.post(
 vendorRouter.get("/me", isVendorAuthenticated, getVendorInfo);
 
 // Update Vendor profile route
-vendorRouter.post("/update_me", isVendorAuthenticated, updateVendorInfo);
+vendorRouter.patch(
+  "/update_profile",
+  isVendorAuthenticated,
+  updateVendorProfile
+);
+
+// Update Vendor address route
+vendorRouter.patch(
+  "/update_address",
+  isVendorAuthenticated,
+  updateVendorAddress
+);
 
 export default vendorRouter;

@@ -583,52 +583,98 @@ export const getVendorInfo = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Update Vendor profile
-// @route   PUT /api/v1/vendor/update_me
+// @desc    Update Vendor Profile
+// @route   PATCH /api/v1/vendor/update_profile
 // @access  Private
-export const updateVendorInfo = asyncErrorHandler(async (req, res, next) => {
+export const updateVendorProfile = asyncErrorHandler(async (req, res, next) => {
   //Get name, email, phone from req.body
   let { name, email, phone, storeName, storeDescription } = req.body;
 
-  // Validate input
-  if (!name || !email) {
-    return next(new ErrorHandler("Name and email are required!", 400));
+  // Validate required fields
+  if (!name || !email || !phone || !storeName) {
+    return next(
+      new ErrorHandler("Name, email, phone, and storeName are required!", 400)
+    );
   }
 
-  // Convert email to lowercase
-  email = email.toLowerCase();
-
-  // Validate email format
+  // Validate email format and convert to lowercase
   const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegexPattern.test(email)) {
     return next(new ErrorHandler("Invalid email format", 400));
   }
+  email = email.toLowerCase();
 
-  // Validate phone number format if provided
-  if (phone) {
-    const phoneNumberRegexPattern =
-      /^[+]?[0-9]{0,3}\W??[0-9]{3}?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4,6}$/im;
-    if (!phoneNumberRegexPattern.test(phone)) {
-      return next(new ErrorHandler("Invalid phone number format", 400));
-    }
+  // Validate phone number format
+  const phoneNumberRegexPattern = /^[+]?[0-9]{10,15}$/;
+  if (!phoneNumberRegexPattern.test(phone)) {
+    return next(new ErrorHandler("Invalid phone number format", 400));
   }
 
-  // Update user information and return the updated user and enable Validation
+  // Find and update vendor details
   const vendor = await Vendor.findByIdAndUpdate(
     req.vendor._id,
-    { name, email, phone, storeName, storeDescription },
+    {
+      $set: {
+        name,
+        email,
+        phone,
+        storeName,
+        storeDescription,
+      },
+    },
     { new: true, runValidators: true }
   );
 
-  //If vendor not found, throw error to client
+  // If vendor not found, return error
   if (!vendor) {
     return next(new ErrorHandler("Vendor not found", 404));
   }
 
-  //Finally send success message to client
+  // Send success response
   res.status(200).json({
     success: true,
-    message: "Vendor information updated successfully!",
+    message: "Vendor profile updated successfully!",
+    vendor,
+  });
+});
+
+// @desc    Update Vendor Address
+// @route   PATCH /api/v1/vendor/update_address
+// @access  Private
+export const updateVendorAddress = asyncErrorHandler(async (req, res, next) => {
+  const { street, city, state, country, zipCode } = req.body;
+
+  // Validate required fields
+  if (!street || !city || !country) {
+    return next(
+      new ErrorHandler("Street, city, and country are required!", 400)
+    );
+  }
+
+  // Find and update the vendor's address
+  const vendor = await Vendor.findByIdAndUpdate(
+    req.vendor._id,
+    {
+      $set: {
+        "address.street": street,
+        "address.city": city,
+        "address.state": state || "",
+        "address.country": country,
+        "address.zipCode": zipCode || "",
+      },
+    },
+    { new: true, runValidators: true }
+  );
+
+  // If vendor not found, return error
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  // Send success response
+  res.status(200).json({
+    success: true,
+    message: "Vendor address updated successfully!",
     vendor,
   });
 });

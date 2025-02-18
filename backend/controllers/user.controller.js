@@ -595,7 +595,6 @@ export const addUserAddress = asyncErrorHandler(async (req, res, next) => {
 // @desc    Update User Address
 // @route   PUT /api/v1/user/update_address/:addressID
 // @access  Private
-
 export const updateUserAddress = asyncErrorHandler(async (req, res, next) => {
   //Get address ID from req.params
   const { addressID } = req.params;
@@ -799,7 +798,6 @@ export const getAllUsersForAdmin = asyncErrorHandler(async (req, res, next) => {
     users,
   });
 });
-
 
 // @desc    Delete User By ID for Admin
 // @route   DELETE /api/v1/user/admin/delete_user_info/:user_id
