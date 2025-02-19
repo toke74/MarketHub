@@ -678,3 +678,99 @@ export const updateVendorAddress = asyncErrorHandler(async (req, res, next) => {
     vendor,
   });
 });
+
+// @desc    Delete Vendor Account
+// @route   DELETE /api/v1/vendor/delete_account
+// @access  Private
+export const deleteVendorAccount = asyncErrorHandler(async (req, res, next) => {
+  const vendorId = req.vendor._id;
+
+  // Find and delete vendor
+  const vendor = await Vendor.findByIdAndDelete(vendorId);
+
+  // If vendor not found, return error
+  if (!vendor) {
+    return next(new ErrorHandler("Vendor not found", 404));
+  }
+
+  // Send success response
+  res.status(200).json({
+    success: true,
+    message: "Your account has been deleted successfully!",
+  });
+});
+
+//Admin Controllers
+
+// @desc    Get Vendor By ID for Admin
+// @route   GET /api/v1/vendor/admin/get_vendor_info/:vendor_id
+// @access  Private
+export const getVendorByIdForAdmin = asyncErrorHandler(
+  async (req, res, next) => {
+    //Get Vendor ID from req.params
+    const { vendor_id } = req.params;
+
+    // Find vendor by ID
+    const vendor = await Vendor.findById(vendor_id);
+
+    //If vendor not found, throw error to Admin
+    if (!vendor) {
+      return next(new ErrorHandler("Vendor not found", 404));
+    }
+
+    //Finally send success message to Admin
+    res.status(200).json({
+      success: true,
+      vendor,
+    });
+  }
+);
+
+// @desc    Get all vendors by admin
+// @route   GET /api/v1/vendor/admin/all_vendors
+// @access  Private
+export const getAllVendorsForAdmin = asyncErrorHandler(
+  async (req, res, next) => {
+    // Retrieve all vendors
+    const vendors = await Vendor.find();
+
+    //If no vendor found, throw error to Admin
+    if (!vendors || vendors.length === 0) {
+      return next(new ErrorHandler("No vendors found", 404));
+    }
+
+    //Finally send success message to Admin
+    res.status(200).json({
+      success: true,
+      count: vendors.length,
+      vendors,
+    });
+  }
+);
+
+// @desc    Delete Vendor By ID for Admin
+// @route   DELETE /api/v1/vendor/admin/delete_vendor_info/:vendor_id
+// @access  Private
+export const deleteVendorByIdForAdmin = asyncErrorHandler(
+  async (req, res, next) => {
+    //Get ID from req.params
+    const { vendor_id } = req.params;
+
+    // Find vendor by ID
+    const vendor = await Vendor.findById(vendor_id);
+
+    //If user not found, throw error to Admin
+    if (!vendor) {
+      return next(new ErrorHandler("Vendor not found", 404));
+    }
+
+    // Delete vendor
+    await vendor.deleteOne();
+
+    //Finally send success message to Admin
+    res.status(200).json({
+      success: true,
+      message: "Vendor deleted successfully",
+    });
+  }
+);
