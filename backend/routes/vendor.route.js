@@ -97,7 +97,7 @@ vendorRouter.patch(
   updateVendorAddress
 );
 
-// Delete  vendor by admin route
+// Delete  vendor account route
 vendorRouter.delete(
   "/delete_account",
   isVendorAuthenticated,
