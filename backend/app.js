@@ -8,6 +8,7 @@ import "dotenv/config.js";
 import ErrorHandlerMiddleware from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
 import vendorRouter from "./routes/vendor.route.js";
+import productRouter from "./routes/product.route.js";
 
 export const app = express();
 const { ORIGIN } = process.env;
@@ -39,6 +40,7 @@ app.use(
 //routes
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/vendor", vendorRouter);
+app.use("/api/v1/product", productRouter);
 
 //testing route
 app.get("/test", (req, res, next) => {
