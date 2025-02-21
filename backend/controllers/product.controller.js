@@ -167,3 +167,80 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
     product,
   });
 });
+
+// @desc    Get Single Product
+// @route   GET /api/v1/product/get_product/:id
+// @access  Public
+export const getProduct = asyncErrorHandler(async (req, res, next) => {
+  // Extract product ID from request parameters
+  const { id } = req.params;
+
+  // Find product by ID and populate vendor details
+  const product = await Product.findById(id).populate(
+    "vendor",
+    "name storeName"
+  );
+
+  // Check if product exists, if not, return error
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  // Respond with product details
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
+
+// @desc    Get All Products with Filtering, Search, and Pagination
+// @route   GET /api/v1/product/get_all_products
+// @access  Public
+export const getAllProducts = asyncErrorHandler(async (req, res, next) => {
+  // Pagination
+  const resultPerPage = 10;
+  const page = Number(req.query.page) || 1;
+
+  // Build query object
+  const queryObj = {};
+
+  // Search by product name
+  if (req.query.keyword) {
+    queryObj.name = { $regex: req.query.keyword, $options: "i" };
+  }
+
+  // Filter by category
+  if (req.query.category) {
+    queryObj.category = req.query.category;
+  }
+
+  // Filter by price range
+  if (req.query.price) {
+    const [minPrice, maxPrice] = req.query.price.split("-");
+    queryObj.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+  }
+
+  // Filter by vendor
+  if (req.query.vendorId) {
+    queryObj.vendor = req.query.vendorId;
+  }
+
+  // Count total products
+  const totalProducts = await Product.countDocuments(queryObj);
+
+  // Fetch products with pagination
+  const products = await Product.find(queryObj)
+    .populate("vendor", "name storeName")
+    .skip(resultPerPage * (page - 1))
+    .limit(resultPerPage)
+    .sort({ createdAt: -1 });
+
+  // Respond with products, total products, and pagination details
+  res.status(200).json({
+    success: true,
+    totalProducts,
+    resultPerPage,
+    currentPage: page,
+    products,
+  });
+});

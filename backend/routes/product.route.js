@@ -2,6 +2,8 @@ import express from "express";
 import {
   createProduct,
   updateProduct,
+  getProduct,
+  getAllProducts,
 } from "../controllers/product.controller.js";
 import { isVendorAuthenticated } from "../middlewares/authMiddleware.js";
 import { uploadProductImages } from "../middlewares/fileUploadMiddleware.js";
@@ -23,5 +25,11 @@ productRouter.put(
   uploadProductImages,
   updateProduct
 );
+
+// Get single Product route
+productRouter.get("/get_product/:id", getProduct);
+
+// Get all Products route
+productRouter.get("/get_all_products", getAllProducts);
 
 export default productRouter;
