@@ -244,3 +244,40 @@ export const getAllProducts = asyncErrorHandler(async (req, res, next) => {
     products,
   });
 });
+
+// @desc    Delete Product
+// @route   DELETE /api/v1/product/delete_product/:id
+// @access  Private (Vendor Only)
+export const deleteProduct = asyncErrorHandler(async (req, res, next) => {
+  // Extract product ID from request
+  const { id } = req.params;
+
+  // Find product by ID
+  const product = await Product.findById(id);
+
+  // Check if product exists
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  // Check if the logged-in vendor owns the product
+  if (product.vendor.toString() !== req.vendor._id.toString()) {
+    return next(
+      new ErrorHandler("You are not authorized to delete this product", 403)
+    );
+  }
+
+  // Delete product images from Cloudinary
+  for (const image of product.images) {
+    await cloudinary.uploader.destroy(image.public_id);
+  }
+
+  // Delete product from the database using findByIdAndDelete
+  await Product.findByIdAndDelete(id);
+
+  // Respond with success
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+  });
+});
