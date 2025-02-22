@@ -5,6 +5,8 @@ import {
   getProduct,
   getAllProducts,
   deleteProduct,
+  getProductsByVendorId,
+  getVendorProducts,
 } from "../controllers/product.controller.js";
 import { isVendorAuthenticated } from "../middlewares/authMiddleware.js";
 import { uploadProductImages } from "../middlewares/fileUploadMiddleware.js";
@@ -39,5 +41,9 @@ productRouter.delete(
   isVendorAuthenticated,
   deleteProduct
 );
+// Get all products by the logged-in vendor route
+productRouter.get("/vendor_products", isVendorAuthenticated, getVendorProducts);
 
+// Get all products by a specific vendor route
+productRouter.get("/products/:vendor_id", getProductsByVendorId);
 export default productRouter;

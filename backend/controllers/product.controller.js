@@ -3,6 +3,7 @@ import Product from "../model/product.model.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
 import cloudinary from "../config/cloudinary.config.js";
+import Vendor from "../model/vendor.model.js";
 
 // @desc    Create Product
 // @route   POST /api/v1/product/create_product
@@ -281,3 +282,74 @@ export const deleteProduct = asyncErrorHandler(async (req, res, next) => {
     message: "Product deleted successfully",
   });
 });
+
+// @desc    Get all products by the logged-in vendor
+// @route   GET /api/v1/product/vendor_products
+// @access  Private (Vendor Only)
+export const getVendorProducts = asyncErrorHandler(async (req, res, next) => {
+  try {
+    // Get vendor ID from authenticated request
+    const vendorId = req.vendor._id;
+
+    // Fetch products belonging to this vendor
+    const products = await Product.find({ vendor: vendorId });
+
+    // If no products found
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found for this vendor.",
+      });
+    }
+
+    // Success response
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+// @desc    Get all products by a specific vendor
+// @route   GET /api/v1/product/vendor/products/:vendor_id
+// @access  Public
+export const getProductsByVendorId = asyncErrorHandler(
+  async (req, res, next) => {
+    // Extract vendor ID from the route params
+    const { vendor_id } = req.params;
+
+    // Check if the vendor exists
+    const vendor = await Vendor.findById(vendor_id);
+
+    // If vendor not found, return error
+    if (!vendor) {
+      return next(new ErrorHandler("Vendor not found", 404));
+    }
+
+    // Fetch products belonging to this vendor
+    const products = await Product.find({ vendor: vendor_id });
+
+    // If no products found
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found for this vendor.",
+      });
+    }
+
+    // Success response
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      vendor: {
+        id: vendor._id,
+        name: vendor.name,
+        email: vendor.email,
+      },
+      products,
+    });
+  }
+);
