@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  /* Define custom fonts */
+  --font-family-primary: "Nunito", sans-serif;
+  --font-family-secondary: "Raleway", sans-serif;
+
+  /* Primary Color: #20C997 (Modern, fresh) */
+  --color-primary: oklch(0.72 0.23 164.5);
+
+  /* Secondary Color: #FF7F50 (Coral for contrast) */
+  --color-secondary: oklch(0.72 0.23 34.8);
+
+  /* Accent Color: #4A5568 (Dark gray for text/icons) */
+  --color-accent: oklch(0.38 0.03 248.5);
+
+  /* Background Color: #E6FFFA (Light teal for a clean look) */
+  --color-background: oklch(0.95 0.03 164.5);
+
+  /* Define CSS variables */
+  --white: 255 255 255; /* RGB for white */
+  --cultured: 248 249 250; /* RGB for cultured (light gray) */
+}
+
+/* Apply fonts globally */
+body {
+  font-family: var(--font-family-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-secondary);
+}
+
+/* Custom scrollbar styles */
+body::-webkit-scrollbar {
+  width: 15px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgb(var(--white));
+  border-left: 1px solid rgb(var(--cultured));
+}
+
+body::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 80%);
+  border: 3px solid rgb(var(--white));
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 70%);
+}
+
+.has-scrollbar {
+  padding-bottom: 5px;
+}
+
+.has-scrollbar::-webkit-scrollbar {
+  width: 15px; /* for vertical scroll */
+  height: 15px; /* for horizontal scroll */
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 3px solid rgb(var(--white));
+  border-radius: 20px;
+}
+
+.has-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 90%);
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 80%);
+}
