@@ -1,19 +1,34 @@
+//Package imports
+import { Routes, Route } from "react-router-dom";
+
+// Header imports
+import Header from "./components/layout/header/Header";
+
+//Navbar Pages imports
+import Home from "./pages/navbarPages/Home";
+import Shops from "./pages/navbarPages/Shops";
+import TodaysDeals from "./pages/navbarPages/TodaysDeals";
+import BestSellers from "./pages/navbarPages/BestSellers";
+import HotOffers from "./pages/navbarPages/HotOffers";
+import Blog from "./pages/navbarPages/Blog";
+import Gifts from "./pages/navbarPages/Gifts";
+import CustomerService from "./pages/navbarPages/CustomerService";
+
 function App() {
   return (
     <div>
-      <div class="bg-background p-8">
-        <h1 class="text-primary text-3xl font-bold">Welcome to Our Store</h1>
-        <p class="text-accent mt-4">
-          Shop the latest trends and enjoy free shipping on orders over $55!
-        </p>
-        <button class="bg-secondary text-white px-4 py-2 mt-4 rounded-lg hover:bg-primary transition-colors">
-          Shop Now
-        </button>
-      </div>
-      <p class="font-sans">This text uses Nunito.</p>
-      <p>This text uses Nunito.</p>
-      <h1 class="font-serif">This heading uses Raleway.</h1>
-      <h1>This heading uses Raleway.</h1>
+      <Header />
+      <Routes>
+        {/* Navbar Links */}
+        <Route path="/" element={<Home />} />
+        <Route path="/shops" element={<Shops />} />
+        <Route path="/todays_deals" element={<TodaysDeals />} />
+        <Route path="/best_sellers" element={<BestSellers />} />
+        <Route path="/hot_offers" element={<HotOffers />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/gifts" element={<Gifts />} />
+        <Route path="/customer_service" element={<CustomerService />} />
+      </Routes>
     </div>
   );
 }
