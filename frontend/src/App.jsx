@@ -14,6 +14,10 @@ import Blog from "./pages/navbarPages/Blog";
 import Gifts from "./pages/navbarPages/Gifts";
 import CustomerService from "./pages/navbarPages/CustomerService";
 
+//authPages imports
+import SignIn from "./pages/authPages/SignIn";
+import SignUp from "./pages/authPages/SignUp";
+
 function App() {
   return (
     <div>
@@ -28,6 +32,10 @@ function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/gifts" element={<Gifts />} />
         <Route path="/customer_service" element={<CustomerService />} />
+
+        {/* auth Links */}
+        <Route path="/sign_in" element={<SignIn />} />
+        <Route path="/sign_up" element={<SignUp />} />
       </Routes>
     </div>
   );

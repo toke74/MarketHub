@@ -18,7 +18,7 @@ const HeaderDesktopMenu = () => {
             <li key={index} className="relative group">
               <Link
                 to={item.url}
-                className="flex items-center cursor-pointer text-text uppercase font-semibold text-[15.6px] hover:text-primary transition"
+                className="flex items-center cursor-pointer text-text uppercase font-semibold text-[11.5px] xl:text-[15.6px] hover:text-primary transition"
               >
                 {item.name}
               </Link>

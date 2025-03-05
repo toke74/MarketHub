@@ -1,8 +1,18 @@
-import { FaRegUser, FaRegHeart } from "react-icons/fa6";
+//package imports
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+
+//React icons
+import { FaRegHeart } from "react-icons/fa6";
 import { IoSearchOutline } from "react-icons/io5";
 import { FiShoppingBag } from "react-icons/fi";
 
+//Local imports
+import SignIn from "../../../pages/authPages/SignIn";
+
 const HeaderMain = () => {
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div className="border-b border-gray-200 py-3">
       <div className="container mx-auto flex justify-between items-center pl-4 pr-6">
@@ -36,10 +46,19 @@ const HeaderMain = () => {
             <IoSearchOutline size={26} />
           </button>
 
-          <button className="relative   hover:text-primary text-xl cursor-pointer">
-            {/* <FaRegUser size={26} /> */}
+          <Link
+            to="/sign_in"
+            // onClick={() => setIsDialogOpen(true)}
+            className="relative   hover:text-primary text-xl cursor-pointer"
+          >
             Sign in
-          </button>
+          </Link>
+          {/* <button
+            onClick={() => setIsDialogOpen(true)}
+            className="relative   hover:text-primary text-xl cursor-pointer"
+          >
+            Sign in
+          </button> */}
 
           <button className="relative  hover:text-primary text-xl cursor-pointer hidden lg:block">
             <FaRegHeart size={26} />
@@ -56,6 +75,7 @@ const HeaderMain = () => {
           </button>
         </div>
       </div>
+      {/* <SignIn isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} /> */}
     </div>
   );
 };

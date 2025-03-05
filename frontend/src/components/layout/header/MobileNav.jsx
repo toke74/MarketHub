@@ -25,12 +25,12 @@ const MobileNav = ({ isOpen, onClose }) => {
     <div>
       <div
         onClick={onClose}
-        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer bg-black opacity-50 transition-opacity duration-500 ${
+        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer lg:hidden bg-black opacity-50 transition-opacity duration-500 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } `}
       ></div>
       <nav
-        className={`has-scrollbar fixed top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5 overflow-y-auto z-50 transition-transform duration-500 ${
+        className={`has-scrollbar fixed lg:hidden top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5 overflow-y-auto z-50 transition-transform duration-500 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

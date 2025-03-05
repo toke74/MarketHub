@@ -13,17 +13,17 @@ const CategoryMobileNav = ({ isOpen, onClose }) => {
     <div>
       <div
         onClick={onClose}
-        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer bg-black opacity-50 transition-opacity duration-500 ${
+        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer lg:hidden bg-black/50  transition-opacity duration-500 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } `}
       ></div>
       <nav
-        className={`has-scrollbar fixed top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5   overflow-y-auto z-50 transition-transform duration-500 ${
+        className={`has-scrollbar fixed lg:hidden top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5   overflow-y-auto z-50 transition-transform duration-500 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Top Section */}
-        <div className="flex justify-between items-center  pb-4 mb-4">
+        <div className="flex justify-between items-center border-b border-gray-200  pb-4 mb-4">
           <h2 className="text-lg font-semibold text-pink-500 ">Menu</h2>
           <button
             onClick={onClose}
@@ -31,10 +31,11 @@ const CategoryMobileNav = ({ isOpen, onClose }) => {
           >
             <FiX />
           </button>
+          /
         </div>
 
         {/* Categories Section */}
-        <ul className="space-y-3 border-b border-gray-200 pb-4">
+        <ul className="space-y-3 pb-4">
           {categories?.map((category, index) => (
             <li key={index}>
               <button
