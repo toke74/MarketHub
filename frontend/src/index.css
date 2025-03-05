@@ -5,17 +5,6 @@
   --font-family-primary: "Nunito", sans-serif;
   --font-family-secondary: "Raleway", sans-serif;
 
-  /*  
-  --color-primary: oklch(0.72 0.23 164.5);
-  --color-secondary: oklch(0.72 0.23 34.8);
-  --color-accent: oklch(0.38 0.03 248.5);
-  --color-background: oklch(0.95 0.03 164.5); */
-
-  /* --color-primary: oklch(0.78 0.19 65.5); 
-  --color-secondary: oklch(0.62 0.22 259.7); 
-  --color-neutral: oklch(0.97 0.01 248.5); 
-  --color-text: oklch(0.25 0.02 248.5);  */
-
   /* Primary Color */
   --color-primary: oklch(0.72 0.18 10.5); /* #FF8F9C */
 
@@ -38,6 +27,9 @@
   /* Define CSS variables */
   --white: 255 255 255; /* RGB for white */
   --cultured: 248 249 250; /* RGB for cultured (light gray) */
+
+  --shadow-3xl: 5px 13px 41px 9px rgba(0, 0, 0, 0.1);
+  /* shadow-[5px_13px_41px_9px_rgba(0,_0,_0,_0.1)] */
 }
 
 /* Apply fonts globally */

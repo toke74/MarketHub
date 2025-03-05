@@ -195,19 +195,19 @@ export const categories = [
     image: "images/category/pet.jpg",
     url: "/pet_supplies",
   },
-  {
-    name: "Appliances",
-    items: [
-      "Kitchen Appliances",
-      "Home Appliances",
-      "Cleaning Appliances",
-      "Personal Care Appliances",
-      "Smart Home Devices",
-      "Air Conditioners",
-    ],
-    image: "images/category/appliances.jpg",
-    url: "/appliances",
-  },
+  // {
+  //   name: "Appliances",
+  //   items: [
+  //     "Kitchen Appliances",
+  //     "Home Appliances",
+  //     "Cleaning Appliances",
+  //     "Personal Care Appliances",
+  //     "Smart Home Devices",
+  //     "Air Conditioners",
+  //   ],
+  //   image: "images/category/appliances.jpg",
+  //   url: "/appliances",
+  // },
   {
     name: "Beauty & Personal Care",
     items: [

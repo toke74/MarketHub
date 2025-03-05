@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 //React Icons
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
 // Local imports
 import { categories } from "../../../utils/data";
@@ -28,16 +28,16 @@ const CategoryDropdownMenu = () => {
         {/* Navbar Item */}
         <button
           onClick={handleClick}
-          className="flex items-center space-x-1 cursor-pointer text-gray-800 uppercase font-semibold 
-      text-[15.6px] hover:text-primary transition "
+          className="flex items-center space-x-1 cursor-pointer  uppercase font-semibold 
+      text-[15.6px]  transition bg-primary hover:bg-primary/85 text-white px-4 py-2 rounded-md"
         >
           <span>CATEGORIES</span>
-          <FiChevronDown />
+          {isVisible ? <FiChevronUp /> : <FiChevronDown />}
         </button>
 
         {/* Dropdown Content */}
         <div
-          className={`absolute top-[41px] mx-auto -left-24 w-[1200px]  flex space-x-6 z-50 bg-white shadow-lg rounded-md  transition-all p-7 ${
+          className={`absolute top-[70px] mx-auto left-0 w-[1200px]  flex space-x-6 z-50 bg-white shadow-3xl rounded-md  transition-all px-7 pt-7 pb-3 ${
             isVisible ? "block" : "hidden"
           } `}
         >
