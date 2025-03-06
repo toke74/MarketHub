@@ -19,7 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: ORIGIN,
+    origin: "http://localhost:5173",
+    // origin: ORIGIN,
     credentials: true,
   })
 );
@@ -30,12 +31,12 @@ app.use(express.json({ limit: "50mb" }));
 //cookie parser middleware
 app.use(cookieParser());
 
-//cors middleware
-app.use(
-  cors({
-    origin: ORIGIN,
-  })
-);
+// //cors middleware
+// app.use(
+//   cors({
+//     origin: ORIGIN,
+//   })
+// );
 
 //routes
 app.use("/api/v1/user", userRouter);

@@ -7,6 +7,9 @@ import { z } from "zod";
 //React icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
 
+//Local imports
+import { useRegisterUserMutation } from "../../services/api/authApi/authApi";
+
 // Zod Schema for Validation
 const signUpSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -15,6 +18,8 @@ const signUpSchema = z.object({
 });
 
 const SignUp = () => {
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
   const {
     register,
     handleSubmit,
@@ -23,9 +28,13 @@ const SignUp = () => {
     resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit = (data) => {
-    console.log("Sign Up Data:", data);
-    // Handle sign-up logic here
+  const onSubmit = async (data) => {
+    try {
+      const response = await registerUser(data).unwrap();
+      console.log("Registration successful:", response);
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
   };
 
   return (
