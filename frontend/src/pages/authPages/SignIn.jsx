@@ -1,12 +1,24 @@
 //Package imports
-
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 //react icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+//Local imports
+import { useLoginUserMutation } from "../../services/api/authApi/authApi";
+import {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+} from "../../features/auth/authSlice";
 
 // Zod Schema for Validation
 const signInSchema = z.object({
@@ -15,10 +27,14 @@ const signInSchema = z.object({
 });
 
 const SignIn = () => {
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -28,14 +44,31 @@ const SignIn = () => {
     },
   });
 
-  const rememberMe = watch("rememberMe"); // Watch the "rememberMe" field
+  // Watch the "rememberMe" field
+  const rememberMe = watch("rememberMe");
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    if (data.rememberMe) {
+  const onSubmit = async (data) => {
+    if (rememberMe) {
       localStorage.setItem("rememberedEmail", data.email);
     } else {
       localStorage.removeItem("rememberedEmail");
+    }
+
+    //Start loading state
+    dispatch(loginRequest());
+
+    try {
+      const response = await loginUser(data).unwrap();
+
+      // Store user data in Redux store
+      dispatch(loginSuccess(response.user));
+
+      navigate("/dashboard");
+    } catch (err) {
+      // Store error data in Redux store
+      dispatch(loginFailure(err.data?.message || "Login failed!"));
+
+      toast.error(err?.data?.message);
     }
   };
   return (
@@ -64,13 +97,23 @@ const SignIn = () => {
           </div>
           <div>
             <label className="block text-text">Password</label>
-            <input
-              type="password"
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
-              placeholder="Enter your password"
-              required
-              {...register("password")}
-            />
+            <div className="relative">
+              <input
+                // type="password"
+                type={showPassword ? "text" : "password"}
+                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                placeholder="Enter your password"
+                required
+                {...register("password")}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
@@ -98,7 +141,11 @@ const SignIn = () => {
             type="submit"
             className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/85 cursor-pointer transition"
           >
-            Sign In
+            {isLoading ? (
+              <img src="loading1.gif" alt="logo" className="w-8 h-8 mx-auto" />
+            ) : (
+              "Sign In"
+            )}
           </button>
         </form>
 

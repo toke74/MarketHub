@@ -18,6 +18,9 @@ import CustomerService from "./pages/navbarPages/CustomerService";
 import SignIn from "./pages/authPages/SignIn";
 import SignUp from "./pages/authPages/SignUp";
 
+//Protected Route imports
+import Dashboard from "./pages/Dashboard";
+
 function App() {
   return (
     <div>
@@ -36,6 +39,9 @@ function App() {
         {/* auth Links */}
         <Route path="/sign_in" element={<SignIn />} />
         <Route path="/sign_up" element={<SignUp />} />
+
+        {/* Protected Route */}
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );

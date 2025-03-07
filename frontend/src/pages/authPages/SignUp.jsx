@@ -1,24 +1,35 @@
 //Package imports
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 
 //React icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
 import { useRegisterUserMutation } from "../../services/api/authApi/authApi";
 
 // Zod Schema for Validation
-const signUpSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+const signUpSchema = z
+  .object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Must be at least 6 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -31,15 +42,16 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     try {
       const response = await registerUser(data).unwrap();
+      toast.success(response?.message);
       console.log("Registration successful:", response);
     } catch (err) {
-      console.error("Registration failed:", err);
+      toast.error(err?.data?.message);
     }
   };
 
   return (
     <div className="flex justify-center  min-h-screen ">
-      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl w-full max-w-md h-[540px] mt-12">
+      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl w-full max-w-md h-[635px] mt-12">
         <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
 
         {/* Sign-Up Form */}
@@ -76,22 +88,66 @@ const SignUp = () => {
           </div>
           <div>
             <label className="block text-text">Password</label>
-            <input
-              type="password"
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
-              placeholder="Enter your password"
-              required
-              {...register("password")}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                placeholder="Enter your password"
+                required
+                {...register("password")}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
+
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
           </div>
+
+          {/* Confirm Password Field with Toggle */}
+          <div>
+            <label className="block text-gray-600">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                {...register("confirmPassword")}
+                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200 pr-10"
+                placeholder="Confirm your password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? (
+                  <FiEyeOff size={20} />
+                ) : (
+                  <FiEye size={20} />
+                )}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <p className="text-red-500 text-sm">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-primary/85 transition"
           >
-            Sign Up
+            {isLoading ? (
+              <img src="loading1.gif" alt="logo" className="w-8 h-8 mx-auto" />
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 
