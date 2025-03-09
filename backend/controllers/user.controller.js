@@ -104,7 +104,7 @@ export const activateUser = asyncErrorHandler(async (req, res, next) => {
 export const loginUser = asyncErrorHandler(async (req, res, next) => {
   //Get email and password from user
   const { email, password } = req.body;
-
+  console.log(req.body);
   //check email and password empty or not
   if (!email || !password) {
     return next(new ErrorHandler("Please provide an email and password", 400));
@@ -139,7 +139,7 @@ export const loginUser = asyncErrorHandler(async (req, res, next) => {
       });
 
       return res.status(201).json({
-        success: true,
+        success: false,
         message: `Please check your email ${user.email} to activate your account!`,
         activationToken: activationToken.token,
       });
@@ -157,7 +157,7 @@ export const loginUser = asyncErrorHandler(async (req, res, next) => {
   }
 
   //import methods to generate access Token and refresh token
-  sendTokensAsCookies(user._id, 200, res);
+  sendTokensAsCookies(user, 200, res);
 });
 
 // @desc    Resend Activation code
@@ -167,7 +167,6 @@ export const resendActivationCode = asyncErrorHandler(
   async (req, res, next) => {
     //Get user email from client by req.body
     const { email } = req.body;
-
     //find user in db by its email
     const user = await User.findOne({ email });
 
@@ -248,7 +247,7 @@ export const updateAccessToken = asyncErrorHandler(async (req, res, next) => {
   req.user = user;
 
   //import methods to generate access Token and refresh token
-  sendTokensAsCookies(user._id, 200, res);
+  sendTokensAsCookies(user, 200, res);
 });
 
 // @desc    Logout user

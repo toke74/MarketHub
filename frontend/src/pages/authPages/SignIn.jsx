@@ -13,11 +13,12 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
-import { useLoginUserMutation } from "../../services/api/authApi/authApi";
+import { useLoginUserMutation } from "../../services/authApi/authApi";
 import {
   loginRequest,
   loginSuccess,
   loginFailure,
+  activateToken,
 } from "../../features/auth/authSlice";
 
 // Zod Schema for Validation
@@ -60,10 +61,19 @@ const SignIn = () => {
     try {
       const response = await loginUser(data).unwrap();
 
-      // Store user data in Redux store
-      dispatch(loginSuccess(response.user));
+      if (response.success && response.user) {
+        // Store user data in Redux store
+        dispatch(loginSuccess(response.user));
+        navigate("/dashboard");
+        return;
+      } else {
+        // Store activation Token in Redux store
+        dispatch(activateToken(response.activationToken));
 
-      navigate("/dashboard");
+        toast.success("Check your email to verify your account");
+        navigate("/verify_email");
+        return;
+      }
     } catch (err) {
       // Store error data in Redux store
       dispatch(loginFailure(err.data?.message || "Login failed!"));

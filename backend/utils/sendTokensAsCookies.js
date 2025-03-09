@@ -9,9 +9,12 @@ import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
 
 // Function to send tokens via cookies
 export const sendTokensAsCookies = asyncErrorHandler(
-  async (userId, statusCode, res) => {
-    const accessToken = generateAccessToken(userId);
-    const refreshToken = generateRefreshToken(userId);
+  async (user, statusCode, res) => {
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    // Remove password field
+    const { password, ...userWithoutPassword } = user.toObject(); // Convert to plain object and exclude password
 
     // Options for Access Token Cookie
     const accessTokenCookieOptions = {
@@ -36,7 +39,7 @@ export const sendTokensAsCookies = asyncErrorHandler(
     // Optionally, send tokens in the response body as well
     res.status(statusCode).json({
       success: true,
-      accessToken,
+      user: userWithoutPassword,
     });
   }
 );

@@ -1,17 +1,19 @@
 //Package imports
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 //React icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
-import { useRegisterUserMutation } from "../../services/api/authApi/authApi";
+import { useRegisterUserMutation } from "../../services/authApi/authApi";
+import { activateToken } from "../../features/auth/authSlice";
 
 // Zod Schema for Validation
 const signUpSchema = z
@@ -30,6 +32,8 @@ const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -42,10 +46,12 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     try {
       const response = await registerUser(data).unwrap();
-      toast.success(response?.message);
-      console.log("Registration successful:", response);
+      dispatch(activateToken(response.activationToken));
+
+      toast.success("Check your email to verify your account");
+      navigate("/verify_email");
     } catch (err) {
-      toast.error(err?.data?.message);
+      toast.error(err?.data?.message || "An error occurred");
     }
   };
 

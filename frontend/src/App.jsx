@@ -17,6 +17,8 @@ import CustomerService from "./pages/navbarPages/CustomerService";
 //authPages imports
 import SignIn from "./pages/authPages/SignIn";
 import SignUp from "./pages/authPages/SignUp";
+import EmailVerification from "./pages/authPages/EmailVerification";
+import ResendActivation from "./pages/authPages/ResendActivation";
 
 //Protected Route imports
 import Dashboard from "./pages/Dashboard";
@@ -39,6 +41,8 @@ function App() {
         {/* auth Links */}
         <Route path="/sign_in" element={<SignIn />} />
         <Route path="/sign_up" element={<SignUp />} />
+        <Route path="/verify_email" element={<EmailVerification />} />
+        <Route path="/resend_activation" element={<ResendActivation />} />
 
         {/* Protected Route */}
         <Route path="/dashboard" element={<Dashboard />} />

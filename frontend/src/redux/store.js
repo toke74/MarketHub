@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import rootReducer from "./rootReducer"; // Import rootReducer
-import { apiSlice } from "./services/api/apiSlice"; // Import RTK Query API
+import { apiSlice } from "../services/apiSlice"; // Import RTK Query API
 
 const store = configureStore({
   reducer: rootReducer, // Combines all slices
