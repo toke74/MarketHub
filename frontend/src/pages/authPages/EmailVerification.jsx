@@ -1,5 +1,5 @@
 //Package imports
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,6 +23,13 @@ const EmailVerification = () => {
 
   // Access user data from Redux store
   const activationToken = useSelector((state) => state.auth.activationToken);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard"); // Redirect to dashboard if logged in
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     handleSubmit,

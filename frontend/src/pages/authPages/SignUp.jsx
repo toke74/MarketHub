@@ -1,11 +1,12 @@
 //Package imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 //React icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
@@ -32,8 +33,15 @@ const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard"); // Redirect to dashboard if logged in
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

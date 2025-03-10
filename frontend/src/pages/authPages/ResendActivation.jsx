@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 // Local imports
 import { useResendActivationToUserMutation } from "../../services/authApi/authApi";
@@ -20,6 +21,13 @@ const ResendActivation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [resendActivationToUser] = useResendActivationToUserMutation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard"); // Redirect to dashboard if logged in
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

@@ -1,5 +1,5 @@
 //Package imports
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Header imports
 import Header from "./components/layout/header/Header";
@@ -22,6 +22,7 @@ import ResendActivation from "./pages/authPages/ResendActivation";
 
 //Protected Route imports
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
@@ -44,8 +45,13 @@ function App() {
         <Route path="/verify_email" element={<EmailVerification />} />
         <Route path="/resend_activation" element={<ResendActivation />} />
 
-        {/* Protected Route */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+        {/* Redirect unknown routes to login */}
+        <Route path="*" element={<Navigate to="/sign_in" replace />} />
       </Routes>
     </div>
   );

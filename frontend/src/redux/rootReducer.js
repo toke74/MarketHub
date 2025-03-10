@@ -1,4 +1,7 @@
+//Package imports
 import { combineReducers } from "@reduxjs/toolkit";
+
+//Local imports
 import authReducer from "../features/auth/authSlice"; // Import auth reducer RTK Slice
 import { apiSlice } from "../services/apiSlice"; // Import RTK Query API slice
 

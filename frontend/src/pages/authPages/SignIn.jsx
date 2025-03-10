@@ -1,5 +1,5 @@
 //Package imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 //react icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
@@ -30,8 +31,15 @@ const signInSchema = z.object({
 const SignIn = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const [showPassword, setShowPassword] = useState(false);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard"); // Redirect to dashboard if logged in
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,
