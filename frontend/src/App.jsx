@@ -1,8 +1,21 @@
 //Package imports
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Header imports
 import Header from "./components/layout/header/Header";
+
+//Local import
+import {
+  useLoadUserQuery,
+  useUpdateAccessTokenQuery,
+} from "./services/authApi/authApi";
+import {
+  loadUserRequest,
+  loadUserSuccess,
+  loadUserFailure,
+} from "./features/auth/authSlice";
 
 //Navbar Pages imports
 import Home from "./pages/navbarPages/Home";
@@ -21,10 +34,47 @@ import EmailVerification from "./pages/authPages/EmailVerification";
 import ResendActivation from "./pages/authPages/ResendActivation";
 
 //Protected Route imports
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Dashboard from "./pages/UserProfilePages/Dashboard";
+import UserProfile from "./pages/UserProfilePages/UserProfile";
+import Orders from "./pages/UserProfilePages/Orders";
+import PaymentMethods from "./pages/UserProfilePages/PaymentMethods";
+import AccountSettings from "./pages/UserProfilePages/AccountSettings";
+import Address from "./pages/UserProfilePages/Address";
+import Wishlist from "./pages/UserProfilePages/Wishlist";
+import ReviewsRatings from "./pages/UserProfilePages/ReviewsRatings";
+import Memberships from "./pages/UserProfilePages/Memberships";
 
 function App() {
+  const dispatch = useDispatch();
+  const { data, error } = useLoadUserQuery();
+  const { data: tokenData, refetch: refreshAccessToken } =
+    useUpdateAccessTokenQuery();
+
+  useEffect(() => {
+    dispatch(loadUserRequest());
+
+    if (data) {
+      dispatch(loadUserSuccess(data));
+    }
+
+    if (error) {
+      if (error.status === 401) {
+        // If unauthorized error occurs, try refreshing the access token
+        refreshAccessToken();
+      } else {
+        dispatch(loadUserFailure(error.message));
+      }
+    }
+  }, [data, error, dispatch, refreshAccessToken]);
+
+  // After refreshing, if new token is received, reload user data
+  useEffect(() => {
+    if (tokenData) {
+      dispatch(loadUserRequest());
+    }
+  }, [tokenData, dispatch]);
+
   return (
     <div>
       <Header />
@@ -47,7 +97,15 @@ function App() {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/payments" element={<PaymentMethods />} />
+          <Route path="/settings" element={<AccountSettings />} />
+          <Route path="/address" element={<Address />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/reviews" element={<ReviewsRatings />} />
+          <Route path="/memberships" element={<Memberships />} />
         </Route>
 
         {/* Redirect unknown routes to login */}

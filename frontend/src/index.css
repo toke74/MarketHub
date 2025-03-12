@@ -6,7 +6,8 @@
   --font-family-secondary: "Raleway", sans-serif;
 
   /* Primary Color */
-  --color-primary: oklch(0.72 0.18 10.5); /* #FF8F9C */
+  --color-primary: oklch(0.68 0.21 40.5); /* #f1641e */
+  /* --color-primary: oklch(0.72 0.18 10.5); #FF8F9C */
 
   /* Secondary Color */
   --color-secondary: oklch(0.72 0.23 164.5); /* #20C997 */

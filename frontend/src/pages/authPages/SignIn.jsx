@@ -15,12 +15,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
 import { useLoginUserMutation } from "../../services/authApi/authApi";
-import {
-  loginRequest,
-  loginSuccess,
-  loginFailure,
-  activateToken,
-} from "../../features/auth/authSlice";
+import { activateToken } from "../../features/auth/authSlice";
 
 // Zod Schema for Validation
 const signInSchema = z.object({
@@ -63,16 +58,12 @@ const SignIn = () => {
       localStorage.removeItem("rememberedEmail");
     }
 
-    //Start loading state
-    dispatch(loginRequest());
-
     try {
       const response = await loginUser(data).unwrap();
 
-      if (response.success && response.user) {
-        // Store user data in Redux store
-        dispatch(loginSuccess(response.user));
-        navigate("/dashboard");
+      if (response.success) {
+        window.location.reload(true);
+        navigate("/");
         return;
       } else {
         // Store activation Token in Redux store
@@ -83,9 +74,6 @@ const SignIn = () => {
         return;
       }
     } catch (err) {
-      // Store error data in Redux store
-      dispatch(loginFailure(err.data?.message || "Login failed!"));
-
       toast.error(err?.data?.message);
     }
   };

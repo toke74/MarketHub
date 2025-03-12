@@ -104,7 +104,6 @@ export const activateUser = asyncErrorHandler(async (req, res, next) => {
 export const loginUser = asyncErrorHandler(async (req, res, next) => {
   //Get email and password from user
   const { email, password } = req.body;
-  console.log(req.body);
   //check email and password empty or not
   if (!email || !password) {
     return next(new ErrorHandler("Please provide an email and password", 400));

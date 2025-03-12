@@ -7,7 +7,7 @@ export const navigationMenu = [
   { name: "Hot Offers", url: "/hot_offers" },
   { name: "Blog", url: "/blog" },
   { name: "Gifts", url: "/gifts" },
-  { name: "Customer Service", url: "/customer_service" },
+  { name: "Contact Us", url: "/contact_us" },
 ];
 
 export const categories = [

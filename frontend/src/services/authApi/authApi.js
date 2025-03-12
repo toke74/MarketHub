@@ -35,7 +35,20 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include", // Required for sending cookies
       }),
     }),
-
+    loadUser: builder.query({
+      query: () => ({
+        url: "/user/me", // Your backend route for getting user data
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    updateAccessToken: builder.query({
+      query: () => ({
+        url: "/user/refresh_Token", // Your backend route for updating access token
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
     logoutUser: builder.mutation({
       query: () => ({
         url: "/users/logout",
@@ -52,5 +65,7 @@ export const {
   useActivateUserMutation,
   useResendActivationToUserMutation,
   useLoginUserMutation,
+  useLoadUserQuery,
+  useUpdateAccessTokenQuery,
   useLogoutUserMutation,
 } = authApi;
