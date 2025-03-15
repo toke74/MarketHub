@@ -48,6 +48,25 @@ export const authApi = apiSlice.injectEndpoints({
         method: "GET",
         credentials: "include",
       }),
+      keepUnusedDataFor: 0, // Ensure the token is always fresh
+      providesTags: ["User"],
+    }),
+    updateAvatar: builder.mutation({
+      query: (data) => ({
+        url: "/user/update_avatar",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["User"], // Invalidate cache to refresh user data
+    }),
+    updateUserProfile: builder.mutation({
+      query: (data) => ({
+        url: "/user/update_me", // Adjust based on your backend route
+        method: "PUT",
+        body: data,
+        credentials: "include", // Required for sending cookies
+      }),
     }),
     logoutUser: builder.mutation({
       query: () => ({
@@ -67,5 +86,7 @@ export const {
   useLoginUserMutation,
   useLoadUserQuery,
   useUpdateAccessTokenQuery,
+  useUpdateAvatarMutation,
+  useUpdateUserProfileMutation,
   useLogoutUserMutation,
 } = authApi;

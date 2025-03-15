@@ -1,5 +1,9 @@
+//Package Imports
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+//React Icons
 import {
   FaUser,
   FaBox,
@@ -17,6 +21,7 @@ import { MdDashboard } from "react-icons/md";
 const UserProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { user } = useSelector((state) => state.auth);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -35,9 +40,10 @@ const UserProfileMenu = () => {
     <div className="relative" ref={dropdownRef}>
       {/* User Icon Button */}
       <button onClick={() => setIsOpen(!isOpen)} className="cursor-pointer ">
-        <FaRegUser
-          size={26}
-          className=" text-text hover:text-primary transition"
+        <img
+          src={`${user?.user?.avatar?.url}`}
+          alt="User"
+          className=" w-10 h-10  object-cover rounded-full border-3  border-gray-300"
         />
       </button>
 

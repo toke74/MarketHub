@@ -31,13 +31,24 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
+  // phoneNumber: {
+  //   type: Number,
+  //   validate: {
+  //     validator: function (value) {
+  //       return phoneNumberRegexPattern.test(value);
+  //     },
+  //     message: "Please enter a valid phone number",
+  //   },
+  // },
   phoneNumber: {
     type: Number,
     validate: {
       validator: function (value) {
+        if (!value) return true; // ✅ Allows phoneNumber to be optional
+        // const phoneNumberRegexPattern = /^[0-9]{10,15}$/;
         return phoneNumberRegexPattern.test(value);
       },
-      message: "Please enter a valid phone number",
+      message: "Please enter a valid phone number (10-15 digits)",
     },
   },
 
@@ -92,7 +103,7 @@ const userSchema = new mongoose.Schema({
     url: {
       type: String,
       default:
-        "https://res.cloudinary.com/shalpeace/image/upload/v1737591816/avatars/t8thzk0xrzb3qfgh7qsl.jpg",
+        "https://res.cloudinary.com/shalpeace/image/upload/v1740064562/products/hovo74qkf7ozxcqkcfsj.jpg",
     },
   },
 

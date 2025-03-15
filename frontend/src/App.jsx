@@ -47,34 +47,44 @@ import Memberships from "./pages/UserProfilePages/Memberships";
 
 function App() {
   const dispatch = useDispatch();
-  const { data, error } = useLoadUserQuery();
-  const { data: tokenData, refetch: refreshAccessToken } =
-    useUpdateAccessTokenQuery();
+  const { data, error, refetch } = useLoadUserQuery();
+  const {
+    data: tokenData,
+    refetch: refreshAccessToken,
+    isFetching,
+  } = useUpdateAccessTokenQuery();
 
+  // Load user on app mount
   useEffect(() => {
     dispatch(loadUserRequest());
-
     if (data) {
       dispatch(loadUserSuccess(data));
     }
-
     if (error) {
+      dispatch(loadUserFailure(error.message));
       if (error.status === 401) {
-        // If unauthorized error occurs, try refreshing the access token
-        refreshAccessToken();
-      } else {
-        dispatch(loadUserFailure(error.message));
+        refreshAccessToken(); // Attempt to refresh the token if unauthorized
       }
     }
   }, [data, error, dispatch, refreshAccessToken]);
 
-  // After refreshing, if new token is received, reload user data
+  // Auto-refresh token every 10 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isFetching) {
+        refreshAccessToken();
+      }
+    }, 10 * 60 * 1000); // 10 minutes
+
+    return () => clearInterval(interval);
+  }, [refreshAccessToken, isFetching]);
+
+  // Reload user data when a new token is received
   useEffect(() => {
     if (tokenData) {
-      dispatch(loadUserRequest());
+      refetch(); // Reload user after token update
     }
-  }, [tokenData, dispatch]);
-
+  }, [tokenData, refetch]);
   return (
     <div>
       <Header />

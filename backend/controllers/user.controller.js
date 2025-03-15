@@ -426,8 +426,8 @@ export const updatePassword = asyncErrorHandler(async (req, res, next) => {
 // @route   POST /api/v1/user/update_avatar
 // @access  Private
 export const updateAvatar = asyncErrorHandler(async (req, res, next) => {
-  //Get user avatar from client by req.file. The new avatar image data (Base64 or image URL)
-  const avatar = req.file?.path;
+  //Get user avatar from client by req.body.avatar. The new avatar image data (Base64 or image URL)
+  const avatar = req.body.avatar;
 
   //If avatar not exist, throw error to client
   if (!avatar) {
@@ -503,15 +503,6 @@ export const updateUserInfo = asyncErrorHandler(async (req, res, next) => {
   const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegexPattern.test(email)) {
     return next(new ErrorHandler("Invalid email format", 400));
-  }
-
-  // Validate phone number format if provided
-  if (phoneNumber) {
-    const phoneNumberRegexPattern =
-      /^[+]?[0-9]{0,3}\W??[0-9]{3}?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4,6}$/im;
-    if (!phoneNumberRegexPattern.test(phoneNumber)) {
-      return next(new ErrorHandler("Invalid phone number format", 400));
-    }
   }
 
   // Update user information and return the updated user and enable Validation
