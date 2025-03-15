@@ -32,7 +32,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard"); // Redirect to dashboard if logged in
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
 
@@ -44,11 +44,10 @@ const SignIn = () => {
   } = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      rememberMe: false, // Default is unchecked
+      rememberMe: false,
     },
   });
 
-  // Watch the "rememberMe" field
   const rememberMe = watch("rememberMe");
 
   const onSubmit = async (data) => {
@@ -62,11 +61,10 @@ const SignIn = () => {
       const response = await loginUser(data).unwrap();
 
       if (response.success) {
-        window.location.reload(true);
         navigate("/");
+        window.location.reload(true);
         return;
       } else {
-        // Store activation Token in Redux store
         dispatch(activateToken(response.activationToken));
 
         toast.success("Check your email to verify your account");
@@ -125,7 +123,6 @@ const SignIn = () => {
             )}
           </div>
 
-          {/* Remember Me & Forgot Password */}
           <div className="flex justify-between items-center text-sm text-text">
             <label className="flex items-center cursor-pointer ">
               <input

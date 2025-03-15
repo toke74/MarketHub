@@ -266,7 +266,6 @@ export const logoutUser = asyncErrorHandler(async (req, res, next) => {
       sameSite: "Strict",
       expires: new Date(0), // Set expiry to past date
     });
-
   //Send success message to client
   res.status(200).json({
     success: true,

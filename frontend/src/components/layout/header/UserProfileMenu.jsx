@@ -1,7 +1,9 @@
 //Package Imports
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 //React Icons
 import {
@@ -15,13 +17,19 @@ import {
   FaUsers,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
+
+//Local import
+import { useLogoutUserMutation } from "../../../services/authApi/authApi";
+import { logout } from "../../../features/auth/authSlice";
 
 const UserProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutUser, { isLoading }] = useLogoutUserMutation();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -35,6 +43,17 @@ const UserProfileMenu = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser().unwrap();
+      dispatch(logout());
+      toast.success("Logged out successfully!");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
+    }
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -85,7 +104,15 @@ const UserProfileMenu = () => {
               text="Memberships"
             />
             <hr className="my-2 border-gray-300" />
-            <DropdownItem to="/logout" icon={<FaSignOutAlt />} text="Logout" />
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-primary/5 transition "
+            >
+              <span className="mr-3 text-[19px]">
+                <FaSignOutAlt />
+              </span>{" "}
+              Logout
+            </button>
           </ul>
         </div>
       )}

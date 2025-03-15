@@ -25,7 +25,7 @@ const ResendActivation = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard"); // Redirect to dashboard if logged in
+      navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
 
