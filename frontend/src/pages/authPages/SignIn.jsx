@@ -15,7 +15,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
 import { useLoginUserMutation } from "../../services/authApi/authApi";
-import { activateToken } from "../../features/auth/authSlice";
+import { activateToken, loadUserFailure } from "../../features/auth/authSlice";
 
 // Zod Schema for Validation
 const signInSchema = z.object({
@@ -72,6 +72,7 @@ const SignIn = () => {
         return;
       }
     } catch (err) {
+      dispatch(loadUserFailure(err?.data?.message));
       toast.error(err?.data?.message);
     }
   };
@@ -133,7 +134,7 @@ const SignIn = () => {
               Remember Me
             </label>
             <Link
-              to="/forgot-password"
+              to="/forgot_password"
               className="text-primary hover:underline"
             >
               Forgot Password?

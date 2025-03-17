@@ -68,6 +68,22 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include", // Required for sending cookies
       }),
     }),
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: "/user/forgot_password",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "/user/reset_password",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
     logoutUser: builder.mutation({
       query: () => ({
         url: "/user/logout",
@@ -88,5 +104,7 @@ export const {
   useUpdateAccessTokenQuery,
   useUpdateAvatarMutation,
   useUpdateUserProfileMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useLogoutUserMutation,
 } = authApi;

@@ -301,9 +301,7 @@ export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // Create reset URL
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/user/reset_password/${resetToken}`;
+  const resetUrl = `${req.protocol}://localhost:5173/reset_password/${resetToken}`;
 
   //After create reset token, then send reset link to user email
   try {
@@ -333,11 +331,8 @@ export const forgotPassword = asyncErrorHandler(async (req, res, next) => {
 // @route   POST /api/v1/user/reset_password/resetToken
 // @access  Public
 export const resetPassword = asyncErrorHandler(async (req, res, next) => {
-  //Get password, confirmPassword from req.body and resetToken from req.params
-  const { resetToken } = req.params;
-  const { password, confirmPassword } = req.body;
-
-  console.log(resetToken);
+  //Get password, confirmPassword  and resetToken from req.body
+  const { password, confirmPassword, resetToken } = req.body;
 
   // Hash the token to find the user
   const resetPasswordToken = crypto

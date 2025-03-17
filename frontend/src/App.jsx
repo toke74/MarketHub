@@ -32,6 +32,8 @@ import SignIn from "./pages/authPages/SignIn";
 import SignUp from "./pages/authPages/SignUp";
 import EmailVerification from "./pages/authPages/EmailVerification";
 import ResendActivation from "./pages/authPages/ResendActivation";
+import ForgotPassword from "./pages/authPages/ForgotPassword";
+import ResetPassword from "./pages/authPages/ResetPassword";
 
 //Protected Route imports
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -104,6 +106,8 @@ function App() {
         <Route path="/sign_up" element={<SignUp />} />
         <Route path="/verify_email" element={<EmailVerification />} />
         <Route path="/resend_activation" element={<ResendActivation />} />
+        <Route path="/forgot_password" element={<ForgotPassword />} />
+        <Route path="/reset_password/:resetToken" element={<ResetPassword />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
