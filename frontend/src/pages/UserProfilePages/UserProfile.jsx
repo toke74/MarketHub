@@ -126,7 +126,7 @@ const UserProfile = () => {
     { name: "Wishlist", icon: <IoIosHeart /> },
     { name: "Memberships", icon: <MdCardMembership /> },
     { name: "Payment Methods", icon: <MdOutlinePayment /> },
-    { name: "Settings", icon: <FaCog /> },
+    { name: "Account Settings", icon: <FaCog /> },
     { name: "Reviews Ratings", icon: <MdReviews /> },
     { name: "Policy", icon: <MdPolicy /> },
     // { name: "Logout", icon: <FaSignOutAlt /> },
@@ -214,6 +214,7 @@ const UserProfile = () => {
                   className="mt-6 w-full max-w-md space-y-4"
                 >
                   <div className="  w-full">
+                    <label className="block text-text">Name</label>
                     <input
                       {...register("name")}
                       type="text"
@@ -227,6 +228,7 @@ const UserProfile = () => {
                     )}
                   </div>
                   <div className=" w-full">
+                    <label className="block text-text">Email</label>
                     <input
                       {...register("email")}
                       type="email"
@@ -240,6 +242,7 @@ const UserProfile = () => {
                     )}
                   </div>
                   <div className=" w-full">
+                    <label className="block text-text">Phone Number</label>
                     <input
                       {...register("phoneNumber")}
                       type="text"
@@ -270,7 +273,7 @@ const UserProfile = () => {
             {selectedTab === "Wishlist" && <Wishlist />}
             {selectedTab === "Memberships" && <Memberships />}
             {selectedTab === "Payment Methods" && <PaymentMethods />}
-            {selectedTab === "Settings" && <AccountSettings />}
+            {selectedTab === "Account Settings" && <AccountSettings />}
             {selectedTab === "Reviews Ratings" && <ReviewsRatings />}
             {selectedTab === "Policy" && <Policy />}
           </div>

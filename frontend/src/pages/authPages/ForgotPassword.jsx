@@ -1,10 +1,11 @@
 // Package imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // React Icons
 import { FaEnvelope } from "react-icons/fa";
@@ -20,6 +21,14 @@ const forgotPasswordSchema = z.object({
 const ForgotPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [forgotPassword] = useForgotPasswordMutation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

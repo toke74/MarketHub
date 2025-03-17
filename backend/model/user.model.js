@@ -31,15 +31,6 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
-  // phoneNumber: {
-  //   type: Number,
-  //   validate: {
-  //     validator: function (value) {
-  //       return phoneNumberRegexPattern.test(value);
-  //     },
-  //     message: "Please enter a valid phone number",
-  //   },
-  // },
   phoneNumber: {
     type: Number,
     validate: {

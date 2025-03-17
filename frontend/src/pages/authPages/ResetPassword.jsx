@@ -1,10 +1,11 @@
 // Package imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 // React Icons
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -30,6 +31,13 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { resetToken } = useParams();
   const [resetPassword] = useResetPasswordMutation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,
