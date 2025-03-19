@@ -42,7 +42,7 @@ import UserProfile from "./pages/UserProfilePages/UserProfile";
 import Orders from "./pages/UserProfilePages/Orders";
 import PaymentMethods from "./pages/UserProfilePages/PaymentMethods";
 import AccountSettings from "./pages/UserProfilePages/AccountSettings";
-import Address from "./pages/UserProfilePages/Address";
+import Address from "./pages/UserProfilePages/address/Address";
 import Wishlist from "./pages/UserProfilePages/Wishlist";
 import ReviewsRatings from "./pages/UserProfilePages/ReviewsRatings";
 import Memberships from "./pages/UserProfilePages/Memberships";

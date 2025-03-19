@@ -15,7 +15,7 @@ const HeaderMain = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="border-b border-gray-200 py-3">
+    <div className="border-b border-gray-200 py-3 bg-white">
       <div className="container mx-auto flex justify-between items-center pl-4 pr-6">
         {/* Logo */}
         <Link to="/" className="w-25 h-20">

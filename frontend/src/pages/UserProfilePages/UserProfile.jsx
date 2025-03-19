@@ -35,7 +35,7 @@ import { logout } from "../../features/auth/authSlice";
 import Dashboard from "./Dashboard";
 import Orders from "./Orders";
 import AccountSettings from "./AccountSettings";
-import Address from "./Address";
+import Address from "./address/Address";
 import Memberships from "./Memberships";
 import ReviewsRatings from "./ReviewsRatings";
 import PaymentMethods from "./PaymentMethods";

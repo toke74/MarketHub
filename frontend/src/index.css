@@ -36,6 +36,7 @@
 /* Apply fonts globally */
 body {
   font-family: var(--font-family-primary);
+  background: #f6f6f5;
 }
 
 h1,

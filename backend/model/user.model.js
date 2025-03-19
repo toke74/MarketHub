@@ -53,13 +53,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      address1: {
+      street: {
         type: String,
         required: true,
       },
-      address2: {
-        type: String,
-      },
+      // address2: {
+      //   type: String,
+      // },
       state: {
         type: String,
       },
@@ -69,8 +69,8 @@ const userSchema = new mongoose.Schema({
 
       addressType: {
         type: String,
-        default: "other",
-        enum: ["default", "other"],
+        default: "Other",
+        enum: ["Default", "Other"],
       },
     },
   ],

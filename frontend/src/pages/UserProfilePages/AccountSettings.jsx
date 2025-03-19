@@ -58,7 +58,7 @@ const AccountSettings = () => {
 
   return (
     <div className="min-h-screen flex justify-center ">
-      <div className="bg-white  py-8 h-[450px] mt-12 w-full max-w-lg">
+      <div className="py-8 h-[450px] mt-12 w-full max-w-lg">
         <h2 className="text-2xl font-semibold text-center mb-6">
           Update Password
         </h2>

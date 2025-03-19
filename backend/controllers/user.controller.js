@@ -524,14 +524,13 @@ export const updateUserInfo = asyncErrorHandler(async (req, res, next) => {
 // @access  Private
 
 export const addUserAddress = asyncErrorHandler(async (req, res, next) => {
-  //Get country, city, address1, address2, zipCode, addressType, state from req.body
-  const { country, city, address1, address2, zipCode, addressType, state } =
-    req.body;
+  //Get country, city, street, zipCode, addressType, state from req.body
+  const { country, city, street, zipCode, addressType, state } = req.body;
 
   // Validate required fields,  if not valid throw error
-  if (!country || !city || !address1) {
+  if (!country || !city || !street) {
     return next(
-      new ErrorHandler("Country, city, and address1 are required fields", 400)
+      new ErrorHandler("Country, city, and street are required fields", 400)
     );
   }
 
@@ -544,11 +543,11 @@ export const addUserAddress = asyncErrorHandler(async (req, res, next) => {
   }
 
   // Check if user enter the addressType is default
-  if (addressType === "default") {
+  if (addressType === "Default") {
     //if default addressType, Set all existing addresses' addressType to "other"
     user.addresses = user.addresses.map((address) => ({
       ...address.toObject(),
-      addressType: "other",
+      addressType: "Other",
     }));
   }
 
@@ -556,11 +555,10 @@ export const addUserAddress = asyncErrorHandler(async (req, res, next) => {
   const newAddress = {
     country,
     city,
-    address1,
-    address2,
+    street,
     zipCode,
     state,
-    addressType: addressType || "other", // Default to "other" if not provided
+    addressType: addressType || "Other", // Default to "other" if not provided
   };
   user.addresses.push(newAddress);
 
