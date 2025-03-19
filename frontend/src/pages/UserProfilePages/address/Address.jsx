@@ -29,7 +29,9 @@ const Address = () => {
       const response = await deleteUserAddress(addressID);
       console.log(response);
       toast.success(response?.data?.message);
-      window.location.reload(true);
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 2000);
     } catch (err) {
       toast.error(err?.data?.message || "An error occurred");
     }
@@ -37,7 +39,7 @@ const Address = () => {
 
   return (
     <div className="min-h-screen flex justify-center">
-      <div className="px-10 py-8 w-full mt-12 max-w-3xl bg-white">
+      <div className="px-10 py-8 w-full mt-12 max-w-3xl bg-white h-[30%]">
         <div className="flex items-center justify-between">
           <h2 className="flex gap-2 text-sm min-[420px]:text-2xl font-semibold">
             {" "}

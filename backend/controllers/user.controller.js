@@ -729,6 +729,21 @@ export const deleteUserAccount = asyncErrorHandler(async (req, res, next) => {
   // Delete the user from the database
   await user.deleteOne();
 
+  // Remove access token and refresh token cookies
+  res
+    .cookie("accessToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      expires: new Date(0), // Set expiry to past date
+    })
+    .cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      expires: new Date(0), // Set expiry to past date
+    });
+
   //Finally send success message to client
   res.status(200).json({
     success: true,

@@ -58,8 +58,6 @@ const ResetPassword = () => {
 
       const resp = await resetPassword(resetDate).unwrap();
 
-      console.log(resp);
-
       toast.success("Password reset successfully! You can now sign in.");
       navigate("/login");
     } catch (error) {

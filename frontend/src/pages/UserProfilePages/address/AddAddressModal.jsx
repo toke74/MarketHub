@@ -34,7 +34,9 @@ const AddAddressModal = ({ onClose }) => {
       const response = await addUserAddress(data).unwrap();
       toast.success(response?.message);
       onClose();
-      window.location.reload(true);
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 2000);
     } catch (err) {
       toast.error(err?.data?.message || "An error occurred");
     }

@@ -92,7 +92,7 @@ const UserProfile = () => {
           const response = await updateAvatar({
             avatar: reader.result,
           }).unwrap();
-          console.log(response);
+
           toast.success(response?.message);
           refetch();
         }

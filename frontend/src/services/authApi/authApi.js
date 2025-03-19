@@ -115,6 +115,13 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    deleteUserAccount: builder.mutation({
+      query: () => ({
+        url: "/user/delete_user", // Dynamically inject addressID
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
     logoutUser: builder.mutation({
       query: () => ({
         url: "/user/logout",
@@ -141,5 +148,6 @@ export const {
   useAddUserAddressMutation,
   useUpdateUserAddressMutation,
   useDeleteUserAddressMutation,
+  useDeleteUserAccountMutation,
   useLogoutUserMutation,
 } = authApi;
