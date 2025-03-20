@@ -7,19 +7,15 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 
 //React icons
-import { FaGoogle, FaGithub } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
-import {
-  useRegisterUserMutation,
-  useSocialAuthMutation,
-} from "../../services/authApi/authApi";
+import { useRegisterUserMutation } from "../../services/authApi/authApi";
 import { activateToken } from "../../features/auth/authSlice";
-import { app } from "../../firebase";
+import GitHubLogin from "../../components/common/GitHubLogin";
+import GoogleLogin from "../../components/common/GoogleLogin";
 
 // Zod Schema for Validation
 const signUpSchema = z
@@ -36,7 +32,6 @@ const signUpSchema = z
 
 const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
-  const [socialAuth] = useSocialAuthMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -69,28 +64,6 @@ const SignUp = () => {
     }
   };
 
-  const handleGoogleClick = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const auth = getAuth(app);
-
-      const result = await signInWithPopup(auth, provider);
-      const data = {
-        name: result.user.displayName,
-        email: result.user.email,
-        avatar: result.user.photoURL,
-        provider: "Google",
-      };
-      const response = await socialAuth(data).unwrap();
-
-      navigate("/");
-      window.location.reload(true);
-    } catch (err) {
-      console.log(err);
-      toast.error(err?.data?.message);
-    }
-  };
-
   return (
     <div className="flex justify-center  min-h-screen ">
       <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl w-full max-w-md h-[659px] mt-12 ">
@@ -98,19 +71,8 @@ const SignUp = () => {
         {/* Social Login */}
         <div className="text-center mt-8 mb-4">
           <div className="flex justify-center gap-4 mb-8">
-            <button
-              type="button"
-              onClick={handleGoogleClick}
-              className="flex items-center justify-center cursor-pointer w-full gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
-            >
-              <FaGoogle /> Google
-            </button>
-            <button
-              type="button"
-              className="flex items-center justify-center cursor-pointer w-full gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
-            >
-              <FaGithub /> GitHub
-            </button>
+            <GoogleLogin />
+            <GitHubLogin />
           </div>
           <p className="text-text text-xl">Or sign up with</p>
         </div>

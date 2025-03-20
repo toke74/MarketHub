@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 // React Icons
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -38,7 +39,7 @@ const AccountSettings = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [updatePassword] = useUpdatePasswordMutation();
   const [deleteUserAccount] = useDeleteUserAccountMutation();
-
+  const { user } = useSelector((state) => state.auth);
   const {
     register,
     handleSubmit,
@@ -86,8 +87,14 @@ const AccountSettings = () => {
               <div className="relative">
                 <input
                   type={showOldPassword ? "text" : "password"}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
+                  // className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
                   placeholder="Enter old password"
+                  disabled={user?.user?.provider !== "Local"}
+                  className={`w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300 ${
+                    user?.user?.provider !== "Local"
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                   required
                   {...register("currentPassword")}
                 />
@@ -116,8 +123,14 @@ const AccountSettings = () => {
               <div className="relative">
                 <input
                   type={showNewPassword ? "text" : "password"}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
+                  // className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
                   placeholder="Enter new password"
+                  disabled={user?.user?.provider !== "Local"}
+                  className={`w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300 ${
+                    user?.user?.provider !== "Local"
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                   required
                   {...register("newPassword")}
                 />
@@ -146,8 +159,14 @@ const AccountSettings = () => {
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
+                  // className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
                   placeholder="Confirm new password"
+                  disabled={user?.user?.provider !== "Local"}
+                  className={`w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300 ${
+                    user?.user?.provider !== "Local"
+                      ? "bg-gray-100 cursor-not-allowed"
+                      : ""
+                  }`}
                   required
                   {...register("confirmPassword")}
                 />
@@ -172,8 +191,12 @@ const AccountSettings = () => {
 
             <button
               type="submit"
-              className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/85 cursor-pointer transition disabled:bg-gray-400"
-              disabled={isSubmitting}
+              className={`w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/85  transition disabled:bg-gray-400 ${
+                user?.user?.provider !== "Local"
+                  ? "cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+              disabled={isSubmitting || user?.user?.provider !== "Local"}
             >
               {isSubmitting ? "Updating..." : "Update Password"}
             </button>

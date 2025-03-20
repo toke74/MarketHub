@@ -65,7 +65,7 @@ const UserProfile = () => {
   const { refetch } = useLoadUserQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [logoutUser, { isLoading }] = useLogoutUserMutation();
+  const [logoutUser] = useLogoutUserMutation();
 
   // ✅ Initialize React Hook Form with Validation
   const {
@@ -233,9 +233,13 @@ const UserProfile = () => {
                     <input
                       {...register("email")}
                       type="email"
+                      disabled={user?.user?.provider !== "Local"}
                       placeholder="Email Address"
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
-                      focus:ring-0 focus:border-gray-300"
+                      className={`w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300 ${
+                        user?.user?.provider !== "Local"
+                          ? "bg-gray-100 cursor-not-allowed"
+                          : ""
+                      }`}
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
