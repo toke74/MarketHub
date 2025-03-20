@@ -219,7 +219,8 @@ const UserProfile = () => {
                       {...register("name")}
                       type="text"
                       placeholder="Name"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                     />
                     {errors.fullName && (
                       <p className="text-red-500 text-sm mt-1">
@@ -233,7 +234,8 @@ const UserProfile = () => {
                       {...register("email")}
                       type="email"
                       placeholder="Email Address"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">
@@ -247,7 +249,8 @@ const UserProfile = () => {
                       {...register("phoneNumber")}
                       type="text"
                       placeholder="Update your Phone Number"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                       onInput={(e) => {
                         e.target.value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
                       }}

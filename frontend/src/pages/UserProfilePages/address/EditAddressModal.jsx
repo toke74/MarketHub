@@ -61,7 +61,7 @@ const EditAddressModal = ({ address, onClose }) => {
           <h2 className="text-lg font-semibold">Edit Address</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-primary cursor-pointer"
           >
             <FaTimes size={18} />
           </button>
@@ -72,7 +72,8 @@ const EditAddressModal = ({ address, onClose }) => {
             <label className="block text-sm font-medium">Street</label>
             <input
               {...register("street")}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300 mt-1"
               placeholder="Enter street"
             />
             {errors.street && (
@@ -84,7 +85,8 @@ const EditAddressModal = ({ address, onClose }) => {
             <label className="block text-sm font-medium">City</label>
             <input
               {...register("city")}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
               placeholder="Enter city"
             />
             {errors.city && (
@@ -97,7 +99,8 @@ const EditAddressModal = ({ address, onClose }) => {
               <label className="block text-sm font-medium">State</label>
               <input
                 {...register("state")}
-                className="w-full border p-2 rounded mt-1"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                 placeholder="Enter state"
               />
               {errors.state && (
@@ -109,7 +112,8 @@ const EditAddressModal = ({ address, onClose }) => {
               <label className="block text-sm font-medium">Zip Code</label>
               <input
                 {...register("zipCode")}
-                className="w-full border p-2 rounded mt-1"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                 placeholder="Enter zip code"
               />
               {errors.zipCode && (
@@ -122,7 +126,8 @@ const EditAddressModal = ({ address, onClose }) => {
             <label className="block text-sm font-medium">Country</label>
             <input
               {...register("country")}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
               placeholder="Enter country"
             />
             {errors.country && (
@@ -134,7 +139,8 @@ const EditAddressModal = ({ address, onClose }) => {
             <label className="block text-sm font-medium">Address Type</label>
             <select
               {...register("addressType")}
-              className="w-full border p-2 rounded mt-1"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
             >
               <option value="Default">Default</option>
               <option value="Other">Other</option>

@@ -80,6 +80,10 @@ const userSchema = new mongoose.Schema({
     default: "user",
     enum: ["user", "admin"],
   },
+  provider: {
+    type: String,
+    enum: ["Local", "Google", "GitHub"],
+  },
 
   isVerified: {
     type: Boolean,

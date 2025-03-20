@@ -49,7 +49,7 @@ const AddAddressModal = ({ onClose }) => {
           <h2 className="text-xl font-semibold">Add Address</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-red-500"
+            className="text-gray-500 hover:text-red-500 cursor-pointer"
           >
             <FaTimes size={20} />
           </button>
@@ -61,7 +61,8 @@ const AddAddressModal = ({ onClose }) => {
             <input
               type="text"
               {...register("street")}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
               placeholder="Enter street"
             />
             {errors.street && (
@@ -74,7 +75,8 @@ const AddAddressModal = ({ onClose }) => {
             <input
               type="text"
               {...register("city")}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
               placeholder="Enter city"
             />
             {errors.city && (
@@ -88,7 +90,8 @@ const AddAddressModal = ({ onClose }) => {
               <input
                 type="text"
                 {...register("state")}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                 placeholder="Enter state"
               />
               {errors.state && (
@@ -100,7 +103,8 @@ const AddAddressModal = ({ onClose }) => {
               <input
                 type="text"
                 {...register("zipCode")}
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
                 placeholder="Enter ZIP Code"
               />
               {errors.zipCode && (
@@ -114,7 +118,8 @@ const AddAddressModal = ({ onClose }) => {
             <input
               type="text"
               {...register("country")}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
               placeholder="Enter country"
             />
           </div>
@@ -123,7 +128,8 @@ const AddAddressModal = ({ onClose }) => {
             <label className="block text-sm font-medium">Address Type</label>
             <select
               {...register("addressType")}
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none 
+                      focus:ring-0 focus:border-gray-300"
             >
               <option value="Default">Default</option>
               <option value="Other">Other</option>

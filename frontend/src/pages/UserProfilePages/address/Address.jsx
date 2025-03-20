@@ -71,7 +71,7 @@ const Address = () => {
                 <div>
                   <p className="font-semibold">{address.street}</p>
                   <p className="text-sm text-gray-600">
-                    {address.city}, {address.state} {address.zip},{" "}
+                    {address.city}, {address.state} {address.zipCode},{" "}
                     {address.country}
                   </p>
                 </div>

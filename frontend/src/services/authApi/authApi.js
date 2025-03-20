@@ -122,6 +122,15 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+    socialAuth: builder.mutation({
+      query: (data) => ({
+        url: "/user/social_auth",
+        method: "POST",
+        body: data,
+        credentials: "include", // Required for cookies
+      }),
+    }),
+
     logoutUser: builder.mutation({
       query: () => ({
         url: "/user/logout",
@@ -149,5 +158,6 @@ export const {
   useUpdateUserAddressMutation,
   useDeleteUserAddressMutation,
   useDeleteUserAccountMutation,
+  useSocialAuthMutation,
   useLogoutUserMutation,
 } = authApi;

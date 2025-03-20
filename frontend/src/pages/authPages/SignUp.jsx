@@ -7,14 +7,19 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 
 //React icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
-import { useRegisterUserMutation } from "../../services/authApi/authApi";
+import {
+  useRegisterUserMutation,
+  useSocialAuthMutation,
+} from "../../services/authApi/authApi";
 import { activateToken } from "../../features/auth/authSlice";
+import { app } from "../../firebase";
 
 // Zod Schema for Validation
 const signUpSchema = z
@@ -31,6 +36,7 @@ const signUpSchema = z
 
 const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
+  const [socialAuth] = useSocialAuthMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -63,11 +69,51 @@ const SignUp = () => {
     }
   };
 
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+
+      const result = await signInWithPopup(auth, provider);
+      const data = {
+        name: result.user.displayName,
+        email: result.user.email,
+        avatar: result.user.photoURL,
+        provider: "Google",
+      };
+      const response = await socialAuth(data).unwrap();
+
+      navigate("/");
+      window.location.reload(true);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message);
+    }
+  };
+
   return (
     <div className="flex justify-center  min-h-screen ">
-      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl w-full max-w-md h-[635px] mt-12">
+      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl w-full max-w-md h-[659px] mt-12 ">
         <h2 className="text-2xl font-semibold text-center mb-4">Sign Up</h2>
-
+        {/* Social Login */}
+        <div className="text-center mt-8 mb-4">
+          <div className="flex justify-center gap-4 mb-8">
+            <button
+              type="button"
+              onClick={handleGoogleClick}
+              className="flex items-center justify-center cursor-pointer w-full gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            >
+              <FaGoogle /> Google
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center cursor-pointer w-full gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
+            >
+              <FaGithub /> GitHub
+            </button>
+          </div>
+          <p className="text-text text-xl">Or sign up with</p>
+        </div>
         {/* Sign-Up Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -78,7 +124,7 @@ const SignUp = () => {
             <label className="block text-text">Full Name</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
               placeholder="Enter your name"
               required
               {...register("name")}
@@ -91,7 +137,7 @@ const SignUp = () => {
             <label className="block text-text">Email</label>
             <input
               type="email"
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
               placeholder="Enter your email"
               required
               {...register("email")}
@@ -105,7 +151,7 @@ const SignUp = () => {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
                 placeholder="Enter your password"
                 required
                 {...register("password")}
@@ -131,7 +177,7 @@ const SignUp = () => {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 {...register("confirmPassword")}
-                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200 pr-10"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
                 placeholder="Confirm your password"
               />
               <button
@@ -165,21 +211,8 @@ const SignUp = () => {
           </button>
         </form>
 
-        {/* Social Login */}
-        <div className="text-center mt-4">
-          <p className="text-text">Or sign up with</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <button className="flex items-center cursor-pointer w-full gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-              <FaGoogle /> Google
-            </button>
-            <button className="flex items-center cursor-pointer w-full gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">
-              <FaGithub /> GitHub
-            </button>
-          </div>
-        </div>
-
         {/* Sign In Link */}
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-gray-600 mt-4 ">
           Already have an account?{" "}
           <Link to="/sign_in" className="text-primary hover:underline">
             Sign In

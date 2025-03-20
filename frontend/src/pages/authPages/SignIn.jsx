@@ -8,14 +8,19 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 
 //react icons
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 //Local imports
-import { useLoginUserMutation } from "../../services/authApi/authApi";
+import {
+  useLoginUserMutation,
+  useSocialAuthMutation,
+} from "../../services/authApi/authApi";
 import { activateToken, loadUserFailure } from "../../features/auth/authSlice";
+import { app } from "../../firebase";
 
 // Zod Schema for Validation
 const signInSchema = z.object({
@@ -25,6 +30,7 @@ const signInSchema = z.object({
 
 const SignIn = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [socialAuth] = useSocialAuthMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -76,11 +82,53 @@ const SignIn = () => {
       toast.error(err?.data?.message);
     }
   };
+
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+
+      const result = await signInWithPopup(auth, provider);
+      const data = {
+        name: result.user.displayName,
+        email: result.user.email,
+        avatar: result.user.photoURL,
+        provider: "Google",
+      };
+      const response = await socialAuth(data).unwrap();
+
+      navigate("/");
+      window.location.reload(true);
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message);
+    }
+  };
+
   return (
     <div className="min-h-screen flex  justify-center ">
-      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl  h-[500px] mt-12 w-full max-w-md">
+      <div className="bg-white px-10 pt-10 rounded-lg shadow-3xl  h-[530px] mt-12 w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-6">Sign In</h2>
 
+        {/* Social Login */}
+        <div className="text-center mt-8">
+          <div className="flex  justify-center gap-4 mb-8">
+            <button
+              type="button"
+              onClick={handleGoogleClick}
+              className="flex items-center justify-center w-full cursor-pointer gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            >
+              <FaGoogle /> Google
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 w-full cursor-pointer bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition"
+            >
+              <FaGithub /> GitHub
+            </button>
+          </div>
+          <p className="text-text text-xl">Or sign in with</p>
+        </div>
         {/* Sign-In Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -91,7 +139,7 @@ const SignIn = () => {
             <label className="block text-text">Email</label>
             <input
               type="email"
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
               placeholder="Enter your email"
               required
               {...register("email")}
@@ -106,7 +154,7 @@ const SignIn = () => {
               <input
                 // type="password"
                 type={showPassword ? "text" : "password"}
-                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
                 placeholder="Enter your password"
                 required
                 {...register("password")}
@@ -152,19 +200,6 @@ const SignIn = () => {
             )}
           </button>
         </form>
-
-        {/* Social Login */}
-        <div className="text-center mt-4">
-          <p className="text-gray-500">Or sign in with</p>
-          <div className="flex justify-center gap-4 mt-2">
-            <button className="flex items-center w-full cursor-pointer gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-              <FaGoogle /> Google
-            </button>
-            <button className="flex items-center gap-2 w-full cursor-pointer bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">
-              <FaGithub /> GitHub
-            </button>
-          </div>
-        </div>
 
         {/* Sign Up Link */}
         <p className="text-center text-gray-600 mt-4">

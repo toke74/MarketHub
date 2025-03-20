@@ -31,6 +31,7 @@ export const registerUser = asyncErrorHandler(async (req, res, next) => {
     name,
     email,
     password,
+    provider: "Local",
   });
 
   //After user created  in DB,  send activation link to user email
@@ -671,7 +672,7 @@ export const deleteUserAddress = asyncErrorHandler(async (req, res, next) => {
 // @access Public
 export const socialAuth = asyncErrorHandler(async (req, res, next) => {
   //Get user info from client which we get it from social auth provider
-  const { email, name, photo, provider } = req.body;
+  const { email, name, avatar, provider } = req.body;
 
   //Find if user exist by its email
   const user = await User.findOne({ email });
@@ -682,20 +683,30 @@ export const socialAuth = asyncErrorHandler(async (req, res, next) => {
       Math.random().toString(36).slice(-8) +
       Math.random().toString(36).slice(-8);
 
+    //Then Upload the new avatar to Cloudinary
+    const result = await cloudinary.uploader.upload(avatar, {
+      folder: "avatars",
+      width: 150,
+      crop: "scale",
+    });
+
     const newUser = await User.create({
       email,
       name,
       password: generatePassword,
-      avatar: photo,
+      avatar: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
       isVerified: true,
       provider,
     });
 
     // After saving user in db, generate access and refresh token and send it to client
-    sendTokensAsCookies(newUser._id, 200, res);
+    sendTokensAsCookies(newUser, 200, res);
   } else {
     //If user exist in db, check if user register with local login with that email, if it is throw error
-    if (user.provider === "local") {
+    if (user.provider === "Local") {
       return next(
         new ErrorHandler(
           "you have account with us, please login with your email and password",
@@ -704,7 +715,7 @@ export const socialAuth = asyncErrorHandler(async (req, res, next) => {
       );
     } else {
       //if user exist in db and register with social auth, login the user by generate access and refresh token and send it to client
-      sendTokensAsCookies(user._id, 200, res);
+      sendTokensAsCookies(user, 200, res);
     }
   }
 });
