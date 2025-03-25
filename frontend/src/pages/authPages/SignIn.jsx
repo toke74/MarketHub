@@ -153,7 +153,7 @@ const SignIn = () => {
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/85 cursor-pointer transition"
+            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary cursor-pointer transition"
           >
             {isLoading ? (
               <img src="loading1.gif" alt="logo" className="w-8 h-8 mx-auto" />

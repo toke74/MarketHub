@@ -119,7 +119,7 @@ const EmailVerification = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-primary/85"
+            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-secondary"
           >
             Verify OTP
           </button>

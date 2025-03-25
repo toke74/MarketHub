@@ -81,7 +81,7 @@ const ResendActivation = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-primary/85 disabled:opacity-50"
+            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-secondary disabled:opacity-50"
             disabled={loading}
           >
             {loading ? "Sending..." : "Resend Activation Code"}

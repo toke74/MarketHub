@@ -163,7 +163,7 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-primary/85 transition"
+            className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-secondary transition"
           >
             {isLoading ? (
               <img src="loading1.gif" alt="logo" className="w-8 h-8 mx-auto" />

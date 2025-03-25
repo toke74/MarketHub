@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-xsm: 37.5rem;
   /* Define custom fonts */
   --font-family-primary: "Nunito", sans-serif;
   --font-family-secondary: "Raleway", sans-serif;
@@ -10,7 +12,8 @@
   /* --color-primary: oklch(0.72 0.18 10.5); #FF8F9C */
 
   /* Secondary Color */
-  --color-secondary: oklch(0.72 0.23 164.5); /* #20C997 */
+  /* --color-secondary: oklch(0.72 0.23 164.5); */
+  --color-secondary: oklch(0.21 0.034 264.665);
 
   /* Background Color */
   --color-background: oklch(0.97 0.01 248.5); /* #F8F9FA */
@@ -25,6 +28,9 @@
   /* Error Color */
   --color-error: oklch(0.6 0.25 25.5); /* #DC3545 */
 
+  --salmon-pink: oklch(0.72 0.18 10.5);
+  --eerie-black: oklch(0.12 0.01 248.5);
+
   /* Define CSS variables */
   --white: 255 255 255; /* RGB for white */
   --cultured: 248 249 250; /* RGB for cultured (light gray) */
@@ -37,6 +43,7 @@
 body {
   font-family: var(--font-family-primary);
   background: #f6f6f5;
+  background: #fff;
 }
 
 h1,
@@ -89,4 +96,19 @@ body::-webkit-scrollbar-thumb:hover {
 
 .has-scrollbar::-webkit-scrollbar-thumb:hover {
   background: hsl(0, 0%, 80%);
+}
+
+/* Customize Swiper pagination dots */
+.swiper-pagination-bullet {
+  background-color: gray !important; /* Default dot color */
+  opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: red !important; /* Active dot color */
+  opacity: 1;
+}
+
+.container {
+  padding: 0 15px;
 }
