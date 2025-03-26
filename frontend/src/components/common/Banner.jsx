@@ -1,7 +1,10 @@
+//Package Imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+
+//React Icons
 import { FaShoppingCart } from "react-icons/fa";
 
 const banners = [
