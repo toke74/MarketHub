@@ -50,7 +50,7 @@ const CategorySlider = () => {
               key={category.id}
               className="min-w-full sm:min-w-[47.3%] lg:min-w-[23%] flex items-center gap-3 p-4 border border-gray-100 rounded-md snap-start overflow-hidden"
             >
-              <div className="bg-gray-300 border-gray-400 p-6 rounded-sm">
+              <div className="bg-gray-100 border border-gray-200 p-6 rounded-sm">
                 <img src={category.icon} alt={category.name} width="35" />
               </div>
 

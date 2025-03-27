@@ -19,12 +19,12 @@ import {
 
 //Navbar Pages imports
 import Home from "./pages/navbarPages/Home";
+import Products from "./pages/navbarPages/Products";
 import Shops from "./pages/navbarPages/Shops";
 import TodaysDeals from "./pages/navbarPages/TodaysDeals";
 import BestSellers from "./pages/navbarPages/BestSellers";
 import HotOffers from "./pages/navbarPages/HotOffers";
 import Blog from "./pages/navbarPages/Blog";
-import Gifts from "./pages/navbarPages/Gifts";
 import CustomerService from "./pages/navbarPages/CustomerService";
 
 //authPages imports
@@ -98,7 +98,7 @@ function App() {
         <Route path="/best_sellers" element={<BestSellers />} />
         <Route path="/hot_offers" element={<HotOffers />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/gifts" element={<Gifts />} />
+        <Route path="/products" element={<Products />} />
         <Route path="/customer_service" element={<CustomerService />} />
 
         {/* auth Links */}

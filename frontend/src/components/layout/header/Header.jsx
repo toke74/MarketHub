@@ -6,12 +6,16 @@ import MobileBottomNav from "./MobileBottomNav";
 
 const Header = () => {
   return (
-    <>
+    <header className="sticky top-0 z-50">
       <HeaderTop />
-      <HeaderMain />
-      <HeaderDesktopMenu />
+      {/* <HeaderMain /> */}
+      {/* <HeaderDesktopMenu /> */}
+      <div className="sticky top-0 bg-white shadow-sm">
+        <HeaderMain />
+        <HeaderDesktopMenu />
+      </div>
       <MobileBottomNav />
-    </>
+    </header>
   );
 };
 
