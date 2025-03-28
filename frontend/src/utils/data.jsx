@@ -302,4 +302,117 @@ export const products = [
     price: 45.0,
     originalPrice: 56.0,
   },
+  {
+    _id: "5",
+    imageDefault: "images/products/party-wear-1.jpg",
+    imageHover: "images/products/party-wear-2.jpg",
+    badge: "Sale",
+    badgeAngle: true,
+    category: "party wear",
+    title: "Womens Party Wear Shoes",
+    rating: 2,
+    price: 45.0,
+    originalPrice: 56.0,
+  },
+  {
+    _id: "6",
+    imageDefault: "images/products/clothes-3.jpg",
+    imageHover: "images/products/clothes-4.jpg",
+    badge: "Sale",
+    category: "Skirt",
+    title: "Black Floral Wrap Midi Skirt",
+    rating: 3,
+    price: 45.0,
+    originalPrice: 56.0,
+  },
+  {
+    _id: "7",
+    imageDefault: "images/products/jacket-3.jpg",
+    imageHover: "images/products/jacket-2.jpg",
+    badge: "",
+    discount: "15%",
+    category: "Jacket",
+    title: "Mens Winter Leathers Jackets",
+    rating: 5,
+    price: 48.0,
+    originalPrice: 75.0,
+  },
+  {
+    _id: "8",
+    imageDefault: "images/products/shirt-1.jpg",
+    imageHover: "images/products/shirt-2.jpg",
+    badge: "New",
+    badgeAngle: true,
+    category: "Shirt",
+    title: "Pure Garment Dyed Cotton Shirt",
+    rating: 4,
+    price: 45.0,
+    originalPrice: 56.0,
+  },
+];
+
+export const testimonials = [
+  {
+    name: "Alan Doe",
+    image: "images/prof-4.jpg",
+    title: "CEO & Founder Invasion",
+    description:
+      "I visited business  and tried product or service the customer used. The experience was great, it advantage enjoyed by the customer. I'd highly recommend them to anyone.",
+  },
+  {
+    name: "Nina Parker",
+    image: "images/prof-3.jpg",
+    title: "senior Designer",
+    description:
+      "I recently purchased the product , and it has transformed how I manage my business. The user-friendly interface and powerful analytics tools have saved me hours of work each week. I highly recommend it for any small business owner",
+  },
+  {
+    name: "Tommy Hill",
+    image: "images/prof-1.jpg",
+    title: "Technical Manager",
+    description:
+      "I was so impressed with the service  that I received from Eset. The staff was adjective, and they went above and beyond to help me with my issue. I would definitely recommend them to anyone",
+  },
+  // {
+  //   name: "Tommy Hill",
+  //   image: "images/prof-1.jpg",
+  //   title: "Technical Manager",
+  //   description:
+  //     "I was so impressed with the service  that I received from Eset. The staff was adjective, and they went above and beyond to help me with my issue. I would definitely recommend them to anyone",
+  // },
+];
+
+export const blogs = [
+  {
+    id: 1,
+    image: "images/blog-1.jpg",
+    category: "Fashion",
+    title: "Clothes Retail KPIs 2021 Guide for Clothes Executives.",
+    author: "Mr Admin",
+    date: "Apr 06, 2022",
+  },
+  {
+    id: 2,
+    image: "images/blog-2.jpg",
+    category: "Clothes",
+    title: "Curbside fashion Trends: How to Win the Pickup Battle.",
+    author: "Mr Robin",
+    date: "Jan 18, 2022",
+  },
+  {
+    id: 3,
+    image: "images/blog-3.jpg",
+    category: "Shoes",
+    title: "EBT vendors: Claim Your Share of SNAP Online Revenue.",
+    author: "Mr Selsa",
+    date: "Feb 10, 2022",
+  },
+  {
+    id: 4,
+    image: "images/blog-4.jpg",
+    category: "Electronics",
+    title: "Curbside fashion Trends: How to Win the Pickup Battle.",
+    author: "Mr Pawar",
+    date: "Mar 15, 2022",
+  },
 ];

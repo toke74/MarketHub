@@ -73,7 +73,9 @@ const DealOfTheDay = () => {
 
   return (
     <div className="mb-10">
-      <h2 className="text-xl font-semibold capitalize mb-4">Deal of the day</h2>
+      <h2 className="text-xl font-semibold capitalize mb-8 pb-2 border-b border-gray-100">
+        Deal of the day
+      </h2>
 
       <div
         className="has-scrollbar flex items-center gap-5 overflow-x-auto [overscroll-behavior-inline:contain]

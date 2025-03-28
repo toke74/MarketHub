@@ -3,7 +3,7 @@ import React from "react";
 const ProductShowcase = ({ title, products }) => {
   return (
     <div className="mb-6 ">
-      <h2 className="text-lg font-semibold uppercase tracking-wide mb-4">
+      <h2 className="text-lg font-semibold uppercase tracking-wide mb-8 pb-2 border-b border-gray-100">
         {title}
       </h2>
 

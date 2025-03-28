@@ -117,7 +117,7 @@ export const CategorySidebar = () => {
   };
 
   return (
-    <div className="p-5 w-[360px] border border-gray-100 mb-7 rounded-lg">
+    <div className="p-5 w-[360px] border border-gray-200 mb-7 rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold uppercase tracking-wide">
           Category
@@ -173,7 +173,7 @@ export const CategorySidebar = () => {
 };
 export const ProductShowcaseSidebar = () => {
   return (
-    <div className="p-5 bg-white shadow-md rounded-lg w-[360px]">
+    <div className="p-5 bg-white border border-gray-200 rounded-lg w-[360px]">
       <h3 className="text-gray-900 font-bold text-lg uppercase tracking-wide mb-4">
         Best Sellers
       </h3>
