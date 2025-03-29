@@ -5,7 +5,7 @@ export const navigationMenu = [
   { name: "Today's Deals", url: "/todays_deals" },
   { name: "Best Sellers", url: "/best_sellers" },
   { name: "Become a Seller", url: "/seller" },
-  { name: "Hot Offers", url: "/hot_offers" },
+  { name: "Offers", url: "/hot_offers" },
   { name: "Blog", url: "/blog" },
   { name: "Contact Us", url: "/contact_us" },
 ];
@@ -414,5 +414,105 @@ export const blogs = [
     title: "Curbside fashion Trends: How to Win the Pickup Battle.",
     author: "Mr Pawar",
     date: "Mar 15, 2022",
+  },
+];
+
+export const footerCategories = [
+  {
+    title: "Fashion",
+    links: [
+      "T-shirt",
+      "Shirts",
+      "Shorts & Jeans",
+      "Jacket",
+      "Dress & Frock",
+      "Innerwear",
+      "Hosiery",
+    ],
+  },
+  {
+    title: "Footwear",
+    links: [
+      "Sport",
+      "Formal",
+      "Boots",
+      "Casual",
+      "Cowboy Shoes",
+      "Safety Shoes",
+      "Party Wear Shoes",
+      "Branded",
+      "Firstcopy",
+      "Long Shoes",
+    ],
+  },
+  {
+    title: "Jewellery",
+    links: [
+      "Necklace",
+      "Earrings",
+      "Couple Rings",
+      "Pendants",
+      "Crystal",
+      "Bangles",
+      "Bracelets",
+      "Nosepin",
+      "Chain",
+    ],
+  },
+  {
+    title: "Cosmetics",
+    links: [
+      "Shampoo",
+      "Bodywash",
+      "Facewash",
+      "Makeup Kit",
+      "Liner",
+      "Lipstick",
+      "Perfume",
+      "Body Soap",
+      "Scrub",
+      "Hair Gel",
+      "Hair Colors",
+      "Hair Dye",
+      "Sunscreen",
+      "Skin Lotion",
+    ],
+  },
+];
+
+export const navLinks = [
+  {
+    title: "Popular Categories",
+    links: ["Fashion", "Electronic", "Cosmetic", "Health", "Watches"],
+  },
+  {
+    title: "Products",
+    links: [
+      "Prices Drop",
+      "New Products",
+      "Best Sales",
+      "Contact Us",
+      "Sitemap",
+    ],
+  },
+  {
+    title: "Our Company",
+    links: [
+      "Delivery",
+      "Legal Notice",
+      "Terms & Conditions",
+      "About Us",
+      "Secure Payment",
+    ],
+  },
+  {
+    title: "Services",
+    links: [
+      "Prices Drop",
+      "New Products",
+      "Best Sales",
+      "Contact Us",
+      "Sitemap",
+    ],
   },
 ];

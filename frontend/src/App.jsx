@@ -3,8 +3,9 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Header imports
+// Header and footer imports
 import Header from "./components/layout/header/Header";
+import Footer from "./components/layout/footer/Footer";
 
 //Local import
 import {
@@ -90,6 +91,7 @@ function App() {
   return (
     <div>
       <Header />
+
       <Routes>
         {/* Navbar Links */}
         <Route path="/" element={<Home />} />
@@ -125,6 +127,7 @@ function App() {
         {/* Redirect unknown routes to login */}
         <Route path="*" element={<Navigate to="/sign_in" replace />} />
       </Routes>
+      <Footer />
     </div>
   );
 }
