@@ -24,6 +24,10 @@ const ResendSellerToken = () => {
     useResendSellerVerificationTokenMutation();
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isSellerAuthenticated) {
@@ -103,17 +107,13 @@ const ResendSellerToken = () => {
 
         {/* Links */}
         <div className="text-center mt-5 space-y-2">
-          {/* <p className="text-sm text-gray-600">
-            <Link
-              to="/seller/verify_email"
-              className="text-primary hover:underline"
-            >
-              Back to Email Verification
-            </Link>
-          </p> */}
           <p className="text-sm text-gray-600">
             Already verified?{" "}
-            <Link to="/seller_login" className="text-primary hover:underline">
+            <Link
+              onClick={scrollToTop}
+              to="/seller_login"
+              className="text-primary hover:underline"
+            >
               Sign In
             </Link>
           </p>

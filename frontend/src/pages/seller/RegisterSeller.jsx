@@ -12,10 +12,8 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Local imports
 import { useRegisterSellerMutation } from "../../services/sellerApi/sellerApi";
-import { activateSellerToken } from "../../features/seller/sellerSlice";
 
-// Zod Schema for S
-// seller Registration Validation
+// Zod Schema for seller Registration Validation
 const sellerSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
@@ -46,7 +44,10 @@ const RegisterSeller = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (isSellerAuthenticated) {
@@ -65,7 +66,7 @@ const RegisterSeller = () => {
   const onSubmit = async (data) => {
     try {
       const response = await registerSeller(data).unwrap();
-      dispatch(activateSellerToken(response.token));
+
       toast.success(
         response.message || "Check your email to verify your account"
       );
@@ -78,7 +79,10 @@ const RegisterSeller = () => {
 
   return (
     <div className="flex justify-center min-h-screen mb-7 ">
-      <div className="bg-white px-5 xs:px-10 pt-10 rounded-lg shadow-3xl w-full min-[390px]:w-[95%] md:w-full max-w-2xl mt-12">
+      <div
+        className="bg-white px-5 xs:px-10 pt-10 rounded-lg shadow-3xl w-full min-[390px]:w-[95%] md:w-full 
+      max-w-2xl mt-12"
+      >
         <h2 className="text-2xl font-semibold text-center mb-4">
           Register as Seller
         </h2>
@@ -296,7 +300,6 @@ const RegisterSeller = () => {
             type="submit"
             className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-secondary transition"
           >
-            {/* Register as Seller */}
             {isLoading ? "Loading ..." : "Register as Seller"}
           </button>
         </form>
@@ -304,7 +307,11 @@ const RegisterSeller = () => {
         {/* Sign In Link */}
         <p className="text-center text-gray-600 mt-6 pb-10">
           Already have a seller account?{" "}
-          <Link to="/seller/sign_in" className="text-primary hover:underline">
+          <Link
+            onClick={scrollToTop}
+            to="/seller_login"
+            className="text-primary hover:underline"
+          >
             Sign In
           </Link>
         </p>

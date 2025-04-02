@@ -33,6 +33,8 @@ import RegisterSeller from "./pages/seller/RegisterSeller";
 import SellerLogin from "./pages/seller/SellerLogin";
 import VerifySellerEmail from "./pages/seller/VerifySellerEmail";
 import ResendSellerToken from "./pages/seller/ResendSellerToken";
+import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerForgotPassword from "./pages/seller/SellerForgotPassword";
 
 //authPages imports
 import SignIn from "./pages/authPages/SignIn";
@@ -125,6 +127,11 @@ function App() {
           element={<VerifySellerEmail />}
         />
         <Route path="/resend_seller_token" element={<ResendSellerToken />} />
+        <Route
+          path="/seller/forgot_password"
+          element={<SellerForgotPassword />}
+        />
+        <Route path="/seller/dashboard" element={<SellerDashboard />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

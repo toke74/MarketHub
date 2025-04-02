@@ -245,7 +245,7 @@ export const loginVendor = asyncErrorHandler(async (req, res, next) => {
   if (!vendor.isEmailVerified) {
     //After user created  in DB,  send activation link to user email
     const { token } = createVerifyEmailToken(vendor._id);
-    const activationLink = `${process.env.CLIENT_URL}/api/v1/vendor/verify_email/${token}`;
+    const activationLink = `${process.env.CLIENT_URL}/verify_seller_email/${token}`;
     const message = activationLink;
     const ejsUrl = `vendor.ejs`;
 
@@ -263,7 +263,7 @@ export const loginVendor = asyncErrorHandler(async (req, res, next) => {
       //Send response to vendor
 
       return res.status(201).json({
-        success: true,
+        success: false,
         message: `Please check your email ${vendor.email} to Verify your email!`,
         token,
       });

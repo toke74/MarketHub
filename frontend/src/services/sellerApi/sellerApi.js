@@ -27,6 +27,15 @@ export const sellerApi = apiSlice.injectEndpoints({
         credentials: "include", // Required for sending cookies
       }),
     }),
+
+    loginSeller: builder.mutation({
+      query: (data) => ({
+        url: "/vendor/login",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -34,4 +43,5 @@ export const {
   useRegisterSellerMutation,
   useActivateSellerMutation,
   useResendSellerVerificationTokenMutation,
+  useLoginSellerMutation,
 } = sellerApi;
