@@ -32,9 +32,9 @@ export const registerVendor = asyncErrorHandler(async (req, res, next) => {
     return next(new ErrorHandler("All required fields must be filled", 400));
   }
 
-  console.log(email);
   // Convert email to lowercase
   email = email.toLowerCase();
+
   // Check if vendor already exists
   const existingVendor = await Vendor.findOne({ email });
   if (existingVendor) {
@@ -63,7 +63,7 @@ export const registerVendor = asyncErrorHandler(async (req, res, next) => {
 
   //After user created  in DB,  send activation link to user email
   const { token } = createVerifyEmailToken(vendor._id);
-  const activationLink = `${process.env.CLIENT_URL}/api/v1/vendor/verify_email/${token}`;
+  const activationLink = `${process.env.CLIENT_URL}/verify_seller_email/${token}`;
   const message = activationLink;
   const ejsUrl = `vendor.ejs`;
 
@@ -125,6 +125,64 @@ export const verifyVendorEmail = asyncErrorHandler(async (req, res, next) => {
     message: "Email verified successfully. Your account is now active.",
   });
 });
+
+// @desc    Resend Vendor Verify Email Token
+// @route   POST /api/v1/vendor/resend_vendor_verify_email_token
+// @access  Public
+export const resendVendorVerifyEmailToken = asyncErrorHandler(
+  async (req, res, next) => {
+    let { email } = req.body;
+
+    // Validate email and password
+    if (!email) {
+      return next(new ErrorHandler("Please provide email ", 400));
+    }
+
+    // Convert email to lowercase
+    email = email.toLowerCase();
+
+    // Find vendor by email
+    const vendor = await Vendor.findOne({ email });
+
+    if (!vendor) {
+      return next(new ErrorHandler("Vendor not exist with this email", 401));
+    }
+
+    // Check if email is verified
+    if (!vendor.isEmailVerified) {
+      //After user created  in DB,  send activation link to user email
+      const { token } = createVerifyEmailToken(vendor._id);
+      const activationLink = `${process.env.CLIENT_URL}/verify_seller_email/${token}`;
+      const message = activationLink;
+      const ejsUrl = `vendor.ejs`;
+
+      //send activation code to user email
+      try {
+        await sendEmail({
+          email: vendor.email,
+          subject: "Verify your Email",
+          message,
+          name: vendor.name,
+          ejsUrl: ejsUrl,
+        });
+
+        return res.status(201).json({
+          success: true,
+          message: `Please check your email ${vendor.email} to Verify your email!`,
+          token,
+        });
+      } catch (error) {
+        return next(new ErrorHandler(error.message, 400));
+      }
+    } else {
+      // Send response to the vendor
+      res.status(200).json({
+        success: true,
+        message: "Email verified successfully. Your account is now active.",
+      });
+    }
+  }
+);
 
 // @desc    Activate Vendor by Admin
 // @route   PATCH /api/v1/vendor/activate/:id

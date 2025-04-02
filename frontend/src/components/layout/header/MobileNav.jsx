@@ -21,6 +21,10 @@ const MobileNav = ({ isOpen, onClose }) => {
     setOpenCategory(openCategory === category ? null : category);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div>
       <div
@@ -51,6 +55,7 @@ const MobileNav = ({ isOpen, onClose }) => {
             <li key={index} onClick={onClose}>
               <Link
                 to={item.url}
+                onClick={scrollToTop}
                 className="block text-text font-semibold py-2 hover:text-primary transition"
               >
                 {item.name}

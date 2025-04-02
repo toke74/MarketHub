@@ -39,6 +39,10 @@
   /* shadow-[5px_13px_41px_9px_rgba(0,_0,_0,_0.1)] */
 }
 
+html {
+  font-family: "Poppins", sans-serif;
+  overscroll-behavior: contain;
+}
 /* Apply fonts globally */
 body {
   font-family: var(--font-family-primary);

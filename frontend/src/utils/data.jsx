@@ -4,7 +4,7 @@ export const navigationMenu = [
   { name: "Shops", url: "/shops" },
   { name: "Today's Deals", url: "/todays_deals" },
   { name: "Best Sellers", url: "/best_sellers" },
-  { name: "Become a Seller", url: "/seller" },
+  { name: "Become a Seller", url: "/become_a_seller" },
   { name: "Offers", url: "/hot_offers" },
   { name: "Blog", url: "/blog" },
   { name: "Contact Us", url: "/contact_us" },

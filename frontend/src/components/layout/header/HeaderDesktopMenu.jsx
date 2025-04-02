@@ -6,6 +6,9 @@ import CategoryDropdownMenu from "./CategoryDropdownMenu";
 import { navigationMenu } from "../../../utils/data";
 
 const HeaderDesktopMenu = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <nav className="hidden lg:block bg-white shadow-md">
       <div className="container mx-auto">
@@ -18,6 +21,7 @@ const HeaderDesktopMenu = () => {
             <li key={index} className="relative group">
               <Link
                 to={item.url}
+                onClick={scrollToTop}
                 className="flex items-center cursor-pointer text-text uppercase font-semibold text-[11.5px] xl:text-[15.6px] hover:text-primary transition"
               >
                 {item.name}

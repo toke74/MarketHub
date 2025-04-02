@@ -2,6 +2,7 @@ import express from "express";
 import {
   registerVendor,
   verifyVendorEmail,
+  resendVendorVerifyEmailToken,
   activateVendor,
   loginVendor,
   logoutVendor,
@@ -37,6 +38,12 @@ vendorRouter.post("/register", registerVendor);
 
 // Verify  Vendor Email route
 vendorRouter.get("/verify_email/:token", verifyVendorEmail);
+
+// Resend Vendor Verify Email Route
+vendorRouter.post(
+  "/resend_vendor_verify_email_token",
+  resendVendorVerifyEmailToken
+);
 
 // Admin route to activate vendor
 vendorRouter.patch(

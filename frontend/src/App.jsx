@@ -28,6 +28,12 @@ import HotOffers from "./pages/navbarPages/HotOffers";
 import Blog from "./pages/navbarPages/Blog";
 import CustomerService from "./pages/navbarPages/CustomerService";
 
+// Seller imports
+import RegisterSeller from "./pages/seller/RegisterSeller";
+import SellerLogin from "./pages/seller/SellerLogin";
+import VerifySellerEmail from "./pages/seller/VerifySellerEmail";
+import ResendSellerToken from "./pages/seller/ResendSellerToken";
+
 //authPages imports
 import SignIn from "./pages/authPages/SignIn";
 import SignUp from "./pages/authPages/SignUp";
@@ -110,6 +116,15 @@ function App() {
         <Route path="/resend_activation" element={<ResendActivation />} />
         <Route path="/forgot_password" element={<ForgotPassword />} />
         <Route path="/reset_password/:resetToken" element={<ResetPassword />} />
+
+        {/* Seller Routes */}
+        <Route path="/become_a_seller" element={<RegisterSeller />} />
+        <Route path="/seller_login" element={<SellerLogin />} />
+        <Route
+          path="/verify_seller_email/:token"
+          element={<VerifySellerEmail />}
+        />
+        <Route path="/resend_seller_token" element={<ResendSellerToken />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
