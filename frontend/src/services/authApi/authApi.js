@@ -40,7 +40,7 @@ export const authApi = apiSlice.injectEndpoints({
 
     loadUser: builder.query({
       query: () => ({
-        url: "/user/me", // Your backend route for getting user data
+        url: "/user/me",
         method: "GET",
         credentials: "include",
       }),

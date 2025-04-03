@@ -20,7 +20,7 @@ const HeaderMain = () => {
         {/* Logo */}
         <Link to="/">
           <img
-            src="logo/eset1.svg"
+            src="/logo/eset1.svg"
             width={80}
             height={20}
             alt="MarketHub"

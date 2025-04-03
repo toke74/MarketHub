@@ -7,7 +7,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/layout/header/Header";
 import Footer from "./components/layout/footer/Footer";
 
-//Local import
+//Local import for user
 import {
   useLoadUserQuery,
   useUpdateAccessTokenQuery,
@@ -17,6 +17,17 @@ import {
   loadUserSuccess,
   loadUserFailure,
 } from "./features/auth/authSlice";
+
+//Local Imports for seller
+import {
+  useLoadSellerQuery,
+  useUpdateSellerAccessTokenQuery,
+} from "./services/sellerApi/sellerApi"; // Import the seller query
+import {
+  loadSellerRequest,
+  loadSellerSuccess,
+  loadSellerFailure,
+} from "./features/seller/sellerSlice"; // Import seller actions
 
 //Navbar Pages imports
 import Home from "./pages/navbarPages/Home";
@@ -56,46 +67,97 @@ import Wishlist from "./pages/UserProfilePages/Wishlist";
 import ReviewsRatings from "./pages/UserProfilePages/ReviewsRatings";
 import Memberships from "./pages/UserProfilePages/Memberships";
 
+//Page not found
+import NotFound from "./pages/NotFound";
+
 function App() {
   const dispatch = useDispatch();
-  const { data, error, refetch } = useLoadUserQuery();
+
+  // Load User
   const {
-    data: tokenData,
-    refetch: refreshAccessToken,
-    isFetching,
+    data: userData,
+    error: userError,
+    refetch: refetchUser,
+  } = useLoadUserQuery();
+  const {
+    data: userTokenData,
+    refetch: refreshUserAccessToken,
+    isFetching: isUserFetching,
   } = useUpdateAccessTokenQuery();
+
+  // Load Seller
+  const {
+    data: sellerData,
+    error: sellerError,
+    refetch: refetchSeller,
+  } = useLoadSellerQuery();
+  const {
+    data: sellerTokenData,
+    refetch: refreshSellerAccessToken,
+    isFetching: isSellerFetching,
+  } = useUpdateSellerAccessTokenQuery();
 
   // Load user on app mount
   useEffect(() => {
     dispatch(loadUserRequest());
-    if (data) {
-      dispatch(loadUserSuccess(data));
+    if (userData) {
+      dispatch(loadUserSuccess(userData));
     }
-    if (error) {
-      dispatch(loadUserFailure(error.message));
-      if (error.status === 401) {
-        refreshAccessToken(); // Attempt to refresh the token if unauthorized
+    if (userError) {
+      dispatch(loadUserFailure(userError.message));
+      if (userError.status === 401) {
+        refreshUserAccessToken(); // Refresh token if unauthorized
       }
     }
-  }, [data, error, dispatch, refreshAccessToken]);
+  }, [userData, userError, dispatch, refreshUserAccessToken]);
 
-  // Auto-refresh token every 10 minutes
+  // Load seller on app mount
+  useEffect(() => {
+    dispatch(loadSellerRequest());
+    if (sellerData) {
+      dispatch(loadSellerSuccess(sellerData));
+    }
+    if (sellerError) {
+      dispatch(loadSellerFailure(sellerError.message));
+      if (sellerError.status === 401) {
+        refreshSellerAccessToken(); // Refresh seller token if unauthorized
+      }
+    }
+  }, [sellerData, sellerError, dispatch, refreshSellerAccessToken]);
+
+  // Auto-refresh tokens every 10 minutes
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!isFetching) {
-        refreshAccessToken();
+      if (!isUserFetching) {
+        refreshUserAccessToken();
+      }
+      if (!isSellerFetching) {
+        refreshSellerAccessToken();
       }
     }, 10 * 60 * 1000); // 10 minutes
 
     return () => clearInterval(interval);
-  }, [refreshAccessToken, isFetching]);
+  }, [
+    refreshUserAccessToken,
+    refreshSellerAccessToken,
+    isUserFetching,
+    isSellerFetching,
+  ]);
 
   // Reload user data when a new token is received
   useEffect(() => {
-    if (tokenData) {
-      refetch(); // Reload user after token update
+    if (userTokenData) {
+      refetchUser();
     }
-  }, [tokenData, refetch]);
+  }, [userTokenData, refetchUser]);
+
+  // Reload seller data when a new token is received
+  useEffect(() => {
+    if (sellerTokenData) {
+      refetchSeller();
+    }
+  }, [sellerTokenData, refetchSeller]);
+
   return (
     <div>
       <Header />
@@ -147,7 +209,8 @@ function App() {
         </Route>
 
         {/* Redirect unknown routes to login */}
-        <Route path="*" element={<Navigate to="/sign_in" replace />} />
+        {/* <Route path="*" element={<Navigate to="/sign_in" replace />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </div>

@@ -5,47 +5,40 @@ const initialState = {
   isSellerAuthenticated: false, // Tracks login status
   loading: false, // Tracks API request status
   error: null, // Stores errors,
-  sellerActivationToken: null,
 };
 
 const sellerSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // activateSellerToken: (state, action) => {
-    //   state.loading = false;
-    //   state.sellerActivationToken = action.payload;
-    //   state.isSellerAuthenticated = false;
-    // },
+    loadSellerRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    loadSellerSuccess: (state, action) => {
+      state.loading = false;
+      state.seller = action.payload;
+      state.isSellerAuthenticated = true;
+    },
+    loadSellerFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.seller = null;
+      state.isSellerAuthenticated = false;
+    },
 
-    // loadUserRequest: (state) => {
-    //   state.loading = true;
-    //   state.error = null;
-    // },
-    // loadUserSuccess: (state, action) => {
-    //   state.loading = false;
-    //   state.user = action.payload;
-    //   state.isAuthenticated = true;
-    // },
-    // loadUserFailure: (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    //   state.user = null;
-    //   state.isAuthenticated = false;
-    // },
     logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
+      state.seller = null;
+      state.isSellerAuthenticated = false;
+      state.error = null;
     },
   },
 });
 
 export const {
-  // activateSellerToken,
-  // setSellerAuthenticated,
-  // loadUserRequest,
-  // loadUserSuccess,
-  // loadUserFailure,
+  loadSellerRequest,
+  loadSellerSuccess,
+  loadSellerFailure,
   logout,
 } = sellerSlice.actions;
 export default sellerSlice.reducer;

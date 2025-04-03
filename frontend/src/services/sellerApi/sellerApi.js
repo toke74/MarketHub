@@ -36,6 +36,25 @@ export const sellerApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    loadSeller: builder.query({
+      query: () => ({
+        url: "/vendor/me",
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Seller"],
+    }),
+
+    updateSellerAccessToken: builder.query({
+      query: () => ({
+        url: "/vendor/vendor_refresh_token",
+        method: "GET",
+        credentials: "include",
+      }),
+      keepUnusedDataFor: 0, // Ensure token is always fresh
+      providesTags: ["Seller"],
+    }),
   }),
 });
 
@@ -44,4 +63,6 @@ export const {
   useActivateSellerMutation,
   useResendSellerVerificationTokenMutation,
   useLoginSellerMutation,
+  useLoadSellerQuery,
+  useUpdateSellerAccessTokenQuery,
 } = sellerApi;
