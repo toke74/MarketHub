@@ -1,6 +1,6 @@
 //package imports
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 //React icons
 import { FaRegHeart } from "react-icons/fa6";
@@ -9,10 +9,12 @@ import { FiShoppingBag } from "react-icons/fi";
 
 //Local imports
 import UserProfileMenu from "./UserProfileMenu";
+import SellerProfileMenu from "./SellerProfileMenu";
+import UserSellerAuth from "./UserSellerAuth";
 
 const HeaderMain = () => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
 
   return (
     <div className="border-b border-gray-200 py-3 bg-white">
@@ -60,15 +62,18 @@ const HeaderMain = () => {
               0
             </span>
           </button>
-          {isAuthenticated ? (
+          {isSellerAuthenticated ? (
+            <SellerProfileMenu />
+          ) : isAuthenticated ? (
             <UserProfileMenu />
           ) : (
-            <Link
-              to="/sign_in"
-              className="relative   hover:text-primary text-xl cursor-pointer"
-            >
-              Sign in
-            </Link>
+            <UserSellerAuth />
+            // <Link
+            //   to="/sign_in"
+            //   className="relative   hover:text-primary text-xl cursor-pointer"
+            // >
+            //   Sign in
+            // </Link>
           )}
         </div>
       </div>

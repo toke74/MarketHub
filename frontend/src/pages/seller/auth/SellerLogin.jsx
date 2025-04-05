@@ -23,6 +23,7 @@ const SellerLogin = () => {
   const [loginSeller, { isLoading }] = useLoginSellerMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -36,6 +37,12 @@ const SellerLogin = () => {
       navigate("/seller/dashboard");
     }
   }, [isSellerAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

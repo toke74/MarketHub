@@ -23,6 +23,7 @@ const forgotPasswordSchema = z.object({
 const ForgotPassword = () => {
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
   const navigate = useNavigate();
 
   const scrollToTop = () => {
@@ -34,6 +35,12 @@ const ForgotPassword = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isSellerAuthenticated) {
+      navigate("/seller/dashboard");
+    }
+  }, [isSellerAuthenticated, navigate]);
 
   const {
     register,

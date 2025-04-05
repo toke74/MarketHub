@@ -7,9 +7,6 @@ import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-// React icons
-// import { FiEye, FiEyeOff } from "react-icons/fi";
-
 // Local imports
 import { useLoginUserMutation } from "../../../services/authApi/authApi";
 import {
@@ -32,6 +29,7 @@ const SignIn = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,6 +42,12 @@ const SignIn = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isSellerAuthenticated) {
+      navigate("/seller/dashboard");
+    }
+  }, [isSellerAuthenticated, navigate]);
 
   const {
     register,

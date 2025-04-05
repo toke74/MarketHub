@@ -14,6 +14,8 @@ const VerifySellerEmail = () => {
   const [activateSeller] = useActivateSellerMutation();
   const navigate = useNavigate();
   const hasRun = useRef(false); // Track if function has already run
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (!hasRun.current && token) {
@@ -48,6 +50,19 @@ const VerifySellerEmail = () => {
       sendRequest();
     }
   }, [token]);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isSellerAuthenticated) {
+      navigate("/seller/dashboard");
+    }
+  }, [isSellerAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="flex items-center justify-center h-screen">

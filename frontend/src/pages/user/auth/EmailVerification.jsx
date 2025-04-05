@@ -29,12 +29,19 @@ const EmailVerification = () => {
   // Access user data from Redux store
   const activationToken = useSelector((state) => state.auth.activationToken);
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isSellerAuthenticated) {
+      navigate("/seller/dashboard");
+    }
+  }, [isSellerAuthenticated, navigate]);
 
   const {
     handleSubmit,

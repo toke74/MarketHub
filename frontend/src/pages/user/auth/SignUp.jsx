@@ -36,6 +36,7 @@ const SignUp = () => {
   const [registerUser, { isLoading }] = useRegisterUserMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -48,6 +49,12 @@ const SignUp = () => {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isSellerAuthenticated) {
+      navigate("/seller/dashboard");
+    }
+  }, [isSellerAuthenticated, navigate]);
 
   const {
     register,

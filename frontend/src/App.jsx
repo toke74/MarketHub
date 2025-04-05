@@ -46,6 +46,7 @@ import VerifySellerEmail from "./pages/seller/auth/VerifySellerEmail";
 import ResendSellerToken from "./pages/seller/auth/ResendSellerToken";
 import SellerDashboard from "./pages/seller/SellerDashboard";
 import SellerForgotPassword from "./pages/seller/auth/SellerForgotPassword";
+import ProtectedSellerRoute from "./routes/ProtectedSellerRoute";
 
 //authPages imports
 import SignIn from "./pages/user/auth/SignIn";
@@ -193,7 +194,10 @@ function App() {
           path="/seller/forgot_password"
           element={<SellerForgotPassword />}
         />
-        <Route path="/seller/dashboard" element={<SellerDashboard />} />
+        {/* Seller Protected Routes */}
+        <Route element={<ProtectedSellerRoute />}>
+          <Route path="/seller/dashboard" element={<SellerDashboard />} />
+        </Route>
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
@@ -209,7 +213,6 @@ function App() {
         </Route>
 
         {/* Redirect unknown routes to login */}
-        {/* <Route path="*" element={<Navigate to="/sign_in" replace />} /> */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

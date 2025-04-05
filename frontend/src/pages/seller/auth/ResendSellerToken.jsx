@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 //React Icons
 import { FaEnvelope } from "react-icons/fa";
@@ -22,10 +22,10 @@ const resendSellerActivationSchema = z.object({
 
 const ResendSellerToken = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [resendSellerVerificationToken, { isLoading }] =
     useResendSellerVerificationTokenMutation();
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -37,6 +37,12 @@ const ResendSellerToken = () => {
       navigate("/seller/dashboard");
     }
   }, [isSellerAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,

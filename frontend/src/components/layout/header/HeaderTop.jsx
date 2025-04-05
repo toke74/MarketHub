@@ -2,7 +2,7 @@ import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const HeaderTop = () => {
   return (
-    <div className="hidden md:block bg-white border-b border-gray-200">
+    <div className="hidden md:block bg-white border-b border-gray-200 py-2">
       <div className="container mx-auto flex justify-between items-center px-3 py-2">
         <ul className="flex space-x-4 text-xl">
           <li>

@@ -11,7 +11,7 @@ const SellerDashboard = () => {
       <img
         src={`${seller?.vendor?.storeAvatar?.url}`}
         alt="Seller"
-        className=" w-30 h-30  object-cover rounded-full border-3  border-gray-300 mb-5"
+        className=" w-15 h-15  object-cover rounded-full border-3  border-gray-300 mb-5"
       />
       <img
         src={`${seller?.vendor?.storeImage?.url}`}

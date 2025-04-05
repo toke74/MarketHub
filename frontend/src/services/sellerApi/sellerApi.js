@@ -55,6 +55,15 @@ export const sellerApi = apiSlice.injectEndpoints({
       keepUnusedDataFor: 0, // Ensure token is always fresh
       providesTags: ["Seller"],
     }),
+
+    logoutSeller: builder.mutation({
+      query: () => ({
+        url: "/vendor/logout",
+        method: "GET",
+        credentials: "include",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -65,4 +74,5 @@ export const {
   useLoginSellerMutation,
   useLoadSellerQuery,
   useUpdateSellerAccessTokenQuery,
+  useLogoutSellerMutation,
 } = sellerApi;
