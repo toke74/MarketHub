@@ -7,9 +7,13 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
+//React Icons
+import { FaEnvelope } from "react-icons/fa";
+
 // Local imports
-import { useResendSellerVerificationTokenMutation } from "../../services/sellerApi/sellerApi";
-// import { activateSellerToken } from "../../features/seller/sellerSlice";
+import { useResendSellerVerificationTokenMutation } from "../../../services/sellerApi/sellerApi";
+import InputField from "../../../components/common/InputField";
+import Button from "../../../components/common/Button";
 
 // Zod Schema for email validation
 const resendSellerActivationSchema = z.object({
@@ -17,10 +21,9 @@ const resendSellerActivationSchema = z.object({
 });
 
 const ResendSellerToken = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [resendSellerVerificationToken] =
+  const [resendSellerVerificationToken, { isLoading }] =
     useResendSellerVerificationTokenMutation();
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
 
@@ -45,7 +48,6 @@ const ResendSellerToken = () => {
 
   // Handle form submission
   const onSubmit = async (data) => {
-    setLoading(true);
     try {
       const response = await resendSellerVerificationToken(data).unwrap();
       toast.success(response?.message, {
@@ -59,8 +61,6 @@ const ResendSellerToken = () => {
           id: "resend-seller-activation",
         }
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -79,30 +79,19 @@ const ResendSellerToken = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email Input */}
-          <div>
-            <label className="block text-gray-700 font-medium">Email</label>
-            <input
-              type="email"
-              {...register("email")}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+          {/* Email Field */}
+          <InputField
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            register={register}
+            name="email"
+            icon={<FaEnvelope />}
+            errors={errors}
+          />
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-secondary transition disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Resend Verification Link"}
-          </button>
+          <Button text="Resend Verification Link" isLoading={isLoading} />
         </form>
 
         {/* Links */}

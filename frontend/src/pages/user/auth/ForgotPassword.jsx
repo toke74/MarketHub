@@ -11,7 +11,9 @@ import { useSelector } from "react-redux";
 import { FaEnvelope } from "react-icons/fa";
 
 //Local Import
-import { useForgotPasswordMutation } from "../../services/authApi/authApi";
+import { useForgotPasswordMutation } from "../../../services/authApi/authApi";
+import InputField from "../../../components/common/InputField";
+import Button from "../../../components/common/Button";
 
 // Validation Schema using Zod
 const forgotPasswordSchema = z.object({
@@ -19,10 +21,13 @@ const forgotPasswordSchema = z.object({
 });
 
 const ForgotPassword = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -41,16 +46,13 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      setIsSubmitting(true);
-
       await forgotPassword(data).unwrap();
 
       toast.success("Password reset link sent! Check your email.");
+      navigate("/sign_in");
       reset();
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -60,7 +62,7 @@ const ForgotPassword = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">
           Forgot Password?
         </h2>
-        <p className="text-gray-600 text-center mb-4">
+        <p className="text-gray-600 text-xs text-center mb-4">
           Enter your email, and we'll send you a password reset link.
         </p>
 
@@ -70,38 +72,28 @@ const ForgotPassword = () => {
           noValidate
           className="space-y-4"
         >
-          <div>
-            <label className="block text-text">Email</label>
-            <div className="relative">
-              <input
-                type="email"
-                className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-primary"
-                placeholder="Enter your email"
-                required
-                {...register("email")}
-              />
-              <span className="absolute inset-y-0 right-3 flex items-center text-gray-500">
-                <FaEnvelope />
-              </span>
-            </div>
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary cursor-pointer transition disabled:bg-gray-400"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Sending..." : "Send Reset Link"}
-          </button>
+          {/* Email Field */}
+          <InputField
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            register={register}
+            name="email"
+            icon={<FaEnvelope />}
+            errors={errors}
+          />
+          {/* Reset Link Button */}
+          <Button text="Send Reset Link" isLoading={isLoading} />
         </form>
 
         {/* Back to Login Link */}
         <p className="text-center text-gray-600 mt-4">
           Remember your password?{" "}
-          <Link to="/login" className="text-primary hover:underline">
+          <Link
+            onClick={scrollToTop}
+            to="/Sign_in"
+            className="text-primary hover:underline"
+          >
             Sign In
           </Link>
         </p>

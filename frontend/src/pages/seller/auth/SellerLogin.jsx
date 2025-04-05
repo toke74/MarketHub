@@ -7,11 +7,11 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 
-// React icons
-import { FiEye, FiEyeOff } from "react-icons/fi";
-
 // Local imports
-import { useLoginSellerMutation } from "../../services/sellerApi/sellerApi";
+import { useLoginSellerMutation } from "../../../services/sellerApi/sellerApi";
+import { loadSellerFailure } from "../../../features/seller/sellerSlice";
+import Button from "../../../components/common/Button";
+import InputField from "../../../components/common/InputField";
 
 // Zod Schema for Seller Login Validation
 const sellerLoginSchema = z.object({
@@ -48,7 +48,6 @@ const SellerLogin = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginSeller(data).unwrap();
-      console.log(response);
       if (response.success) {
         setTimeout(() => {
           navigate("/seller/dashboard");
@@ -61,7 +60,7 @@ const SellerLogin = () => {
         return;
       }
     } catch (err) {
-      dispatch(loadUserFailure(err?.data?.message));
+      dispatch(loadSellerFailure(err?.data?.message));
       toast.error(err?.data?.message);
     }
   };
@@ -82,41 +81,25 @@ const SellerLogin = () => {
           className="space-y-4"
         >
           {/* Email Field */}
-          <div>
-            <label className="block text-text">Email</label>
-            <input
-              type="email"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-              placeholder="Enter your email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-
+          <InputField
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            register={register}
+            name="email"
+            errors={errors}
+          />
           {/* Password Field */}
-          <div>
-            <label className="block text-text">Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-                placeholder="Enter your password"
-                {...register("password")}
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
-            )}
-          </div>
+          <InputField
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            register={register}
+            name="password"
+            errors={errors}
+            showPassword={showPassword}
+            togglePassword={() => setShowPassword(!showPassword)}
+          />
 
           {/* Forgot Password Link */}
           <div className="text-right">
@@ -130,13 +113,7 @@ const SellerLogin = () => {
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-secondary transition"
-            disabled={isLoading}
-          >
-            {isLoading ? "Logging in..." : "Login as Seller"}
-          </button>
+          <Button text="Login as a Seller" isLoading={isLoading} />
         </form>
 
         {/* Register Link */}

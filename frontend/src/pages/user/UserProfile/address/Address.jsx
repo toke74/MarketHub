@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 //Local Imports
 import AddAddressModal from "./AddAddressModal";
 import EditAddressModal from "./EditAddressModal";
-import { useDeleteUserAddressMutation } from "../../../services/authApi/authApi";
+import { useDeleteUserAddressMutation } from "../../../../services/authApi/authApi";
 
 const Address = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

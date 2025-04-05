@@ -11,7 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // Local imports
-import { useRegisterSellerMutation } from "../../services/sellerApi/sellerApi";
+import { useRegisterSellerMutation } from "../../../services/sellerApi/sellerApi";
+import Button from "../../../components/common/Button";
+import InputField from "../../../components/common/InputField";
 
 // Zod Schema for seller Registration Validation
 const sellerSchema = z
@@ -41,7 +43,6 @@ const sellerSchema = z
 const RegisterSeller = () => {
   const [registerSeller, { isLoading }] = useRegisterSellerMutation();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { isSellerAuthenticated } = useSelector((state) => state.seller);
   const navigate = useNavigate();
 
@@ -94,103 +95,68 @@ const RegisterSeller = () => {
         >
           {/* Personal Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-text">Full Name</label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-                placeholder="Enter your name"
-                {...register("name")}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-text">Email</label>
-              <input
-                type="email"
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-                placeholder="Enter your email"
-                {...register("email")}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
+            {/* Name Field */}
+            <InputField
+              label="Full Name"
+              type="text"
+              placeholder="Enter your name"
+              register={register}
+              name="name"
+              errors={errors}
+            />
+
+            {/* Email Field */}
+            <InputField
+              label="Email"
+              type="email"
+              placeholder="Enter your email"
+              register={register}
+              name="email"
+              errors={errors}
+            />
           </div>
 
           {/* Password Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-text">Password</label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-                  placeholder="Enter your password"
-                  {...register("password")}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-text">Confirm Password</label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-                  placeholder="Confirm your password"
-                  {...register("confirmPassword")}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-3 flex items-center"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <FiEyeOff size={20} />
-                  ) : (
-                    <FiEye size={20} />
-                  )}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
+            {/* Password Field */}
+            <InputField
+              label="Password"
+              type="password"
+              placeholder="Enter your password"
+              register={register}
+              name="password"
+              errors={errors}
+              showPassword={showPassword}
+              togglePassword={() => setShowPassword(!showPassword)}
+            />
+
+            {/* Confirm Password Field with Toggle */}
+            <InputField
+              label="Confirm Password"
+              type="password"
+              placeholder="Enter your Confirm password"
+              register={register}
+              name="confirmPassword"
+              errors={errors}
+              showPassword={showPassword}
+              togglePassword={() => setShowPassword(!showPassword)}
+            />
           </div>
 
           {/* Phone Number */}
-          <div>
-            <label className="block text-text">Phone Number</label>
-            <input
-              type="tel"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-              placeholder="Enter your phone number"
-              {...register("phone")}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">{errors.phone.message}</p>
-            )}
-          </div>
+          <InputField
+            label="Phone Number"
+            type="tel"
+            placeholder="Enter your phone number"
+            register={register}
+            name="phone"
+            errors={errors}
+          />
 
           {/* Address Fields */}
           <div className="space-y-4 border border-gray-100 p-4 rounded-lg">
             <h3 className="text-lg font-medium">Store Address</h3>
+
             <div>
               <label className="block text-text">Street</label>
               <input
@@ -205,6 +171,7 @@ const RegisterSeller = () => {
                 </p>
               )}
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-text">City</label>
@@ -235,6 +202,7 @@ const RegisterSeller = () => {
                 )}
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-text">State</label>
@@ -268,18 +236,15 @@ const RegisterSeller = () => {
           </div>
 
           {/* Store Information */}
-          <div>
-            <label className="block text-text">Store Name</label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
-              placeholder="Enter your store name"
-              {...register("storeName")}
-            />
-            {errors.storeName && (
-              <p className="text-red-500 text-sm">{errors.storeName.message}</p>
-            )}
-          </div>
+          <InputField
+            label="Store Name"
+            type="text"
+            placeholder="Enter your store name"
+            register={register}
+            name="storeName"
+            errors={errors}
+          />
+
           <div>
             <label className="block text-text">Store Description</label>
             <textarea
@@ -296,12 +261,7 @@ const RegisterSeller = () => {
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-primary cursor-pointer text-white py-2 rounded-lg hover:bg-secondary transition"
-          >
-            {isLoading ? "Loading ..." : "Register as Seller"}
-          </button>
+          <Button text="Register as a Seller" isLoading={isLoading} />
         </form>
 
         {/* Sign In Link */}

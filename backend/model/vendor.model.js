@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import cloudinary from "../config/cloudinary.config.js";
 
 const vendorSchema = new mongoose.Schema(
   {
@@ -49,12 +50,12 @@ const vendorSchema = new mongoose.Schema(
     storeAvatar: {
       public_id: {
         type: String,
-        default: "storeAvatar",
+        default: "avatar",
       },
       url: {
         type: String,
         default:
-          "https://res.cloudinary.com/shalpeace/image/upload/v1738422245/storeAvatar.jpg",
+          "https://res.cloudinary.com/shalpeace/image/upload/v1743689091/storeAvatars/228058-P2LF2Q-631_kw7fll.jpg",
       },
     },
     storeImage: {
@@ -65,7 +66,7 @@ const vendorSchema = new mongoose.Schema(
       url: {
         type: String,
         default:
-          "https://res.cloudinary.com/shalpeace/image/upload/v1738422246/images_1_imoke7.jpg",
+          "https://res.cloudinary.com/shalpeace/image/upload/v1743689829/storeImages/storeimage_fhpvy2.jpg",
       },
     },
     bankDetails: {
@@ -142,6 +143,36 @@ vendorSchema.pre("save", async function (next) {
   // Generate a salt and hash the password
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
+
+  try {
+    // Upload default avatar to Cloudinary if no store avatar is provided
+    const result = await cloudinary.uploader.upload(
+      "https://res.cloudinary.com/shalpeace/image/upload/v1743689091/storeAvatars/228058-P2LF2Q-631_kw7fll.jpg",
+      {
+        folder: "storeAvatars",
+        public_id: `vendor_${this._id}_avatar`,
+        overwrite: true,
+      }
+    );
+
+    // Upload default store image to Cloudinary if no store image is provided
+    const resultImage = await cloudinary.uploader.upload(
+      "https://res.cloudinary.com/shalpeace/image/upload/v1743689829/storeImages/storeimage_fhpvy2.jpg",
+      {
+        folder: "storeImages",
+        public_id: `vendor_${this._id}_storeImage`,
+        overwrite: true,
+      }
+    );
+
+    this.storeImage = {
+      public_id: result.public_id,
+      url: result.secure_url,
+    };
+  } catch (error) {
+    console.error("Error uploading store avatar to Cloudinary:", error);
+    next(error);
+  }
 
   next();
 });

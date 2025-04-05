@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
 // Local Imports
-import { useActivateSellerMutation } from "../../services/sellerApi/sellerApi";
+import { useActivateSellerMutation } from "../../../services/sellerApi/sellerApi";
 
 const VerifySellerEmail = () => {
   const [error, setError] = useState(false);

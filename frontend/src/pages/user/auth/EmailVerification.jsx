@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
 // Local imports
-import { useActivateUserMutation } from "../../services/authApi/authApi";
+import { useActivateUserMutation } from "../../../services/authApi/authApi";
+import Button from "../../../components/common/Button";
 
 // Zod Schema for OTP validation
 const otpSchema = z.object({
@@ -16,10 +17,14 @@ const otpSchema = z.object({
 });
 
 const EmailVerification = () => {
-  const [activateUser] = useActivateUserMutation();
+  const [activateUser, { isLoading }] = useActivateUserMutation();
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Access user data from Redux store
   const activationToken = useSelector((state) => state.auth.activationToken);
@@ -116,18 +121,17 @@ const EmailVerification = () => {
             </Link>
           </p>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-secondary"
-          >
-            Verify OTP
-          </button>
+          {/* Verify OTP Button */}
+          <Button text="Verify OTP" isLoading={isLoading} />
         </form>
 
         {/* Go Back to Sign In */}
         <p className="text-sm text-gray-600 text-center mt-4">
-          <Link to="/sign_in" className="text-primary hover:underline">
+          <Link
+            onClick={scrollToTop}
+            to="/sign_in"
+            className="text-primary hover:underline"
+          >
             Back to Sign In
           </Link>
         </p>

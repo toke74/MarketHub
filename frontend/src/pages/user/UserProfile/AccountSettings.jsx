@@ -13,7 +13,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import {
   useDeleteUserAccountMutation,
   useUpdatePasswordMutation,
-} from "../../services/authApi/authApi";
+} from "../../../services/authApi/authApi";
 import DeleteAccount from "./DeleteAccount";
 
 // Validation Schema using Zod

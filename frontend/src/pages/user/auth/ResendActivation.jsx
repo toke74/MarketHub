@@ -8,8 +8,10 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 // Local imports
-import { useResendActivationToUserMutation } from "../../services/authApi/authApi";
-import { activateToken } from "../../features/auth/authSlice";
+import { useResendActivationToUserMutation } from "../../../services/authApi/authApi";
+import { activateToken } from "../../../features/auth/authSlice";
+import InputField from "../../../components/common/InputField";
+import Button from "../../../components/common/Button";
 
 // Zod Schema for email validation
 const resendActivationSchema = z.object({
@@ -17,10 +19,10 @@ const resendActivationSchema = z.object({
 });
 
 const ResendActivation = () => {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [resendActivationToUser] = useResendActivationToUserMutation();
+  const [resendActivationToUser, { isLoading }] =
+    useResendActivationToUserMutation();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -39,7 +41,6 @@ const ResendActivation = () => {
 
   // Handle form submission
   const onSubmit = async (data) => {
-    setLoading(true);
     try {
       const response = await resendActivationToUser(data).unwrap();
       dispatch(activateToken(response.activationToken));
@@ -48,8 +49,6 @@ const ResendActivation = () => {
       navigate("/verify_email");
     } catch (error) {
       toast.error(error?.data?.message || "Failed to resend activation code");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -65,27 +64,17 @@ const ResendActivation = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Email Input */}
-          <div>
-            <label className="block text-text">Email</label>
-            <input
-              type="email"
-              {...register("email")}
-              className="w-full px-3 py-2 border rounded-lg focus:ring focus:ring-blue-200"
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
+          <InputField
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            register={register}
+            name="email"
+            errors={errors}
+          />
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-secondary disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Resend Activation Code"}
-          </button>
+          <Button text="Resend Activation Code" isLoading={isLoading} />
         </form>
 
         {/* Go Back to Email Verification */}

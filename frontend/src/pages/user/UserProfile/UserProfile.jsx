@@ -29,10 +29,10 @@ import {
   useLoadUserQuery,
   useUpdateUserProfileMutation,
   useLogoutUserMutation,
-} from "../../services/authApi/authApi";
-import { logout } from "../../features/auth/authSlice";
+} from "../../../services/authApi/authApi";
+import { logout } from "../../../features/auth/authSlice";
 
-import Dashboard from "./Dashboard";
+import Dashboard from "../dashboard/Dashboard";
 import Orders from "./Orders";
 import AccountSettings from "./AccountSettings";
 import Address from "./address/Address";
@@ -41,7 +41,7 @@ import ReviewsRatings from "./ReviewsRatings";
 import PaymentMethods from "./PaymentMethods";
 import Policy from "./Policy";
 import Refunds from "./Refunds";
-import Wishlist from "./Wishlist";
+import Wishlist from "../wishlist/Wishlist";
 import { useState } from "react";
 
 // Validation Schema using Zod
@@ -137,7 +137,7 @@ const UserProfile = () => {
       await logoutUser().unwrap();
       dispatch(logout());
       toast.success("Logged out successfully!");
-      navigate("/login");
+      navigate("/sign_in");
     } catch (error) {
       toast.error("Logout failed. Please try again.");
     }

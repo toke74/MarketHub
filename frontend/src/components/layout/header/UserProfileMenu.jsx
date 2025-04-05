@@ -49,7 +49,7 @@ const UserProfileMenu = () => {
       await logoutUser().unwrap();
       dispatch(logout());
       toast.success("Logged out successfully!");
-      navigate("/login");
+      navigate("/sign_in");
     } catch (error) {
       toast.error("Logout failed. Please try again.");
     }

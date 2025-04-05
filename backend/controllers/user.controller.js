@@ -582,8 +582,11 @@ export const updateUserAddress = asyncErrorHandler(async (req, res, next) => {
   const { addressID } = req.params;
 
   //Get country, city, address1, address2, zipCode, state, addressType from req.body
-  const { country, city, address1, address2, zipCode, state, addressType } =
-    req.body;
+  // const { country, city, address1, address2, zipCode, state, addressType } =
+  //   req.body;
+
+  //Get country, city, street, zipCode, addressType, state from req.body
+  const { country, city, street, zipCode, addressType, state } = req.body;
 
   // Find user by ID, we get ID from req.user isAuthenticated middleware
   const user = await User.findById(req.user._id);
@@ -604,8 +607,8 @@ export const updateUserAddress = asyncErrorHandler(async (req, res, next) => {
   // Update the address fields,  if exit to update
   if (country) address.country = country;
   if (city) address.city = city;
-  if (address1) address.address1 = address1;
-  if (address2) address.address2 = address2;
+  if (street) address.street = street;
+  if (state) address.state = state;
   if (zipCode) address.zipCode = zipCode;
 
   // Handle addressType to ensure only one default

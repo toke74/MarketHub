@@ -40,32 +40,32 @@ import Blog from "./pages/navbarPages/Blog";
 import CustomerService from "./pages/navbarPages/CustomerService";
 
 // Seller imports
-import RegisterSeller from "./pages/seller/RegisterSeller";
-import SellerLogin from "./pages/seller/SellerLogin";
-import VerifySellerEmail from "./pages/seller/VerifySellerEmail";
-import ResendSellerToken from "./pages/seller/ResendSellerToken";
+import RegisterSeller from "./pages/seller/auth/RegisterSeller";
+import SellerLogin from "./pages/seller/auth/SellerLogin";
+import VerifySellerEmail from "./pages/seller/auth/VerifySellerEmail";
+import ResendSellerToken from "./pages/seller/auth/ResendSellerToken";
 import SellerDashboard from "./pages/seller/SellerDashboard";
-import SellerForgotPassword from "./pages/seller/SellerForgotPassword";
+import SellerForgotPassword from "./pages/seller/auth/SellerForgotPassword";
 
 //authPages imports
-import SignIn from "./pages/authPages/SignIn";
-import SignUp from "./pages/authPages/SignUp";
-import EmailVerification from "./pages/authPages/EmailVerification";
-import ResendActivation from "./pages/authPages/ResendActivation";
-import ForgotPassword from "./pages/authPages/ForgotPassword";
-import ResetPassword from "./pages/authPages/ResetPassword";
+import SignIn from "./pages/user/auth/SignIn";
+import SignUp from "./pages/user/auth/SignUp";
+import EmailVerification from "./pages/user/auth/EmailVerification";
+import ResendActivation from "./pages/user/auth/ResendActivation";
+import ForgotPassword from "./pages/user/auth/ForgotPassword";
+import ResetPassword from "./pages/user/auth/ResetPassword";
 
 //Protected Route imports
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Dashboard from "./pages/UserProfilePages/Dashboard";
-import UserProfile from "./pages/UserProfilePages/UserProfile";
-import Orders from "./pages/UserProfilePages/Orders";
-import PaymentMethods from "./pages/UserProfilePages/PaymentMethods";
-import AccountSettings from "./pages/UserProfilePages/AccountSettings";
-import Address from "./pages/UserProfilePages/address/Address";
-import Wishlist from "./pages/UserProfilePages/Wishlist";
-import ReviewsRatings from "./pages/UserProfilePages/ReviewsRatings";
-import Memberships from "./pages/UserProfilePages/Memberships";
+import Dashboard from "./pages/user/dashboard/Dashboard";
+import UserProfile from "./pages/user/UserProfile/UserProfile";
+import Orders from "./pages/user/UserProfile/Orders";
+import PaymentMethods from "./pages/user/UserProfile/PaymentMethods";
+import AccountSettings from "./pages/user/UserProfile/AccountSettings";
+import Address from "./pages/user/UserProfile/address/Address";
+import Wishlist from "./pages/user/wishlist/Wishlist";
+import ReviewsRatings from "./pages/user/UserProfile/ReviewsRatings";
+import Memberships from "./pages/user/UserProfile/Memberships";
 
 //Page not found
 import NotFound from "./pages/NotFound";
