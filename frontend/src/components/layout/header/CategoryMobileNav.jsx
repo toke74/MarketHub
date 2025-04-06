@@ -13,9 +13,9 @@ const CategoryMobileNav = ({ isOpen, onClose }) => {
     <div>
       <div
         onClick={onClose}
-        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer lg:hidden bg-black/50  transition-opacity duration-500 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } `}
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 z-40 lg:hidden ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
       ></div>
       <nav
         className={`has-scrollbar fixed lg:hidden top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5   overflow-y-auto z-50 transition-transform duration-500 ${
@@ -31,7 +31,6 @@ const CategoryMobileNav = ({ isOpen, onClose }) => {
           >
             <FiX />
           </button>
-          /
         </div>
 
         {/* Categories Section */}

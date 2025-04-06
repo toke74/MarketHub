@@ -72,7 +72,7 @@ const SellerProfileMenu = () => {
           <ul className="py-4 text-text">
             <DropdownItem to="/profile" icon={<FaUser />} text="User Profile" />
             <DropdownItem
-              to="/dashboard"
+              to="/seller/dashboard"
               icon={<MdDashboard />}
               text="Dashboard"
             />

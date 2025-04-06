@@ -1,6 +1,7 @@
 //package import
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 //react-icons
 import { FiX, FiChevronLeft } from "react-icons/fi";
@@ -16,6 +17,12 @@ import { navigationMenu } from "../../../utils/data";
 
 const MobileNav = ({ isOpen, onClose }) => {
   const [openCategory, setOpenCategory] = useState(null);
+  const { isSellerAuthenticated } = useSelector((state) => state.seller);
+
+  // Filter out "Become a Seller" if the seller is logged in
+  const filteredMenu = isSellerAuthenticated
+    ? navigationMenu.filter((item) => item.name !== "Become a Seller")
+    : navigationMenu;
 
   const toggleCategory = (category) => {
     setOpenCategory(openCategory === category ? null : category);
@@ -29,9 +36,9 @@ const MobileNav = ({ isOpen, onClose }) => {
     <div>
       <div
         onClick={onClose}
-        className={`top-0 left-0 absolute w-full h-full z-30 cursor-pointer lg:hidden bg-black opacity-50 transition-opacity duration-500 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } `}
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 z-40 lg:hidden ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
       ></div>
       <nav
         className={`has-scrollbar fixed lg:hidden top-0 left-0 w-[350px] h-screen bg-white shadow-lg p-5 overflow-y-auto z-50 transition-transform duration-500 ${
@@ -51,7 +58,7 @@ const MobileNav = ({ isOpen, onClose }) => {
 
         {/* Menu Items */}
         <ul className="space-y-2 ">
-          {navigationMenu.map((item, index) => (
+          {filteredMenu.map((item, index) => (
             <li key={index} onClick={onClose}>
               <Link
                 to={item.url}

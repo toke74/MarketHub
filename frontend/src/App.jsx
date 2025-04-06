@@ -31,7 +31,7 @@ import {
 
 //Navbar Pages imports
 import Home from "./pages/navbarPages/Home";
-import Products from "./pages/navbarPages/Products";
+import Products from "./pages/products/Products";
 import Shops from "./pages/navbarPages/Shops";
 import TodaysDeals from "./pages/navbarPages/TodaysDeals";
 import BestSellers from "./pages/navbarPages/BestSellers";
@@ -44,7 +44,7 @@ import RegisterSeller from "./pages/seller/auth/RegisterSeller";
 import SellerLogin from "./pages/seller/auth/SellerLogin";
 import VerifySellerEmail from "./pages/seller/auth/VerifySellerEmail";
 import ResendSellerToken from "./pages/seller/auth/ResendSellerToken";
-import SellerDashboard from "./pages/seller/SellerDashboard";
+import SellerDashboard from "./pages/seller/dashboard/SellerDashboard";
 import SellerForgotPassword from "./pages/seller/auth/SellerForgotPassword";
 import ProtectedSellerRoute from "./routes/ProtectedSellerRoute";
 
@@ -67,6 +67,9 @@ import Address from "./pages/user/UserProfile/address/Address";
 import Wishlist from "./pages/user/wishlist/Wishlist";
 import ReviewsRatings from "./pages/user/UserProfile/ReviewsRatings";
 import Memberships from "./pages/user/UserProfile/Memberships";
+
+//Orders Route
+import OrderManagement from "./pages/orders/OrderManagement";
 
 //Page not found
 import NotFound from "./pages/NotFound";
@@ -197,6 +200,7 @@ function App() {
         {/* Seller Protected Routes */}
         <Route element={<ProtectedSellerRoute />}>
           <Route path="/seller/dashboard" element={<SellerDashboard />} />
+          <Route path="/orders" element={<OrderManagement />} />
         </Route>
 
         {/* Protected Routes */}
