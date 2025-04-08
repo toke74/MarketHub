@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 //React Icons
+<<<<<<< HEAD
 import { FaUser, FaBox, FaSignOutAlt } from "react-icons/fa";
 import {
   FiPackage,
@@ -21,6 +22,20 @@ import { FaStore } from "react-icons/fa6";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import { HiOutlineReceiptRefund } from "react-icons/hi2";
 import { RiCoupon3Line } from "react-icons/ri";
+=======
+import {
+  FaUser,
+  FaBox,
+  FaCreditCard,
+  FaCog,
+  FaMapMarkerAlt,
+  FaHeart,
+  FaStar,
+  FaUsers,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { MdDashboard } from "react-icons/md";
+>>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
 //Local import
 import { useLogoutSellerMutation } from "../../../services/sellerApi/sellerApi";
@@ -32,7 +47,11 @@ const SellerProfileMenu = () => {
   const { seller } = useSelector((state) => state.seller);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+<<<<<<< HEAD
   const [logoutSeller] = useLogoutSellerMutation();
+=======
+  const [logoutSeller, { isLoading }] = useLogoutSellerMutation();
+>>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -71,6 +90,7 @@ const SellerProfileMenu = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
+<<<<<<< HEAD
         <div
           className="absolute -right-5 mt-1 w-65 bg-white border border-gray-200 rounded-lg shadow-3xl 
         z-50 has-scrollbar overflow-y-auto  max-h-[80vh]"
@@ -223,6 +243,47 @@ const SellerProfileMenu = () => {
             <button
               onClick={handleLogout}
               className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-gray-100 transition "
+=======
+        <div className="absolute -right-5 mt-1 w-65 bg-white border border-gray-200 rounded-lg shadow-3xl z-50">
+          <ul className="py-4 text-text">
+            <DropdownItem to="/profile" icon={<FaUser />} text="User Profile" />
+            <DropdownItem
+              to="/seller/dashboard"
+              icon={<MdDashboard />}
+              text="Dashboard"
+            />
+            <DropdownItem to="/orders" icon={<FaBox />} text="Orders" />
+            <DropdownItem
+              to="/payments"
+              icon={<FaCreditCard />}
+              text="Payment Methods"
+            />
+            <DropdownItem
+              to="/settings"
+              icon={<FaCog />}
+              text="Account Settings"
+            />
+            <DropdownItem
+              to="/address"
+              icon={<FaMapMarkerAlt />}
+              text="Address"
+            />
+            <DropdownItem to="/wishlist" icon={<FaHeart />} text="Wishlist" />
+            <DropdownItem
+              to="/reviews"
+              icon={<FaStar />}
+              text="Reviews & Ratings"
+            />
+            <DropdownItem
+              to="/memberships"
+              icon={<FaUsers />}
+              text="Memberships"
+            />
+            <hr className="my-2 border-gray-300" />
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-primary/5 transition "
+>>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
             >
               <span className="mr-3 text-[19px]">
                 <FaSignOutAlt />
@@ -235,5 +296,20 @@ const SellerProfileMenu = () => {
     </div>
   );
 };
+<<<<<<< HEAD
+=======
+// Dropdown Item Component
+const DropdownItem = ({ to, icon, text }) => (
+  <li>
+    <Link
+      to={to}
+      onClick={() => setIsOpen(false)}
+      className="flex items-center px-4 py-2 hover:bg-primary/5 transition"
+    >
+      <span className="mr-3 text-[19px]">{icon}</span> {text}
+    </Link>
+  </li>
+);
+>>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
 export default SellerProfileMenu;
