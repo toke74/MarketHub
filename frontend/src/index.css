@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xs: 30rem;
+  --breakpoint-xsm: 37.5rem;
+  /* Define custom fonts */
+  --font-family-primary: "Nunito", sans-serif;
+  --font-family-secondary: "Raleway", sans-serif;
+
+  /* Primary Color */
+  /* --color-primary: oklch(0.68 0.21 40.5); #f1641e */
+  --color-primary: oklch(0.72 0.18 10.5); /*#FF8F9C*/
+
+  /* Secondary Color */
+  /* --color-secondary: oklch(0.72 0.23 164.5); */
+  --color-secondary: oklch(0.21 0.034 264.665);
+
+  /* Background Color */
+  --color-background: oklch(0.97 0.01 248.5); /* #F8F9FA */
+
+  /* Text Color */
+  --color-text: oklch(0.38 0.03 248.5); /* #4A5568 */
+
+  /* Accent Color */
+  --color-accent: oklch(0.83 0.19 85.4); /* #FFC107 */
+  /* Success Color */
+  --color-success: oklch(0.65 0.23 144.5); /* #28A745 */
+  /* Error Color */
+  --color-error: oklch(0.6 0.25 25.5); /* #DC3545 */
+
+  --salmon-pink: oklch(0.72 0.18 10.5);
+  --eerie-black: oklch(0.12 0.01 248.5);
+
+  /* Define CSS variables */
+  --white: 255 255 255; /* RGB for white */
+  --cultured: 248 249 250; /* RGB for cultured (light gray) */
+
+  --shadow-3xl: 5px 13px 41px 9px rgba(0, 0, 0, 0.1);
+  /* shadow-[5px_13px_41px_9px_rgba(0,_0,_0,_0.1)] */
+}
+
+html {
+  font-family: "Poppins", sans-serif;
+  overscroll-behavior: contain;
+}
+/* Apply fonts globally */
+body {
+  font-family: var(--font-family-primary);
+  background: #f6f6f5;
+  background: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-secondary);
+}
+
+/* Custom scrollbar styles */
+body::-webkit-scrollbar {
+  width: 15px;
+}
+
+body::-webkit-scrollbar-track {
+  background: rgb(var(--white));
+  border-left: 1px solid rgb(var(--cultured));
+}
+
+body::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 80%);
+  border: 3px solid rgb(var(--white));
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 70%);
+}
+
+.has-scrollbar {
+  padding-bottom: 5px;
+}
+
+.has-scrollbar::-webkit-scrollbar {
+  width: 15px; /* for vertical scroll */
+  height: 15px; /* for horizontal scroll */
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 3px solid rgb(var(--white));
+  border-radius: 20px;
+}
+
+.has-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 90%);
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 80%);
+}
+
+/* Customize Swiper pagination dots */
+.swiper-pagination-bullet {
+  background-color: gray !important; /* Default dot color */
+  opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: red !important; /* Active dot color */
+  opacity: 1;
+}
+
+.container {
+  padding: 0 15px;
+}
