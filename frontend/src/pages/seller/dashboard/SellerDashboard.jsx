@@ -47,7 +47,7 @@ const SellerDashboard = () => {
   const [isMobile, setIsMobile] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [logoutSeller, { isLoading }] = useLogoutSellerMutation();
+  const [logoutSeller] = useLogoutSellerMutation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -80,6 +80,7 @@ const SellerDashboard = () => {
       toast.error("Logout failed. Please try again.");
     }
   };
+
   const navItems = [
     { icon: <FiHome />, text: "Dashboard", key: "dashboard" },
     { icon: <FaUser />, text: "Seller Profile", key: "profile" },

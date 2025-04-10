@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 //React Icons
-<<<<<<< HEAD
 import { FaUser, FaBox, FaSignOutAlt } from "react-icons/fa";
 import {
   FiPackage,
@@ -15,6 +14,8 @@ import {
   FiPercent,
   FiPieChart,
   FiHelpCircle,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import { MdDashboard } from "react-icons/md";
 import { MdOutlineReviews } from "react-icons/md";
@@ -22,20 +23,6 @@ import { FaStore } from "react-icons/fa6";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import { HiOutlineReceiptRefund } from "react-icons/hi2";
 import { RiCoupon3Line } from "react-icons/ri";
-=======
-import {
-  FaUser,
-  FaBox,
-  FaCreditCard,
-  FaCog,
-  FaMapMarkerAlt,
-  FaHeart,
-  FaStar,
-  FaUsers,
-  FaSignOutAlt,
-} from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
->>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
 //Local import
 import { useLogoutSellerMutation } from "../../../services/sellerApi/sellerApi";
@@ -44,14 +31,16 @@ import { logout } from "../../../features/seller/sellerSlice";
 const SellerProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const scrollRef = useRef(null); // Scrollable dropdown content
+  const scrollIntervalRef = useRef(null);
+
+  const [showScrollUp, setShowScrollUp] = useState(false);
+  const [showScrollDown, setShowScrollDown] = useState(false);
+
   const { seller } = useSelector((state) => state.seller);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-<<<<<<< HEAD
   const [logoutSeller] = useLogoutSellerMutation();
-=======
-  const [logoutSeller, { isLoading }] = useLogoutSellerMutation();
->>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -77,6 +66,44 @@ const SellerProfileMenu = () => {
     }
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Auto scroll logic
+  const handleMouseMove = (e) => {
+    const dropdown = scrollRef.current;
+    const bounds = dropdown.getBoundingClientRect();
+    const threshold = 30;
+    const scrollSpeed = 3;
+
+    clearInterval(scrollIntervalRef.current);
+
+    // Scroll down
+    if (e.clientY > bounds.bottom - threshold) {
+      setShowScrollDown(true);
+      scrollIntervalRef.current = setInterval(() => {
+        dropdown.scrollTop += scrollSpeed;
+      }, 10);
+    }
+    // Scroll up
+    else if (e.clientY < bounds.top + threshold) {
+      setShowScrollUp(true);
+      scrollIntervalRef.current = setInterval(() => {
+        dropdown.scrollTop -= scrollSpeed;
+      }, 10);
+    } else {
+      setShowScrollDown(false);
+      setShowScrollUp(false);
+    }
+  };
+
+  const stopAutoScroll = () => {
+    clearInterval(scrollIntervalRef.current);
+    setShowScrollUp(false);
+    setShowScrollDown(false);
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* User Icon Button */}
@@ -90,16 +117,34 @@ const SellerProfileMenu = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-<<<<<<< HEAD
         <div
+          ref={scrollRef}
           className="absolute -right-5 mt-1 w-65 bg-white border border-gray-200 rounded-lg shadow-3xl 
         z-50 has-scrollbar overflow-y-auto  max-h-[80vh]"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={stopAutoScroll}
         >
+          {/* Up arrow */}
+          {showScrollUp && (
+            <div className="absolute top-1 left-1/2 -translate-x-1/2 z-50 bg-white p-1 rounded-full shadow-md animate-bounce">
+              <FiChevronUp className="text-gray-500 text-xl" />
+            </div>
+          )}
+
+          {/* Down arrow */}
+          {showScrollDown && (
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 z-50 bg-white p-1 rounded-full shadow-md animate-bounce">
+              <FiChevronDown className="text-gray-500 text-xl" />
+            </div>
+          )}
           <ul className="py-4 text-text">
             <li>
               <Link
                 to="/seller/profile"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FaUser />}</span> Seller
@@ -109,7 +154,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/seller/dashboard"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<MdDashboard />}</span>{" "}
@@ -119,7 +167,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/product_management"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiPackage />}</span>{" "}
@@ -129,7 +180,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/order_management"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FaBox />}</span> Order
@@ -139,7 +193,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/sales"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiDollarSign />}</span>{" "}
@@ -149,7 +206,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/refunds"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">
@@ -161,7 +221,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/withdraw_money"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<BiMoneyWithdraw />}</span>{" "}
@@ -171,7 +234,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/coupons"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<RiCoupon3Line />}</span>{" "}
@@ -181,7 +247,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/customer_messages"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiMessageSquare />}</span>{" "}
@@ -191,7 +260,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/customer_reviews"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<MdOutlineReviews />}</span>{" "}
@@ -201,7 +273,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/marketing"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiPercent />}</span>{" "}
@@ -211,7 +286,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/store_settings"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FaStore />}</span> Store
@@ -221,7 +299,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/analytics"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiPieChart />}</span>{" "}
@@ -231,7 +312,10 @@ const SellerProfileMenu = () => {
             <li>
               <Link
                 to="/help_center"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  scrollToTop();
+                }}
                 className="flex items-center px-4 py-2 hover:bg-gray-100 transition"
               >
                 <span className="mr-3 text-[19px]">{<FiHelpCircle />}</span>{" "}
@@ -243,47 +327,6 @@ const SellerProfileMenu = () => {
             <button
               onClick={handleLogout}
               className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-gray-100 transition "
-=======
-        <div className="absolute -right-5 mt-1 w-65 bg-white border border-gray-200 rounded-lg shadow-3xl z-50">
-          <ul className="py-4 text-text">
-            <DropdownItem to="/profile" icon={<FaUser />} text="User Profile" />
-            <DropdownItem
-              to="/seller/dashboard"
-              icon={<MdDashboard />}
-              text="Dashboard"
-            />
-            <DropdownItem to="/orders" icon={<FaBox />} text="Orders" />
-            <DropdownItem
-              to="/payments"
-              icon={<FaCreditCard />}
-              text="Payment Methods"
-            />
-            <DropdownItem
-              to="/settings"
-              icon={<FaCog />}
-              text="Account Settings"
-            />
-            <DropdownItem
-              to="/address"
-              icon={<FaMapMarkerAlt />}
-              text="Address"
-            />
-            <DropdownItem to="/wishlist" icon={<FaHeart />} text="Wishlist" />
-            <DropdownItem
-              to="/reviews"
-              icon={<FaStar />}
-              text="Reviews & Ratings"
-            />
-            <DropdownItem
-              to="/memberships"
-              icon={<FaUsers />}
-              text="Memberships"
-            />
-            <hr className="my-2 border-gray-300" />
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-primary/5 transition "
->>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
             >
               <span className="mr-3 text-[19px]">
                 <FaSignOutAlt />
@@ -296,20 +339,5 @@ const SellerProfileMenu = () => {
     </div>
   );
 };
-<<<<<<< HEAD
-=======
-// Dropdown Item Component
-const DropdownItem = ({ to, icon, text }) => (
-  <li>
-    <Link
-      to={to}
-      onClick={() => setIsOpen(false)}
-      className="flex items-center px-4 py-2 hover:bg-primary/5 transition"
-    >
-      <span className="mr-3 text-[19px]">{icon}</span> {text}
-    </Link>
-  </li>
-);
->>>>>>> ca76b54b366d2cce5f4c4c0e1ad2a955f2f297af
 
 export default SellerProfileMenu;
