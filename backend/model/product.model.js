@@ -25,6 +25,9 @@ const productSchema = new mongoose.Schema(
         message: "Discount price must be less than the original price",
       },
     },
+    discountInPercent: {
+      type: Number,
+    },
     category: {
       type: String,
       required: [true, "Product category is required"],
@@ -33,14 +36,22 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Product brand is required"],
     },
+    badgeNew: {
+      type: String,
+      default: "",
+    },
+    badgeSale: {
+      type: String,
+      default: "",
+    },
     stock: {
       type: Number,
       required: [true, "Product stock is required"],
       min: [0, "Stock cannot be negative"],
     },
     soldOut: {
-      type: Boolean,
-      default: false, // Automatically calculated below based on stock
+      type: Number,
+      default: 0,
     },
     vendor: {
       type: mongoose.Schema.Types.ObjectId,
@@ -55,11 +66,11 @@ const productSchema = new mongoose.Schema(
     ],
     variations: [
       {
-        color: { type: String, required: true },
-        size: { type: String, required: true },
+        color: { type: String },
+        size: { type: String },
         quantity: {
           type: Number,
-          required: [true, "Quantity is required for variation"],
+          // required: [true, "Quantity is required for variation"],
           min: [0, "Quantity cannot be negative"],
         },
       },
@@ -111,12 +122,44 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// Middleware to calculate soldOut based on stock
-productSchema.pre("save", function (next) {
-  this.soldOut = this.stock <= 0; // If stock is 0 or less, mark as sold out
+// Middleware 2: Calculate  soldOut
+productSchema.pre("save", async function (next) {
+  // Only run for existing products (not new ones)
+  if (!this.isNew) {
+    const existingProduct = await this.constructor.findById(this._id);
+    if (existingProduct) {
+      const previousStock = existingProduct.stock;
+      const currentStock = this.stock;
+
+      // Calculate how many items were sold
+      const soldCount = previousStock - currentStock;
+
+      // If positive, update soldOut count
+      if (soldCount > 0) {
+        this.soldOut = existingProduct.soldOut + soldCount;
+      } else {
+        this.soldOut = existingProduct.soldOut; // no change or restock
+      }
+    }
+  } else {
+    // On new product creation, initialize soldOut to 0
+    this.soldOut = 0;
+  }
+
   next();
 });
 
+// Middleware 2: Calculate discount percentage
+productSchema.pre("save", function (next) {
+  if (this.discountInPercent && this.price > 0) {
+    this.discountPrice =
+      this.price - Math.round((this.price * this.discountInPercent) / 100);
+  } else {
+    this.discountPrice = 0;
+  }
+
+  next();
+});
 const Product = mongoose.model("Product", productSchema);
 
 // Export the Product model

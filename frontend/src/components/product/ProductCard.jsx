@@ -12,31 +12,31 @@ const ProductCard = ({ product }) => {
     <div className="border border-gray-200 rounded-md overflow-hidden transition-shadow hover:shadow-lg group">
       <div className="relative">
         <img
-          src={product.imageDefault}
-          alt={product.title}
+          src={product.images?.[0]?.url || "/placeholder.jpg"}
+          alt={product.title || "Product image"}
           className="w-full h-auto object-cover transition-transform transform group-hover:scale-110"
         />
         <img
-          src={product.imageHover}
-          alt={product.title}
+          src={product.images?.[1]?.url || "/placeholder.jpg"}
+          alt={product.title || "Product image"}
           className="absolute top-0 left-0 w-full h-auto object-cover opacity-0 transition-opacity group-hover:opacity-100"
         />
         {/* Badge */}
-        {product.discount && (
+        {product.discountInPercent > 0 && product.discountInPercent && (
           <div
-            className={`showcase-badge absolute top-4 left-4 bg-green-500 text-xs font-medium text-white px-2 py-0.5 rounded-sm z-30`}
+            className={`showcase-badge absolute top-4 left-12 bg-green-500 text-xs font-medium text-white px-2 py-0.5 rounded-sm z-30`}
           >
-            {product.discount}
+            {product.discountInPercent}% off
           </div>
         )}
-        {product.badge === "Sale" && (
+        {product.badgeSale && (
           <div className="showcase-badge angle black absolute top-2 -left-8 bg-black text-white text-[11px] font-medium uppercase px-10 py-1 -rotate-45 z-30">
-            sale
+            {product.badgeSale}
           </div>
         )}
-        {product.badge === "New" && (
+        {product.badgeNew && (
           <div className="showcase-badge angle black absolute top-2 -left-8 bg-red-500 text-white text-[11px] font-medium uppercase px-10 py-1 -rotate-45 z-30">
-            {product.badge}
+            {product.badgeNew}
           </div>
         )}
         <div className="absolute top-2 right-2 flex flex-col space-y-2 transform translate-x-12 transition-transform group-hover:translate-x-0">
@@ -58,29 +58,43 @@ const ProductCard = ({ product }) => {
       <div className="p-4">
         <a
           href="#"
-          className="text-primary text-[16px] font-medium uppercase mb-2 block"
+          className="text-primary text-[16px] font-medium capitalize mb-2 block"
         >
-          {product.category}
+          {product?.vendor?.name}
         </a>
+
         <h3 className="text-text text-lg font-light capitalize tracking-wide mb-2 truncate">
           <a href="#" className="hover:text-black">
-            {product.title}
+            {product.name}
           </a>
         </h3>
-        <div className="flex text-xl text-yellow-500 mb-2">
+        <div className="flex text-xl text-yellow-500 mb-2 ">
           {[...Array(5)].map((_, index) =>
-            index < product.rating ? (
+            index < product.ratings ? (
               <IoStar key={index} />
             ) : (
               <IoStarOutline key={index} />
             )
           )}
         </div>
-        <div className="flex items-center space-x-2 text-lg text-gray-900 mb-2">
-          <p className="font-bold">${product.price}</p>
-          {product.originalPrice && (
-            <del className="text-gray-500">${product.originalPrice}</del>
-          )}
+        <div className="flex justify-between">
+          <div className="flex items-center space-x-2 text-lg text-gray-900 mb-2">
+            {product.discountPrice > 0 ? (
+              <p className="font-bold">${product.discountPrice}</p>
+            ) : (
+              <p className="font-bold">${product.price}</p>
+            )}
+            {product.discountPrice > 0 && (
+              <del className="text-gray-500">${product.price}</del>
+            )}
+          </div>
+
+          <a
+            href="#"
+            className="text-green-400 text-[16px] font-medium  mb-2 block"
+          >
+            {product.soldOut} sold
+          </a>
         </div>
       </div>
     </div>

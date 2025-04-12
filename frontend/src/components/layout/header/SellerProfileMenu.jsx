@@ -325,7 +325,10 @@ const SellerProfileMenu = () => {
 
             <hr className="my-2 border-gray-300" />
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                handleLogout();
+                scrollToTop();
+              }}
               className="flex items-center w-full cursor-pointer px-4 py-2 hover:bg-gray-100 transition "
             >
               <span className="mr-3 text-[19px]">

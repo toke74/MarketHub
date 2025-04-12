@@ -1,3 +1,6 @@
+//Package Imports
+import { useSelector } from "react-redux";
+
 //Local Imports
 import Banner from "../../components/common/Banner";
 import CategorySlider from "../../components/product/CategorySlider";
@@ -13,12 +16,13 @@ import {
 } from "../../utils/ProductShowcaseData";
 import DealOfTheDay from "../../components/product/DealOfTheDay";
 import ProductCard from "../../components/product/ProductCard";
-import { products } from "../../utils/data";
 import Testimonials from "../../components/common/Testimonials";
 import CTAService from "../../components/common/CTAService";
 import Blog from "../../components/common/Blog";
 
 const Home = () => {
+  const { products } = useSelector((state) => state.product);
+
   return (
     <div className="">
       <Banner />

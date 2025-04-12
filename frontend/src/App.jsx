@@ -29,6 +29,14 @@ import {
   loadSellerFailure,
 } from "./features/seller/sellerSlice"; // Import seller actions
 
+// Local Import for product
+import {
+  getProductsRequest,
+  getProductsSuccess,
+  getProductsFailure,
+} from "./features/product/productSlice";
+import { useGetAllProductsQuery } from "./services/productApi/productApi";
+
 //Navbar Pages imports
 import Home from "./pages/navbarPages/Home";
 import Products from "./pages/products/Products";
@@ -76,6 +84,7 @@ import Memberships from "./pages/user/UserProfile/Memberships";
 
 //Page not found
 import NotFound from "./pages/NotFound";
+import CreateProduct from "./pages/products/CreateProduct";
 
 function App() {
   const dispatch = useDispatch();
@@ -86,6 +95,7 @@ function App() {
     error: userError,
     refetch: refetchUser,
   } = useLoadUserQuery();
+
   const {
     data: userTokenData,
     refetch: refreshUserAccessToken,
@@ -98,11 +108,19 @@ function App() {
     error: sellerError,
     refetch: refetchSeller,
   } = useLoadSellerQuery();
+
   const {
     data: sellerTokenData,
     refetch: refreshSellerAccessToken,
     isFetching: isSellerFetching,
   } = useUpdateSellerAccessTokenQuery();
+
+  // Use RTK Query to fetch products
+  const {
+    data: productData,
+    error: productError,
+    isLoading: productLoading,
+  } = useGetAllProductsQuery();
 
   // Load user on app mount
   useEffect(() => {
@@ -165,6 +183,23 @@ function App() {
     }
   }, [sellerTokenData, refetchSeller]);
 
+  // Load products on app mount
+  useEffect(() => {
+    dispatch(getProductsRequest());
+
+    if (productData) {
+      dispatch(getProductsSuccess(productData.products));
+    }
+
+    if (productError) {
+      dispatch(
+        getProductsFailure(
+          productError?.data?.message || "Failed to load products"
+        )
+      );
+    }
+  }, [productData, productError, dispatch]);
+
   return (
     <div>
       <Header />
@@ -208,6 +243,7 @@ function App() {
           <Route path="/customer_reviews" element={<CustomerReviews />} />
           <Route path="/seller/profile" element={<SellerProfile />} />
         </Route>
+        <Route path="/create_product" element={<CreateProduct />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

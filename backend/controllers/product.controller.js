@@ -10,11 +10,12 @@ import Vendor from "../model/vendor.model.js";
 // @access  Private (Vendor Only)
 export const createProduct = asyncErrorHandler(async (req, res, next) => {
   // Destructure fields from req.body
+  console.log(req.body);
   const {
     name,
     description,
     price,
-    discountPrice,
+    discountInPercent,
     category,
     brand,
     stock,
@@ -66,7 +67,7 @@ export const createProduct = asyncErrorHandler(async (req, res, next) => {
     name,
     description,
     price,
-    discountPrice,
+    discountInPercent,
     category,
     brand,
     stock,
