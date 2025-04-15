@@ -132,7 +132,7 @@ const SellerDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto flex flex-col md:flex-row h-screen bg-gray-50 overflow-hidden mb-3">
+    <div className="container mx-auto flex flex-col md:flex-row h-screen overflow-hidden mb-3">
       {/* Mobile Sidebar Overlay */}
       {mobileSidebarOpen && (
         <div

@@ -52,12 +52,16 @@ import RegisterSeller from "./pages/seller/auth/RegisterSeller";
 import SellerLogin from "./pages/seller/auth/SellerLogin";
 import VerifySellerEmail from "./pages/seller/auth/VerifySellerEmail";
 import ResendSellerToken from "./pages/seller/auth/ResendSellerToken";
+
+//Seller Protected routes
 import SellerDashboard from "./pages/seller/dashboard/SellerDashboard";
 import SellerForgotPassword from "./pages/seller/auth/SellerForgotPassword";
 import ProtectedSellerRoute from "./routes/ProtectedSellerRoute";
 import CustomerMessages from "./pages/seller/customer/CustomerMessages";
 import CustomerReviews from "./pages/seller/customer/CustomerReviews";
 import SellerProfile from "./pages/seller/profile/SellerProfile";
+import CreateProduct from "./pages/products/CreateProduct";
+import ProductManagement from "./pages/products/ProductManagement";
 
 //Orders Route
 import OrderManagement from "./pages/orders/OrderManagement";
@@ -84,7 +88,6 @@ import Memberships from "./pages/user/UserProfile/Memberships";
 
 //Page not found
 import NotFound from "./pages/NotFound";
-import CreateProduct from "./pages/products/CreateProduct";
 
 function App() {
   const dispatch = useDispatch();
@@ -242,6 +245,7 @@ function App() {
           <Route path="/customer_messages" element={<CustomerMessages />} />
           <Route path="/customer_reviews" element={<CustomerReviews />} />
           <Route path="/seller/profile" element={<SellerProfile />} />
+          <Route path="/product_management" element={<ProductManagement />} />
         </Route>
         <Route path="/create_product" element={<CreateProduct />} />
 
