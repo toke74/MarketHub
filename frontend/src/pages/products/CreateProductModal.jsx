@@ -48,6 +48,7 @@ const CreateProductModal = ({ onClose }) => {
   const [createProduct, { isLoading }] = useCreateProductMutation();
   const [previewImages, setPreviewImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -58,6 +59,7 @@ const CreateProductModal = ({ onClose }) => {
     resolver: zodResolver(productSchema),
     defaultValues: {
       variations: [],
+      discountInPercent: 0,
     },
   });
 
@@ -100,6 +102,8 @@ const CreateProductModal = ({ onClose }) => {
     try {
       const response = await createProduct(formData).unwrap();
       toast.success(response.message || "Product created successfully");
+      window.location.reload(true);
+      navigate("/product_management");
       onClose(); // Close modal after success
     } catch (err) {
       toast.error(err?.data?.message || "An error occurred");

@@ -94,31 +94,119 @@ export const createProduct = asyncErrorHandler(async (req, res, next) => {
 // @desc    Update Product
 // @route   PUT /api/v1/product/update_product/:id
 // @access  Private (Vendor Only)
+// export const updateProduct = asyncErrorHandler(async (req, res, next) => {
+//   // Extract product ID from request parameters
+//   const { id } = req.params;
+
+//   // Find product by ID
+//   const product = await Product.findById(id);
+
+//   // Check if product exists, if not, return error
+//   if (!product) {
+//     return next(new ErrorHandler("Product not found", 404));
+//   }
+
+//   // Ensure the product belongs to the authenticated vendor
+//   if (product.vendor.toString() !== req.vendor._id.toString()) {
+//     return next(
+//       new ErrorHandler("You are not authorized to update this product", 403)
+//     );
+//   }
+
+//   // Update fields from req.body
+//   const updatableFields = [
+//     "name",
+//     "description",
+//     "price",
+//     "discountPrice",
+//     "category",
+//     "brand",
+//     "stock",
+//     "variations",
+//     "tags",
+//     "isFeatured",
+//   ];
+
+//   // Update product fields
+//   updatableFields.forEach((field) => {
+//     if (req.body[field] !== undefined) {
+//       product[field] = req.body[field];
+//     }
+//   });
+
+//   // Handle image updates if new images are uploaded
+//   if (req.files && req.files.length > 0) {
+//     // Delete old images from Cloudinary
+//     await Promise.all(
+//       product.images.map(async (img) => {
+//         await cloudinary.uploader.destroy(img.public_id);
+//       })
+//     );
+
+//     // Upload new images
+//     const uploadedImages = await Promise.all(
+//       req.files.map(async (file) => {
+//         const result = await cloudinary.uploader.upload(file.path, {
+//           folder: "products",
+//         });
+//         return {
+//           public_id: result.public_id,
+//           url: result.secure_url,
+//         };
+//       })
+//     );
+
+//     product.images = uploadedImages;
+//   }
+
+//   // Save updated product
+//   await product.save();
+
+//   // Respond with success message and updated product details
+//   res.status(200).json({
+//     success: true,
+//     message: "Product updated successfully",
+//     product,
+//   });
+// });
+// @desc    Update Product
+// @route   PUT /api/v1/product/update_product/:id
+// @access  Private (Vendor Only)
 export const updateProduct = asyncErrorHandler(async (req, res, next) => {
-  // Extract product ID from request parameters
   const { id } = req.params;
 
-  // Find product by ID
   const product = await Product.findById(id);
-
-  // Check if product exists, if not, return error
   if (!product) {
     return next(new ErrorHandler("Product not found", 404));
   }
 
-  // Ensure the product belongs to the authenticated vendor
   if (product.vendor.toString() !== req.vendor._id.toString()) {
     return next(
       new ErrorHandler("You are not authorized to update this product", 403)
     );
   }
 
-  // Update fields from req.body
+  // Parse variations if sent as JSON string
+  if (req.body.variations && typeof req.body.variations === "string") {
+    try {
+      req.body.variations = JSON.parse(req.body.variations);
+    } catch (error) {
+      return next(new ErrorHandler("Invalid variations format", 400));
+    }
+  }
+
+  // Optional: Filter out empty variation objects
+  if (Array.isArray(req.body.variations)) {
+    req.body.variations = req.body.variations.filter(
+      (v) => v.color && v.size && v.quantity > 0
+    );
+  }
+
   const updatableFields = [
     "name",
     "description",
     "price",
-    "discountPrice",
+    "discountInPercent",
     "category",
     "brand",
     "stock",
@@ -127,14 +215,13 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
     "isFeatured",
   ];
 
-  // Update product fields
   updatableFields.forEach((field) => {
     if (req.body[field] !== undefined) {
       product[field] = req.body[field];
     }
   });
 
-  // Handle image updates if new images are uploaded
+  // Handle image uploads
   if (req.files && req.files.length > 0) {
     // Delete old images from Cloudinary
     await Promise.all(
@@ -143,26 +230,60 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
       })
     );
 
-    // Upload new images
-    const uploadedImages = await Promise.all(
-      req.files.map(async (file) => {
-        const result = await cloudinary.uploader.upload(file.path, {
-          folder: "products",
-        });
-        return {
-          public_id: result.public_id,
-          url: result.secure_url,
-        };
-      })
-    );
+    // Parse existing images from request body
+    let existingImages = [];
+    if (req.body.existingImages) {
+      try {
+        // Support multiple values
+        if (Array.isArray(req.body.existingImages)) {
+          existingImages = req.body.existingImages.map((img) =>
+            typeof img === "string" ? JSON.parse(img) : img
+          );
+        } else {
+          existingImages = [JSON.parse(req.body.existingImages)];
+        }
+      } catch (error) {
+        return next(new ErrorHandler("Invalid existing images format", 400));
+      }
+    }
 
-    product.images = uploadedImages;
+    // Merge new uploads with existing images
+    if (req.files && req.files.length > 0) {
+      const newUploadedImages = await Promise.all(
+        req.files.map(async (file) => {
+          const result = await cloudinary.uploader.upload(file.path, {
+            folder: "products",
+          });
+          return {
+            public_id: result.public_id,
+            url: result.secure_url,
+          };
+        })
+      );
+
+      product.images = [...existingImages, ...newUploadedImages];
+    } else {
+      product.images = existingImages; // only existing if no new ones
+    }
+
+    // Upload new images
+    // const uploadedImages = await Promise.all(
+    //   req.files.map(async (file) => {
+    //     const result = await cloudinary.uploader.upload(file.path, {
+    //       folder: "products",
+    //     });
+    //     return {
+    //       public_id: result.public_id,
+    //       url: result.secure_url,
+    //     };
+    //   })
+    // );
+
+    // product.images = uploadedImages;
   }
 
-  // Save updated product
   await product.save();
 
-  // Respond with success message and updated product details
   res.status(200).json({
     success: true,
     message: "Product updated successfully",

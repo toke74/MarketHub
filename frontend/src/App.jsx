@@ -60,7 +60,7 @@ import ProtectedSellerRoute from "./routes/ProtectedSellerRoute";
 import CustomerMessages from "./pages/seller/customer/CustomerMessages";
 import CustomerReviews from "./pages/seller/customer/CustomerReviews";
 import SellerProfile from "./pages/seller/profile/SellerProfile";
-import CreateProduct from "./pages/products/CreateProduct";
+// import CreateProduct from "./pages/products/CreateProduct";
 import ProductManagement from "./pages/products/ProductManagement";
 
 //Orders Route
@@ -246,8 +246,8 @@ function App() {
           <Route path="/customer_reviews" element={<CustomerReviews />} />
           <Route path="/seller/profile" element={<SellerProfile />} />
           <Route path="/product_management" element={<ProductManagement />} />
+          {/* <Route path="/create_product" element={<CreateProduct />} /> */}
         </Route>
-        <Route path="/create_product" element={<CreateProduct />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

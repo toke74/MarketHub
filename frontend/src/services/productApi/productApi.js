@@ -10,6 +10,7 @@ export const productApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
     getAllProducts: builder.query({
       query: () => ({
         url: "/product/get_all_products",
@@ -17,7 +18,20 @@ export const productApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    editProduct: builder.mutation({
+      query: ({ productID, formData }) => ({
+        url: `/product/update_product/${productID}`,
+        method: "PUT",
+        body: formData,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useCreateProductMutation, useGetAllProductsQuery } = productApi;
+export const {
+  useCreateProductMutation,
+  useGetAllProductsQuery,
+  useEditProductMutation,
+} = productApi;

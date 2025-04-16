@@ -8,6 +8,7 @@ import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 // Local Imports
 import CreateProductModal from "./CreateProductModal";
 import EditProductModal from "./EditProductModal";
+import { Link } from "react-router-dom";
 
 const ProductManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -129,7 +130,7 @@ const ProductManagement = () => {
                 currentProducts.map((product) => (
                   <tr key={product._id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {product.name}
+                      <Link to="">{product.name}</Link>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       ${product.price.toFixed(2)}
@@ -200,7 +201,7 @@ const ProductManagement = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
               >
                 Prev
               </button>
@@ -209,7 +210,7 @@ const ProductManagement = () => {
                 <button
                   key={i}
                   onClick={() => handlePageChange(i + 1)}
-                  className={`px-3 py-1 border rounded ${
+                  className={`px-3 py-1 cursor-pointer border rounded ${
                     currentPage === i + 1
                       ? "bg-primary text-white"
                       : "text-gray-700"
@@ -222,7 +223,7 @@ const ProductManagement = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border rounded disabled:opacity-50"
+                className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
               >
                 Next
               </button>

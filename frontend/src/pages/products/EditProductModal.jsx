@@ -1,7 +1,13 @@
+//Package Imports
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+
+//Local Imports
+import { useEditProductMutation } from "../../services/productApi/productApi";
 
 // Zod schema
 const productSchema = z.object({
@@ -12,7 +18,7 @@ const productSchema = z.object({
   category: z.string().min(1, "Category is required"),
   brand: z.string().min(1, "Brand is required"),
   stock: z.number().min(0, "Stock must be non-negative"),
-  tags: z.string().optional(),
+  tags: z.string().optional().or(z.literal("")),
   variations: z
     .array(
       z.object({
@@ -26,6 +32,9 @@ const productSchema = z.object({
 });
 
 const EditProductModal = ({ onClose, product, onSave }) => {
+  const [editProduct, { isLoading }] = useEditProductMutation();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -38,6 +47,7 @@ const EditProductModal = ({ onClose, product, onSave }) => {
       price: product.price || 0,
       discountInPercent: product.discountInPercent || 0,
       stock: product.stock || 0,
+      tags: product.tags || "",
     },
   });
 
@@ -65,15 +75,73 @@ const EditProductModal = ({ onClose, product, onSave }) => {
     setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (data) => {
-    const finalImages = previewImages.map(
-      (img) => (img.file ? img.file : img) // send file if newly added, or existing URL if already uploaded
-    );
-    const payload = { ...data, images: finalImages };
+  //   const onSubmit = async (data) => {
+  //     const productID = product?._id;
+  //     const finalImages = previewImages.map(
+  //       (img) => (img.file ? img.file : img) // send file if newly added, or existing URL if already uploaded
+  //     );
+  //     const payload = { ...data, images: finalImages };
 
-    console.log("Edited product data:", payload);
-    onSave(payload);
-    onClose();
+  //     console.log("Edited product data:", payload);
+  //     try {
+  //       const response = await editProduct({ productID, ...payload }).unwrap();
+  //       toast.success(response.message || "Product updated successfully");
+  //       onClose(); // Close modal after success
+  //     } catch (err) {
+  //       toast.error(err?.data?.message || "An error occurred");
+  //     }
+  //   };
+
+  const onSubmit = async (data) => {
+    const productID = product?._id;
+
+    // 🔁 Clean up the tags field
+    if (!data.tags?.trim()) {
+      delete data.tags;
+    }
+    const formData = new FormData();
+
+    formData.append("name", String(data.name));
+    formData.append("description", String(data.description));
+    formData.append("price", String(data.price));
+    formData.append("discountInPercent", String(data.discountInPercent || 0));
+    formData.append("category", String(data.category));
+    formData.append("brand", String(data.brand));
+    formData.append("stock", String(data.stock));
+    formData.append("tags", String(data.tags || ""));
+
+    // Variations (assuming it's an array of objects)
+    if (data.variations) {
+      formData.append("variations", JSON.stringify(data.variations));
+    }
+
+    // Handle images
+    let hasNewImages = false;
+    previewImages.forEach((img) => {
+      if (img.file) {
+        formData.append("images", img.file);
+        hasNewImages = true;
+      }
+      if (!img.file && img.url) {
+        formData.append("existingImages", JSON.stringify(img)); // send existing image info
+      }
+    });
+
+    if (!hasNewImages && previewImages.length === 0) {
+      toast.error("Please upload at least one product image.");
+      return;
+    }
+
+    try {
+      const response = await editProduct({ productID, formData }).unwrap();
+      toast.success(response.message || "Product updated successfully");
+      window.location.reload(true);
+      // navigate("/product_management");
+      onClose();
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.data?.message || "An error occurred");
+    }
   };
 
   return (
@@ -164,7 +232,11 @@ const EditProductModal = ({ onClose, product, onSave }) => {
 
           <div>
             <label className="block mb-1 font-medium">Tags</label>
-            <input {...register("tags")} className="input" />
+            <input
+              {...register("tags")}
+              onBlur={(e) => (e.target.value = e.target.value.trim())}
+              className="input"
+            />
           </div>
 
           {/* Images */}
@@ -209,8 +281,17 @@ const EditProductModal = ({ onClose, product, onSave }) => {
             <button
               type="submit"
               className="px-4 py-2 w-full cursor-pointer bg-primary text-white rounded hover:bg-primary/70"
+              disabled={isLoading}
             >
-              Save Changes
+              {isLoading ? (
+                <img
+                  src="loading.gif"
+                  alt="loading"
+                  className="w-8 h-8 mx-auto"
+                />
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </div>
         </form>
