@@ -1,6 +1,7 @@
 // Package Imports
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 // React Icons
 import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
@@ -9,13 +10,14 @@ import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreateProductModal from "./CreateProductModal";
 import EditProductModal from "./EditProductModal";
 import { Link } from "react-router-dom";
+import { useDeleteProductMutation } from "../../services/productApi/productApi";
 
 const ProductManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const { products } = useSelector((state) => state.product);
-
+  const [deleteProduct] = useDeleteProductMutation();
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
@@ -42,8 +44,19 @@ const ProductManagement = () => {
     setEditProduct(selectedProduct);
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete product:", id);
+  const handleDelete = async (id) => {
+    const productID = id;
+    console.log("Delete product:", productID);
+    try {
+      const response = await deleteProduct(productID);
+      console.log(response);
+      toast.success(response?.data?.message);
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 2000);
+    } catch (err) {
+      toast.error(err?.data?.message || "An error occurred");
+    }
   };
 
   const handleCreate = () => setShowCreateModal(true);

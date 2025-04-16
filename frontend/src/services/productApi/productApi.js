@@ -27,6 +27,14 @@ export const productApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
     }),
+
+    deleteProduct: builder.mutation({
+      query: (productID) => ({
+        url: `/product/delete_product/${productID}`, // Dynamically inject productID
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -34,4 +42,5 @@ export const {
   useCreateProductMutation,
   useGetAllProductsQuery,
   useEditProductMutation,
+  useDeleteProductMutation,
 } = productApi;
