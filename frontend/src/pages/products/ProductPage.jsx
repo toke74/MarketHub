@@ -1,12 +1,11 @@
-//Package Imports
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-//React Icons
+// React Icons
 import { FaStar, FaHeart, FaShoppingCart, FaBolt } from "react-icons/fa";
 import { IoStar, IoStarHalf, IoStarOutline } from "react-icons/io5";
 
-//Local Imports
+// Local Imports
 import ImageZoomModal from "../../components/common/ImageZoomModal";
 import { useGetProductByIdQuery } from "../../services/productApi/productApi";
 import ProductDetailsRenderer from "./ProductDetailsRenderer";
@@ -17,6 +16,7 @@ const ProductPage = () => {
 
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState(""); // New state for selected color
   const [quantity, setQuantity] = useState(1);
   const [zoomImage, setZoomImage] = useState(null);
 
@@ -41,16 +41,30 @@ const ProductPage = () => {
     price = 0,
     discountPrice = 0,
     sizes = [],
+    colors = [], // Added colors from product
     images = [],
     ratings = 0,
-    details = [],
     reviews = [],
     numReviews = 0,
     discountInPercent,
     productDetails,
   } = product || {};
 
-  console.log(product);
+  // Helper to convert color names to CSS colors (basic mapping)
+  const getColorStyle = (colorName) => {
+    const colorMap = {
+      Red: "#FF0000",
+      Blue: "#0000FF",
+      Yellow: "#FFFF00",
+      Black: "#000000",
+      Green: "#008000",
+      White: "#FFFFFF",
+      Gray: "#808080",
+      Purple: "#800080",
+      Orange: "#FFA500",
+    };
+    return colorMap[colorName] || "#000000"; // Default to black if color not mapped
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4">
@@ -84,21 +98,6 @@ const ProductPage = () => {
         {/* Product Info */}
         <div className="space-y-6">
           <h1 className="text-2xl font-semibold">{name}</h1>
-          {/* <div className="flex items-center gap-2 text-[17px]">
-            <div className="flex text-xl text-yellow-500 ">
-              {[...Array(5)].map((_, index) =>
-                index < rating ? (
-                  <IoStar key={index} />
-                ) : (
-                  <IoStarOutline key={index} />
-                )
-              )}
-            </div>
-            <span className="mt-1">
-              {rating || "0"}{" "}
-              <span className="ml-4">({numReviews} Reviews)</span>
-            </span>
-          </div> */}
           <div className="flex items-center gap-2 text-[17px]">
             <div className="flex text-xl text-yellow-500">
               {[...Array(5)].map((_, index) => {
@@ -120,7 +119,6 @@ const ProductPage = () => {
             </span>
           </div>
           <div className="flex items-center gap-4 text-2xl font-bold text-red-500">
-            {/* ${discountPrice?.toFixed(2)} */}
             {discountPrice > 0 ? (
               <p className="font-bold">${discountPrice}</p>
             ) : (
@@ -148,12 +146,34 @@ const ProductPage = () => {
               {sizes?.map((size) => (
                 <button
                   key={size}
-                  className={`px-4 py-2 rounded-full border ${
+                  className={`px-4 py-2 rounded-full border cursor-pointer ${
                     selectedSize === size ? "bg-black text-white" : "bg-white"
                   }`}
                   onClick={() => setSelectedSize(size)}
                 >
                   {size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Colors */}
+          <div>
+            <h2 className="font-semibold mb-2">Select Color:</h2>
+            <div className="flex gap-3">
+              {colors?.map((color) => (
+                <button
+                  key={color}
+                  className={`w-8 h-8 rounded-full border-2 flex items-center justify-center cursor-pointer ${
+                    selectedColor === color ? "border-black" : "border-gray-200"
+                  }`}
+                  style={{ backgroundColor: getColorStyle(color) }}
+                  onClick={() => setSelectedColor(color)}
+                  title={color}
+                >
+                  {selectedColor === color && (
+                    <span className="w-4 h-4 rounded-full bg-white border border-black"></span>
+                  )}
                 </button>
               ))}
             </div>
@@ -173,10 +193,10 @@ const ProductPage = () => {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button className="flex-1 bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2">
+            <button className="flex-1 bg-black cursor-pointer text-white py-3 rounded-xl flex items-center justify-center gap-2">
               <FaShoppingCart /> Add to Cart
             </button>
-            <button className="flex-1 bg-red-500 text-white py-3 rounded-xl flex items-center justify-center gap-2">
+            <button className="flex-1 bg-red-500 cursor-pointer text-white py-3 rounded-xl flex items-center justify-center gap-2">
               <FaBolt /> Buy Now
             </button>
           </div>
@@ -195,22 +215,17 @@ const ProductPage = () => {
       {/* PRODUCT DETAILS */}
       <div className="mt-10 border-t pt-6">
         <h2 className="text-xl font-bold mb-3">Product Details</h2>
-        <ul className="list-disc ml-6 text-sm text-gray-700 space-y-1">
-          {/* {productDetails?.map((item, idx) => (
-            <li key={idx}>{item}</li>
-          ))} */}
-          <ProductDetailsRenderer productDetails={productDetails} />
-        </ul>
+        <ProductDetailsRenderer productDetails={productDetails} />
       </div>
 
       {/* REVIEWS */}
       <div className="mt-10 border-t pt-6">
         <h2 className="text-xl font-bold mb-3">Customer Reviews</h2>
-        {product?.reviews?.length === 0 ? (
+        {reviews?.length === 0 ? (
           <p className="text-gray-500 text-sm">No reviews yet.</p>
         ) : (
           <div className="space-y-4">
-            {product?.reviews?.map((review) => (
+            {reviews?.map((review) => (
               <div key={review._id} className="border rounded-lg p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
                   <div className="font-semibold">{review.userName}</div>
@@ -226,29 +241,6 @@ const ProductPage = () => {
           </div>
         )}
       </div>
-
-      {/* RECOMMENDED */}
-      {/* <div className="mt-10 border-t pt-6">
-        <h2 className="text-xl font-bold mb-3">You May Also Like</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {recommended.map((item) => (
-            <div
-              key={item._id}
-              className="border rounded-lg p-2 hover:shadow-lg transition"
-            >
-              <img
-                src={item.images[0]}
-                alt={item.name}
-                className="w-full h-48 object-cover rounded-md"
-              />
-              <div className="mt-2 text-sm font-medium">{item.name}</div>
-              <div className="text-red-500 font-semibold">
-                ${item.discountPrice.toFixed(2)}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 };
