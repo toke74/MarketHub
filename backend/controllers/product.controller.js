@@ -10,7 +10,6 @@ import Vendor from "../model/vendor.model.js";
 // @access  Private (Vendor Only)
 export const createProduct = asyncErrorHandler(async (req, res, next) => {
   // Destructure fields from req.body
-  console.log(req.body);
   const {
     name,
     description,
@@ -20,8 +19,11 @@ export const createProduct = asyncErrorHandler(async (req, res, next) => {
     brand,
     stock,
     variations,
+    colors,
+    sizes,
     tags,
     isFeatured,
+    productDetails,
   } = req.body;
 
   // Check authenticated vendor
@@ -62,6 +64,26 @@ export const createProduct = asyncErrorHandler(async (req, res, next) => {
     })
   );
 
+  // Convert colors and sizes to arrays if they come as comma-separated strings
+  const parsedColors = Array.isArray(colors)
+    ? colors
+    : typeof colors === "string"
+    ? colors.split(",").map((color) => color.trim())
+    : [];
+
+  const parsedSizes = Array.isArray(sizes)
+    ? sizes
+    : typeof sizes === "string"
+    ? sizes.split(",").map((size) => size.trim())
+    : [];
+
+  // Convert productDetails to an array if necessary
+  const parsedProductDetails = Array.isArray(productDetails)
+    ? productDetails
+    : typeof productDetails === "string"
+    ? productDetails.split(",").map((detail) => detail.trim())
+    : [];
+
   // Create product
   const product = await Product.create({
     name,
@@ -73,8 +95,11 @@ export const createProduct = asyncErrorHandler(async (req, res, next) => {
     stock,
     images: uploadedImages,
     variations,
+    colors: parsedColors,
+    sizes: parsedSizes,
     tags,
     isFeatured,
+    productDetails: parsedProductDetails,
     vendor: vendor._id,
   });
 
@@ -124,6 +149,21 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
     );
   }
 
+  // Parse productDetails from FormData
+  let productDetails = [];
+  if (req.body.productDetails) {
+    // If productDetails is already an array (unlikely, but handle just in case)
+    if (Array.isArray(req.body.productDetails)) {
+      productDetails = req.body.productDetails;
+    } else {
+      // FormData sends productDetails as productDetails[0], productDetails[1], etc.
+      productDetails = Object.keys(req.body)
+        .filter((key) => key.startsWith("productDetails["))
+        .map((key) => req.body[key])
+        .filter((detail) => detail); // Filter out empty strings
+    }
+  }
+
   const updatableFields = [
     "name",
     "description",
@@ -135,10 +175,15 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
     "variations",
     "tags",
     "isFeatured",
+    "productDetails", // Add productDetails to updatable fields
   ];
 
   updatableFields.forEach((field) => {
-    if (req.body[field] !== undefined) {
+    if (field === "productDetails") {
+      if (productDetails.length > 0) {
+        product[field] = productDetails;
+      }
+    } else if (req.body[field] !== undefined) {
       product[field] = req.body[field];
     }
   });
@@ -185,23 +230,8 @@ export const updateProduct = asyncErrorHandler(async (req, res, next) => {
 
       product.images = [...existingImages, ...newUploadedImages];
     } else {
-      product.images = existingImages; // only existing if no new ones
+      product.images = existingImages; // Only existing if no new ones
     }
-
-    // Upload new images
-    // const uploadedImages = await Promise.all(
-    //   req.files.map(async (file) => {
-    //     const result = await cloudinary.uploader.upload(file.path, {
-    //       folder: "products",
-    //     });
-    //     return {
-    //       public_id: result.public_id,
-    //       url: result.secure_url,
-    //     };
-    //   })
-    // );
-
-    // product.images = uploadedImages;
   }
 
   await product.save();

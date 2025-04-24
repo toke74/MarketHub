@@ -117,6 +117,17 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 0 15px;
 }
 
+.tiptap {
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+.tiptap:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
 .input {
   @apply w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300;
   /* @apply border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400; */

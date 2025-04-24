@@ -6,6 +6,7 @@ import {
   IoStar,
   IoStarOutline,
 } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   return (
@@ -64,11 +65,14 @@ const ProductCard = ({ product }) => {
         </a>
 
         <h3 className="text-text text-lg font-light capitalize tracking-wide mb-2 truncate">
-          <a href="#" className="hover:text-black">
+          <Link
+            to={`/product_page/${product._id}`}
+            className="hover:text-black"
+          >
             {product.name}
-          </a>
+          </Link>
         </h3>
-        <div className="flex text-xl text-yellow-500 mb-2 ">
+        {/* <div className="flex text-xl text-yellow-500 mb-2 ">
           {[...Array(5)].map((_, index) =>
             index < product.ratings ? (
               <IoStar key={index} />
@@ -76,7 +80,23 @@ const ProductCard = ({ product }) => {
               <IoStarOutline key={index} />
             )
           )}
+        </div> */}
+
+        <div className="flex text-xl text-yellow-500">
+          {[...Array(5)].map((_, index) => {
+            const fullStars = Math.floor(product.ratings);
+            const hasHalfStar = product.ratings - fullStars >= 0.5;
+
+            if (index < fullStars) {
+              return <IoStar key={index} />;
+            } else if (index === fullStars && hasHalfStar) {
+              return <IoStarHalf key={index} />;
+            } else {
+              return <IoStarOutline key={index} />;
+            }
+          })}
         </div>
+
         <div className="flex justify-between">
           <div className="flex items-center space-x-2 text-lg text-gray-900 mb-2">
             {product.discountPrice > 0 ? (

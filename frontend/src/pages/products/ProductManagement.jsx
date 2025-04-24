@@ -46,7 +46,6 @@ const ProductManagement = () => {
 
   const handleDelete = async (id) => {
     const productID = id;
-    console.log("Delete product:", productID);
     try {
       const response = await deleteProduct(productID);
       console.log(response);
@@ -109,7 +108,7 @@ const ProductManagement = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
+                <th className="w-[30%] px-6 py-3 text-left text-sm font-medium text-gray-600">
                   Name
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">
@@ -142,8 +141,10 @@ const ProductManagement = () => {
               {currentProducts.length > 0 ? (
                 currentProducts.map((product) => (
                   <tr key={product._id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Link to="">{product.name}</Link>
+                    <td className="w-[30%] px-6 py-4  text-sm font-medium">
+                      <Link to={`/product_page/${product._id}`}>
+                        {product.name}
+                      </Link>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       ${product.price.toFixed(2)}

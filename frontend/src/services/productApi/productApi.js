@@ -19,6 +19,19 @@ export const productApi = apiSlice.injectEndpoints({
       }),
     }),
 
+    getProductById: builder.query({
+      query: (id) => ({
+        url: `/product/get_product/${id}`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    // getProductById: builder.query({
+    //   query: (id) => `/product/get_product/${id}`,
+    //   providesTags: (result, error, id) => [{ type: "Product", id }],
+    // }),
+
     editProduct: builder.mutation({
       query: ({ productID, formData }) => ({
         url: `/product/update_product/${productID}`,
@@ -41,6 +54,7 @@ export const productApi = apiSlice.injectEndpoints({
 export const {
   useCreateProductMutation,
   useGetAllProductsQuery,
+  useGetProductByIdQuery,
   useEditProductMutation,
   useDeleteProductMutation,
 } = productApi;

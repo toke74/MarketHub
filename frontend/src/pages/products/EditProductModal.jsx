@@ -1,13 +1,16 @@
-//Package Imports
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-//Local Imports
+// React Icons
+import { FaPlus, FaTrash } from "react-icons/fa";
+
+// Local Imports
 import { useEditProductMutation } from "../../services/productApi/productApi";
+import RichTextEditor from "../../components/common/RichTextEditor";
 
 // Zod schema
 const productSchema = z.object({
@@ -29,6 +32,9 @@ const productSchema = z.object({
     )
     .optional(),
   images: z.any().optional(), // Will handle image files separately
+  productDetails: z
+    .array(z.string().min(1, "Each detail must have content"))
+    .min(1, "At least one product detail is required"),
 });
 
 const EditProductModal = ({ onClose, product, onSave }) => {
@@ -39,6 +45,8 @@ const EditProductModal = ({ onClose, product, onSave }) => {
     register,
     handleSubmit,
     setValue,
+    getValues,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
@@ -48,7 +56,17 @@ const EditProductModal = ({ onClose, product, onSave }) => {
       discountInPercent: product.discountInPercent || 0,
       stock: product.stock || 0,
       tags: product.tags || "",
+      productDetails: product.productDetails || [""], // Initialize with existing productDetails or an empty string
     },
+  });
+
+  const {
+    fields: productDetailFields,
+    append: appendProductDetail,
+    remove: removeProductDetail,
+  } = useFieldArray({
+    control,
+    name: "productDetails",
   });
 
   const [previewImages, setPreviewImages] = useState(product.images || []);
@@ -75,30 +93,14 @@ const EditProductModal = ({ onClose, product, onSave }) => {
     setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  //   const onSubmit = async (data) => {
-  //     const productID = product?._id;
-  //     const finalImages = previewImages.map(
-  //       (img) => (img.file ? img.file : img) // send file if newly added, or existing URL if already uploaded
-  //     );
-  //     const payload = { ...data, images: finalImages };
-
-  //     console.log("Edited product data:", payload);
-  //     try {
-  //       const response = await editProduct({ productID, ...payload }).unwrap();
-  //       toast.success(response.message || "Product updated successfully");
-  //       onClose(); // Close modal after success
-  //     } catch (err) {
-  //       toast.error(err?.data?.message || "An error occurred");
-  //     }
-  //   };
-
   const onSubmit = async (data) => {
     const productID = product?._id;
 
-    // 🔁 Clean up the tags field
+    // Clean up the tags field
     if (!data.tags?.trim()) {
       delete data.tags;
     }
+
     const formData = new FormData();
 
     formData.append("name", String(data.name));
@@ -114,6 +116,11 @@ const EditProductModal = ({ onClose, product, onSave }) => {
     if (data.variations) {
       formData.append("variations", JSON.stringify(data.variations));
     }
+
+    // Product Details
+    (data.productDetails || []).forEach((detail, i) => {
+      formData.append(`productDetails[${i}]`, detail);
+    });
 
     // Handle images
     let hasNewImages = false;
@@ -135,7 +142,6 @@ const EditProductModal = ({ onClose, product, onSave }) => {
     try {
       const response = await editProduct({ productID, formData }).unwrap();
       toast.success(response.message || "Product updated successfully");
-      window.location.reload(true);
       // navigate("/product_management");
       onClose();
     } catch (err) {
@@ -145,13 +151,13 @@ const EditProductModal = ({ onClose, product, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-52 bg-black/40 flex justify-center items-center ">
+    <div className="fixed inset-0 z-52 bg-black/40 flex justify-center items-center">
       <div className="bg-white p-10 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-lg relative">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-xl cursor-pointer"
         >
-          &times;
+          ×
         </button>
         <h2 className="text-xl font-semibold mb-4">Edit Product</h2>
 
@@ -170,6 +176,47 @@ const EditProductModal = ({ onClose, product, onSave }) => {
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}
+              </p>
+            )}
+          </div>
+
+          {/* Product Details Rich Text */}
+          <div className="space-y-2">
+            <label className="block mb-1 font-medium">Product Details</label>
+            {productDetailFields.map((field, index) => (
+              <div key={field.id} className="border p-2 rounded relative">
+                <RichTextEditor
+                  value={getValues(`productDetails.${index}`) || ""}
+                  onChange={(content) =>
+                    setValue(`productDetails.${index}`, content, {
+                      shouldValidate: true,
+                    })
+                  }
+                />
+                {errors.productDetails?.[index] && (
+                  <p className="text-red-500 text-sm">
+                    {errors.productDetails[index].message}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeProductDetail(index)}
+                  className="text-red-500 absolute top-2 right-2 hover:text-red-700"
+                >
+                  <FaTrash />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => appendProductDetail("")}
+              className="mt-2 text-primary hover:underline flex items-center gap-2 cursor-pointer"
+            >
+              <FaPlus /> Add Detail Block
+            </button>
+            {errors.productDetails && !errors.productDetails?.[0] && (
+              <p className="text-red-500 text-sm">
+                {errors.productDetails.message}
               </p>
             )}
           </div>

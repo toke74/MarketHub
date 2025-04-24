@@ -64,6 +64,9 @@ const productSchema = new mongoose.Schema(
         public_id: { type: String, required: true },
       },
     ],
+    colors: [{ type: String }],
+    sizes: [{ type: String }],
+
     variations: [
       {
         color: { type: String },
@@ -80,6 +83,7 @@ const productSchema = new mongoose.Schema(
       default: 0,
       min: [0, "Ratings cannot be less than 0"],
       max: [5, "Ratings cannot exceed 5"],
+      set: (v) => Math.round(v * 10) / 10,
     },
     numReviews: {
       type: Number,
@@ -108,6 +112,25 @@ const productSchema = new mongoose.Schema(
       default: false,
     },
     tags: [{ type: String }],
+    productDetails: [
+      {
+        type: String,
+        validate: {
+          validator: function (value) {
+            return value && value.length > 0; // Ensure each string in the array is non-empty
+          },
+          message: "Each product detail must have content",
+        },
+      },
+      {
+        validate: {
+          validator: function (array) {
+            return array && array.length > 0; // Ensure the array has at least one entry
+          },
+          message: "At least one product detail is required",
+        },
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

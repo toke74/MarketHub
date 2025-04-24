@@ -46,6 +46,7 @@ import BestSellers from "./pages/navbarPages/BestSellers";
 import HotOffers from "./pages/navbarPages/HotOffers";
 import Blog from "./pages/navbarPages/Blog";
 import CustomerService from "./pages/navbarPages/CustomerService";
+import ProductPage from "./pages/products/ProductPage";
 
 // Seller imports
 import RegisterSeller from "./pages/seller/auth/RegisterSeller";
@@ -60,7 +61,6 @@ import ProtectedSellerRoute from "./routes/ProtectedSellerRoute";
 import CustomerMessages from "./pages/seller/customer/CustomerMessages";
 import CustomerReviews from "./pages/seller/customer/CustomerReviews";
 import SellerProfile from "./pages/seller/profile/SellerProfile";
-// import CreateProduct from "./pages/products/CreateProduct";
 import ProductManagement from "./pages/products/ProductManagement";
 
 //Orders Route
@@ -215,8 +215,9 @@ function App() {
         <Route path="/best_sellers" element={<BestSellers />} />
         <Route path="/hot_offers" element={<HotOffers />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/products" element={<Products />} />
         <Route path="/customer_service" element={<CustomerService />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/product_page/:id" element={<ProductPage />} />
 
         {/* auth Links */}
         <Route path="/sign_in" element={<SignIn />} />

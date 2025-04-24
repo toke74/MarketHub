@@ -1,4 +1,4 @@
-//Package Imports
+// Package Imports
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,7 @@ import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-//React Icons
+// React Icons
 import {
   FaTag,
   FaDollarSign,
@@ -20,8 +20,9 @@ import {
   FaPercent,
 } from "react-icons/fa";
 
-//Local Imports
+// Local Imports
 import { useCreateProductMutation } from "../../services/productApi/productApi";
+import RichTextEditor from "../../components/common/RichTextEditor";
 
 // Validation schema using Zod
 const productSchema = z.object({
@@ -33,6 +34,11 @@ const productSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
   stock: z.number().min(0, "Stock must be non-negative"),
   tags: z.string().optional(),
+  colors: z.string().optional(), // Changed to string for input handling
+  sizes: z.string().optional(), // Changed to string for input handling
+  productDetails: z
+    .array(z.string().min(1, "Each detail must have content"))
+    .min(1, "At least one product detail is required"),
   variations: z
     .array(
       z.object({
@@ -54,13 +60,27 @@ const CreateProductModal = ({ onClose }) => {
     register,
     handleSubmit,
     control,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
       variations: [],
       discountInPercent: 0,
+      colors: "", // Initialize as string
+      sizes: "", // Initialize as string
+      productDetails: [""],
     },
+  });
+
+  const {
+    fields: productDetailFields,
+    append: appendProductDetail,
+    remove: removeProductDetail,
+  } = useFieldArray({
+    control,
+    name: "productDetails",
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -89,6 +109,27 @@ const CreateProductModal = ({ onClose }) => {
     formData.append("stock", data.stock);
     formData.append("tags", data.tags || "");
 
+    // Transform colors and sizes from comma-separated strings to arrays
+    const colors = data.colors
+      ? data.colors
+          .split(",")
+          .map((c) => c.trim())
+          .filter((c) => c)
+      : [];
+    const sizes = data.sizes
+      ? data.sizes
+          .split(",")
+          .map((s) => s.trim())
+          .filter((s) => s)
+      : [];
+
+    colors.forEach((color, i) => formData.append(`colors[${i}]`, color));
+    sizes.forEach((size, i) => formData.append(`sizes[${i}]`, size));
+
+    (data.productDetails || []).forEach((detail, i) => {
+      formData.append(`productDetails[${i}]`, detail);
+    });
+
     data.variations.forEach((v, i) => {
       formData.append(`variations[${i}][color]`, v.color);
       formData.append(`variations[${i}][size]`, v.size);
@@ -102,22 +143,21 @@ const CreateProductModal = ({ onClose }) => {
     try {
       const response = await createProduct(formData).unwrap();
       toast.success(response.message || "Product created successfully");
-      window.location.reload(true);
       navigate("/product_management");
-      onClose(); // Close modal after success
+      onClose();
     } catch (err) {
       toast.error(err?.data?.message || "An error occurred");
     }
   };
 
   return (
-    <div className="fixed inset-0 z-52 bg-black/40 flex justify-center items-center ">
+    <div className="fixed inset-0 z-52 bg-black/40 flex justify-center items-center">
       <div className="bg-white p-10 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-lg relative">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-xl cursor-pointer"
         >
-          &times;
+          ×
         </button>
         <h2 className="text-2xl font-bold mb-6 text-center">Create Product</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -129,7 +169,6 @@ const CreateProductModal = ({ onClose }) => {
             <input
               {...register("name")}
               className="w-full border p-2 rounded mt-1 input"
-              //   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-0 focus:border-gray-300"
             />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -148,6 +187,49 @@ const CreateProductModal = ({ onClose }) => {
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}
+              </p>
+            )}
+          </div>
+
+          {/* Product Details Rich Text */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-text">
+              <FaList /> Product Details
+            </label>
+            {productDetailFields.map((field, index) => (
+              <div key={field.id} className="border p-2 rounded relative">
+                <RichTextEditor
+                  value={getValues(`productDetails.${index}`) || ""}
+                  onChange={(content) =>
+                    setValue(`productDetails.${index}`, content, {
+                      shouldValidate: true,
+                    })
+                  }
+                />
+                {errors.productDetails?.[index] && (
+                  <p className="text-red-500 text-sm">
+                    {errors.productDetails[index].message}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeProductDetail(index)}
+                  className="text-red-500 absolute top-2 right-2 hover:text-red-700"
+                >
+                  <FaTrash />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => appendProductDetail("")}
+              className="mt-2 text-primary hover:underline flex items-center gap-2 cursor-pointer"
+            >
+              <FaPlus /> Add Detail Block
+            </button>
+            {errors.productDetails && !errors.productDetails?.[0] && (
+              <p className="text-red-500 text-sm">
+                {errors.productDetails.message}
               </p>
             )}
           </div>
@@ -213,7 +295,7 @@ const CreateProductModal = ({ onClose }) => {
 
           {/* Stock */}
           <div>
-            <label className="flex items-center gap-2  text-text">
+            <label className="flex items-center gap-2 text-text">
               <FaBoxOpen /> Stock
             </label>
             <input
@@ -226,6 +308,36 @@ const CreateProductModal = ({ onClose }) => {
             )}
           </div>
 
+          {/* Colors */}
+          <div>
+            <label className="flex items-center gap-2 text-text">
+              <FaTag /> Colors (comma-separated)
+            </label>
+            <input
+              placeholder="e.g. Red, Blue, Green"
+              {...register("colors")}
+              className="w-full border p-2 rounded mt-1 input"
+            />
+            {errors.colors && (
+              <p className="text-red-500 text-sm">{errors.colors.message}</p>
+            )}
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <label className="flex items-center gap-2 text-text">
+              <FaTag /> Sizes (comma-separated)
+            </label>
+            <input
+              placeholder="e.g. S, M, L, XL"
+              {...register("sizes")}
+              className="w-full border p-2 rounded mt-1 input"
+            />
+            {errors.sizes && (
+              <p className="text-red-500 text-sm">{errors.sizes.message}</p>
+            )}
+          </div>
+
           {/* Tags */}
           <div>
             <label className="flex items-center gap-2 text-text">
@@ -235,6 +347,9 @@ const CreateProductModal = ({ onClose }) => {
               {...register("tags")}
               className="w-full border p-2 rounded mt-1 input"
             />
+            {errors.tags && (
+              <p className="text-red-500 text-sm">{errors.tags.message}</p>
+            )}
           </div>
 
           {/* Image Upload */}
@@ -293,7 +408,7 @@ const CreateProductModal = ({ onClose }) => {
                   <button
                     type="button"
                     onClick={() => remove(index)}
-                    className="text-red-600 text-xl hover:text-red-800 cursor-pointer flex  items-center justify-center"
+                    className="text-red-600 text-xl hover:text-red-800 cursor-pointer flex items-center justify-center"
                   >
                     <FaTrash /> <span className="md:hidden ml-5">Remove</span>
                   </button>
@@ -304,7 +419,7 @@ const CreateProductModal = ({ onClose }) => {
             <button
               type="button"
               onClick={() => append({ color: "", size: "", quantity: 0 })}
-              className="mt-3 flex items-center gap-2 text-primary hover:underline cursor-pointer "
+              className="mt-3 flex items-center gap-2 text-primary hover:underline cursor-pointer"
             >
               <FaPlus /> Add Variation
             </button>
@@ -315,6 +430,7 @@ const CreateProductModal = ({ onClose }) => {
             <button
               type="submit"
               className="w-full bg-primary text-white py-2 rounded hover:bg-primary/80 transition cursor-pointer"
+              disabled={isLoading}
             >
               {isLoading ? (
                 <img
