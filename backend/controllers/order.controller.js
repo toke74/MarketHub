@@ -1,12 +1,12 @@
-import asyncHandler from "express-async-handler";
-import Order from "../models/Order.js";
-import Product from "../models/Product.js";
-import Vendor from "../models/Vendor.js";
+import asyncErrorHandler from "../middlewares/catchAsyncErrors.js";
+import Order from "../model/order.model.js";
+import Product from "../model/product.model.js";
+import Vendor from "../model/vendor.model.js";
 
 // @desc    Create a new order
 // @route   POST /api/orders
 // @access  Private
-const createOrder = asyncHandler(async (req, res) => {
+const createOrder = asyncErrorHandler(async (req, res) => {
   const {
     orderItems,
     shippingAddress,
@@ -95,7 +95,7 @@ const createOrder = asyncHandler(async (req, res) => {
 // @desc    Get order by ID
 // @route   GET /api/orders/:id
 // @access  Private
-const getOrderById = asyncHandler(async (req, res) => {
+const getOrderById = asyncErrorHandler(async (req, res) => {
   const order = await Order.findById(req.params.id)
     .populate("user", "name email")
     .populate("orderItems.product")
@@ -121,7 +121,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @desc    Get all orders for a user
 // @route   GET /api/orders/myorders
 // @access  Private
-const getMyOrders = asyncHandler(async (req, res) => {
+const getMyOrders = asyncErrorHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
     .populate("orderItems.product", "name images")
     .populate("orderItems.vendor", "storeName")
@@ -133,7 +133,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @desc    Get all orders for a vendor
 // @route   GET /api/orders/vendor
 // @access  Private/Vendor
-const getVendorOrders = asyncHandler(async (req, res) => {
+const getVendorOrders = asyncErrorHandler(async (req, res) => {
   const orders = await Order.find({
     "vendors.vendor": req.user._id,
   })
@@ -161,7 +161,7 @@ const getVendorOrders = asyncHandler(async (req, res) => {
 // @desc    Update order status (Admin)
 // @route   PUT /api/orders/:id/status
 // @access  Private/Admin
-const updateOrderStatus = asyncHandler(async (req, res) => {
+const updateOrderStatus = asyncErrorHandler(async (req, res) => {
   const { status } = req.body;
   const order = await Order.findById(req.params.id);
 
@@ -204,7 +204,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 // @desc    Update vendor shipping status
 // @route   PUT /api/orders/:id/vendor-status
 // @access  Private/Vendor
-const updateVendorShippingStatus = asyncHandler(async (req, res) => {
+const updateVendorShippingStatus = asyncErrorHandler(async (req, res) => {
   const { status } = req.body;
   const order = await Order.findById(req.params.id);
 
@@ -272,7 +272,7 @@ const updateVendorShippingStatus = asyncHandler(async (req, res) => {
 // @desc    Update payment status (Admin)
 // @route   PUT /api/orders/:id/payment
 // @access  Private/Admin
-const updatePaymentStatus = asyncHandler(async (req, res) => {
+const updatePaymentStatus = asyncErrorHandler(async (req, res) => {
   const { status, transactionId } = req.body;
   const order = await Order.findById(req.params.id);
 
@@ -297,7 +297,7 @@ const updatePaymentStatus = asyncHandler(async (req, res) => {
 // @desc    Get all orders (Admin)
 // @route   GET /api/orders
 // @access  Private/Admin
-const getAllOrders = asyncHandler(async (req, res) => {
+const getAllOrders = asyncErrorHandler(async (req, res) => {
   const orders = await Order.find({})
     .populate("user", "name email")
     .populate("orderItems.product", "name images")
@@ -310,7 +310,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
 // @desc    Cancel order (User)
 // @route   PUT /api/orders/:id/cancel
 // @access  Private
-const cancelOrder = asyncHandler(async (req, res) => {
+const cancelOrder = asyncErrorHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {

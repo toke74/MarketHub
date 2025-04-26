@@ -9,6 +9,7 @@ import ErrorHandlerMiddleware from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
 import vendorRouter from "./routes/vendor.route.js";
 import productRouter from "./routes/product.route.js";
+import orderRouter from "./routes/order.route.js";
 
 export const app = express();
 const { ORIGIN } = process.env;
@@ -42,6 +43,7 @@ app.use(cookieParser());
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/vendor", vendorRouter);
 app.use("/api/v1/product", productRouter);
+app.use("/api/v1/order", orderRouter);
 
 //testing route
 app.get("/test", (req, res, next) => {
